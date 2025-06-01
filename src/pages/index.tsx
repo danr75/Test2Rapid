@@ -16,9 +16,7 @@ const Home: React.FC = () => {
           <h1 className="text-5xl font-bold mb-4 text-primary">
             Interactive Learning Hub
           </h1>
-          <p className="text-xl text-gray-600">
-            Learn any topic through AI-generated questions and build your knowledge mind map
-          </p>
+          {/* Removed AI-generated text as requested */}
         </div>
         
         <div className="max-w-2xl mx-auto">
@@ -30,18 +28,16 @@ const Home: React.FC = () => {
           </div>
           
           <div className="mt-8 text-center text-gray-600">
-            <p className="mb-2">How it works:</p>
-            <div className="flex justify-center items-center space-x-4 text-sm">
+            <p className="mb-2 text-center">How it works:</p>
+            <div className="grid grid-cols-3 gap-4 max-w-md mx-auto text-sm">
               <div className="flex flex-col items-center">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2">1</div>
                 <p>Choose a topic</p>
               </div>
-              <div className="text-gray-400">→</div>
               <div className="flex flex-col items-center">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2">2</div>
                 <p>Answer questions</p>
               </div>
-              <div className="text-gray-400">→</div>
               <div className="flex flex-col items-center">
                 <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2">3</div>
                 <p>Build your mind map</p>

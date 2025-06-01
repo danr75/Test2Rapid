@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import QuestionCard from '@/components/Quiz/QuestionCard';
 import FeedbackModal from '@/components/Quiz/FeedbackModal';
+import CompletionModal from '@/components/Quiz/CompletionModal';
 import MindMap from '@/components/MindMap/MindMap';
 import { useLearning } from '@/store/LearningContext';
 import questionGenerator from '@/services/ai/questionGenerator';
@@ -11,10 +12,13 @@ const QuizPage: React.FC = () => {
   const router = useRouter();
   const { state, dispatch } = useLearning();
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showCompletion, setShowCompletion] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [explanation, setExplanation] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+  const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
   
   // Get the current question
   const currentQuestion = state.questions[state.currentQuestionIndex];
@@ -59,8 +63,15 @@ const QuizPage: React.FC = () => {
       }
     }
     
-    // If the answer is correct, add a node to the mind map
+    // If the answer is correct, add a node to the mind map, increment correct answers count, and mark question as completed
     if (option.isCorrect && currentQuestion) {
+      setCorrectAnswersCount(prev => prev + 1);
+      
+      // Mark this question as completed
+      if (!completedQuestions.includes(state.currentQuestionIndex)) {
+        setCompletedQuestions(prev => [...prev, state.currentQuestionIndex]);
+      }
+      
       const newNode = {
         id: currentQuestion.id,
         label: currentQuestion.text.length > 30 
@@ -86,19 +97,31 @@ const QuizPage: React.FC = () => {
     setShowFeedback(false);
     setSelectedOption(null);
     
-    // Move to the next question if available
-    if (state.currentQuestionIndex < state.questions.length - 1) {
-      dispatch({
-        type: 'SET_CURRENT_QUESTION_INDEX',
-        payload: state.currentQuestionIndex + 1,
-      });
-    } else {
-      // If all questions are answered, show a completion message
-      setTimeout(() => {
-        alert('Congratulations! You have completed all questions!');
-      }, 500);
-      // In a future task, we'll implement a proper completion screen
+    // Only move to the next question if the answer was correct
+    if (isCorrect) {
+      // If there are more questions, move to the next one
+      if (state.currentQuestionIndex < state.questions.length - 1) {
+        dispatch({
+          type: 'SET_CURRENT_QUESTION_INDEX',
+          payload: state.currentQuestionIndex + 1,
+        });
+      } else {
+        // If all questions are answered correctly, show the completion modal
+        setShowCompletion(true);
+      }
     }
+    // If answer was incorrect, stay on the same question
+  };
+  
+  // Handle starting a new topic
+  const handleStartNewTopic = () => {
+    setShowCompletion(false);
+    router.push('/');
+  };
+  
+  // Handle reviewing the mind map (just closes the modal to see the mind map)
+  const handleReviewMindMap = () => {
+    setShowCompletion(false);
   };
   
   if (state.isLoading) {
@@ -161,19 +184,17 @@ const QuizPage: React.FC = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-1 text-primary">{state.topic}</h1>
-            <p className="text-gray-600">
-              Build your knowledge through interactive questions
-            </p>
+            <h1 className="text-3xl font-bold text-primary">{state.topic}</h1>
           </div>
           <button 
             onClick={() => router.push('/')} 
-            className="mt-4 md:mt-0 text-sm flex items-center text-gray-600 hover:text-primary transition-colors"
+            className="mt-4 md:mt-0 py-2 px-4 rounded-md border border-gray-200 text-sm font-medium flex items-center hover:bg-gray-50 transition-colors"
+            aria-label="Return to topic selection"
           >
-            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Choose another topic
+            New Topic
           </button>
         </div>
         
@@ -185,6 +206,7 @@ const QuizPage: React.FC = () => {
               onAnswerSelected={handleAnswerSelected}
               questionNumber={state.currentQuestionIndex + 1}
               totalQuestions={state.questions.length}
+              completedQuestions={completedQuestions}
             />
           </div>
           
@@ -204,6 +226,16 @@ const QuizPage: React.FC = () => {
           explanation={explanation}
           onContinue={handleContinue}
           correctAnswer={!isCorrect ? correctAnswer : undefined}
+        />
+      )}
+      
+      {showCompletion && (
+        <CompletionModal
+          topic={state.topic}
+          correctAnswers={correctAnswersCount}
+          totalQuestions={state.questions.length}
+          onStartNew={handleStartNewTopic}
+          onReview={handleReviewMindMap}
         />
       )}
     </div>

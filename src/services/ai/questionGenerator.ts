@@ -19,7 +19,7 @@ const generateId = (): string => {
 
 // Mock data for placeholder questions
 const mockQuestions = (topic: string): Question[] => {
-  return [
+  const questions: Question[] = [
     {
       id: generateId(),
       text: `What is a key concept in ${topic}?`,
@@ -40,7 +40,89 @@ const mockQuestions = (topic: string): Question[] => {
       ],
       explanation: `This is another placeholder explanation about ${topic}. The AI will generate more detailed and accurate explanations.`,
     },
+    {
+      id: generateId(),
+      text: `How does ${topic} impact modern technology?`,
+      options: [
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+      ],
+      explanation: `This explanation would detail the relationship between ${topic} and modern technological advancements.`,
+    },
+    {
+      id: generateId(),
+      text: `What historical development led to our current understanding of ${topic}?`,
+      options: [
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+      ],
+      explanation: `This explanation would cover the historical context and evolution of ${topic} over time.`,
+    },
+    {
+      id: generateId(),
+      text: `Which field is most closely related to ${topic}?`,
+      options: [
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+      ],
+      explanation: `This explanation would explore the interdisciplinary connections between ${topic} and related fields of study.`,
+    },
+    {
+      id: generateId(),
+      text: `What practical application of ${topic} has the most potential?`,
+      options: [
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+      ],
+      explanation: `This explanation would discuss the practical applications and future potential of ${topic} in real-world scenarios.`,
+    },
+    {
+      id: generateId(),
+      text: `Who is considered a pioneer in the field of ${topic}?`,
+      options: [
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+      ],
+      explanation: `This explanation would highlight key figures and their contributions to the development of ${topic}.`,
+    },
+    {
+      id: generateId(),
+      text: `What common misconception exists about ${topic}?`,
+      options: [
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+      ],
+      explanation: `This explanation would address common misunderstandings about ${topic} and clarify the accurate perspective.`,
+    },
+    {
+      id: generateId(),
+      text: `How might ${topic} evolve in the next decade?`,
+      options: [
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+      ],
+      explanation: `This explanation would explore future trends and potential developments in ${topic} over the coming years.`,
+    },
+    {
+      id: generateId(),
+      text: `What ethical considerations are important when discussing ${topic}?`,
+      options: [
+        { id: generateId(), text: 'Mock correct answer', isCorrect: true },
+        { id: generateId(), text: 'Mock incorrect answer 1', isCorrect: false },
+        { id: generateId(), text: 'Mock incorrect answer 2', isCorrect: false },
+      ],
+      explanation: `This explanation would address the ethical dimensions and considerations related to ${topic} in various contexts.`,
+    },
   ];
+  
+  return questions;
 };
 
 // Placeholder function for generating questions

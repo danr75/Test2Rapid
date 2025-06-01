@@ -66,7 +66,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
           onClick={onContinue} 
           className={`w-full py-3 rounded-md font-semibold text-white transition-colors ${isCorrect ? 'bg-secondary hover:bg-green-600' : 'bg-primary hover:bg-indigo-600'}`}
         >
-          Continue
+          {isCorrect ? 'Continue to Next Question' : 'Try Again'}
           <span className="ml-2 text-xs opacity-75">(or press Enter)</span>
         </button>
       </div>

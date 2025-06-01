@@ -12,6 +12,7 @@ interface QuestionCardProps {
   onAnswerSelected: (option: Option) => void;
   questionNumber: number;
   totalQuestions: number;
+  completedQuestions?: number[];
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({
@@ -20,18 +21,21 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   onAnswerSelected,
   questionNumber,
   totalQuestions,
+  completedQuestions = [],
 }) => {
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
   
   return (
     <div className="card mb-6 border-t-4 border-primary">
-      <div className="flex justify-between items-center mb-4">
-        <span className="bg-primary text-white text-sm py-1 px-3 rounded-full">
-          Question {questionNumber} of {totalQuestions}
-        </span>
-        <span className="text-sm text-gray-500">
-          {Math.round((questionNumber / totalQuestions) * 100)}% Complete
-        </span>
+      <div className="mb-4">
+        <div className="w-full flex gap-1 h-2">
+          {Array.from({ length: 10 }, (_, i) => (
+            <div 
+              key={i} 
+              className={`flex-1 rounded-full transition-all duration-300 ease-in-out ${completedQuestions.includes(i) ? 'bg-secondary' : i === questionNumber - 1 ? 'bg-primary' : 'bg-gray-200'}`}
+            ></div>
+          ))}
+        </div>
       </div>
       
       <h3 className="text-xl font-semibold mb-6">{question}</h3>

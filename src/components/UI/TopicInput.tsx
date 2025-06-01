@@ -36,7 +36,17 @@ const TopicInput: React.FC = () => {
   };
   
   const selectSuggestedTopic = (suggestedTopic: string) => {
-    setTopic(suggestedTopic);
+    setIsLoading(true);
+    
+    // Set the topic in our global state
+    dispatch({ type: 'SET_TOPIC', payload: suggestedTopic });
+    
+    // Reset any previous questions
+    dispatch({ type: 'SET_QUESTIONS', payload: [] });
+    dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: 0 });
+    
+    // Navigate directly to the quiz page
+    router.push('/quiz');
   };
   
   return (
@@ -47,7 +57,7 @@ const TopicInput: React.FC = () => {
             type="text"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            placeholder="Enter a topic you want to learn about..."
+            placeholder="Ask Me"
             className="input-field"
             required
             disabled={isLoading}
