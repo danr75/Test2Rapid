@@ -27,23 +27,7 @@ const Home: React.FC = () => {
             <TopicInput />
           </div>
           
-          <div className="mt-8 text-center text-gray-600">
-            <p className="mb-2 text-center">How it works:</p>
-            <div className="grid grid-cols-3 gap-4 max-w-md mx-auto text-sm">
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2">1</div>
-                <p>Choose a topic</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2">2</div>
-                <p>Answer questions</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2">3</div>
-                <p>Build your mind map</p>
-              </div>
-            </div>
-          </div>
+          {/* Removed 'How it works' section */}
         </div>
       </main>
     </div>

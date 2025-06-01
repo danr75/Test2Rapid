@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import QuestionCard from '@/components/Quiz/QuestionCard';
+import MindMap from '@/components/MindMap/MindMap';
 import FeedbackModal from '@/components/Quiz/FeedbackModal';
 import CompletionModal from '@/components/Quiz/CompletionModal';
-import MindMap from '@/components/MindMap/MindMap';
 import { useLearning } from '@/store/LearningContext';
 import questionGenerator from '@/services/ai/questionGenerator';
 
@@ -14,6 +14,7 @@ const QuizPage: React.FC = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [expandedMindMap, setExpandedMindMap] = useState(false);
   const [explanation, setExplanation] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -198,25 +199,47 @@ const QuizPage: React.FC = () => {
           </button>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <QuestionCard
-              question={currentQuestion.text}
-              options={currentQuestion.options}
-              onAnswerSelected={handleAnswerSelected}
-              questionNumber={state.currentQuestionIndex + 1}
-              totalQuestions={state.questions.length}
-              completedQuestions={completedQuestions}
-            />
+        <div className={`grid grid-cols-1 ${expandedMindMap ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6 relative`}>
+          {!expandedMindMap && (
+            <div className="lg:col-span-2">
+              <QuestionCard
+                question={currentQuestion.text}
+                options={currentQuestion.options}
+                onAnswerSelected={handleAnswerSelected}
+                questionNumber={state.currentQuestionIndex + 1}
+                totalQuestions={state.questions.length}
+                completedQuestions={completedQuestions}
+              />
+            </div>
+          )}
+          
+          <div className={expandedMindMap ? 'col-span-1' : 'lg:col-span-1'}>
+            <div className="relative">
+              <button 
+                onClick={() => setExpandedMindMap(!expandedMindMap)}
+                className="absolute top-4 right-4 z-10 p-2 bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 transition-colors"
+                aria-label={expandedMindMap ? "Collapse mind map" : "Expand mind map"}
+                title={expandedMindMap ? "Collapse mind map" : "Expand mind map"}
+              >
+                {expandedMindMap ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                )}
+              </button>
+              <MindMap 
+                nodes={state.nodes} 
+                links={state.links} 
+                centralTopic={state.topic}
+              />
+            </div>
           </div>
           
-          <div className="lg:col-span-1">
-            <MindMap 
-              nodes={state.nodes} 
-              links={state.links} 
-              centralTopic={state.topic}
-            />
-          </div>
+          {/* Removed the bottom-right return button */}
         </div>
       </main>
       
