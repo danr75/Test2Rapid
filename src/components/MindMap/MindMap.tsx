@@ -5,6 +5,9 @@ interface Node {
   id: string;
   label: string;
   group?: number;
+  type?: 'topic' | 'question' | 'subtopic';
+  expanded?: boolean;
+  parentId?: string;
 }
 
 interface Link {
@@ -16,21 +19,43 @@ interface MindMapProps {
   nodes: Node[];
   links: Link[];
   centralTopic: string;
+  onTopicClick?: (topicId: string, topicLabel: string) => void;
 }
 
-const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic }) => {
+const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, onTopicClick }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const simulationRef = useRef<any>(null);
+  const zoomRef = useRef<any>(null);
 
   // Update dimensions when the container size changes
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
-        setDimensions({
+        const newDimensions = {
           width: containerRef.current.clientWidth,
           height: containerRef.current.clientHeight,
-        });
+        };
+        
+        setDimensions(newDimensions);
+        
+        // If we have a simulation running, update its center force
+        if (simulationRef.current) {
+          simulationRef.current
+            .force('center', d3.forceCenter(newDimensions.width / 2, newDimensions.height / 2))
+            .alpha(0.3)
+            .restart();
+        }
+        
+        // If we have zoom behavior, reset to center
+        if (zoomRef.current && svgRef.current) {
+          const svg = d3.select(svgRef.current);
+          svg.call(zoomRef.current.transform, d3.zoomIdentity.translate(
+            newDimensions.width / 2 - newDimensions.width / 4, 
+            newDimensions.height / 2 - newDimensions.height / 4
+          ));
+        }
       }
     };
 
@@ -79,22 +104,55 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic }) => {
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
       });
+    
+    // Store zoom reference for resize handling
+    zoomRef.current = zoom;
 
+    // Initial zoom to center
     svg.call(zoom as any);
-
-    // Create the force simulation
-    const simulation = d3.forceSimulation()
-      .force('link', d3.forceLink().id((d: any) => d.id).distance(100))
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2));
+    
+    // Apply initial transform - need to cast to any to avoid TypeScript errors
+    const initialTransform = d3.zoomIdentity.translate(
+      dimensions.width / 2 - dimensions.width / 4,
+      dimensions.height / 2 - dimensions.height / 4
+    );
+    (zoom.transform as any)(svg, initialTransform);
 
     // Prepare the data
     const nodeData = nodes.map(node => ({ ...node }));
     const linkData = links.map(link => ({ ...link }));
+    
+    // Create the simulation with improved forces for better spacing
+    const simulation = d3.forceSimulation(nodeData as any)
+      .force('charge', d3.forceManyBody().strength(-800)) // Stronger repulsion
+      .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2));
+      
+    // Store simulation reference for resize handling
+    simulationRef.current = simulation;
+    
+    // Add the link force separately to avoid timing issues
+    const linkForce = d3.forceLink(linkData as any)
+      .id((d: any) => d.id)
+      .distance(200) // Increase distance between nodes
+      .strength(0.7); // Slightly reduce strength for more natural layout
+    
+    // Add collision force to prevent node overlap - adjusted for wider rectangular nodes
+    simulation.force('collision', d3.forceCollide().radius((d: any) => {
+      if (d.id === 'central') return 100; // Larger collision area for central node
+      if (d.type === 'topic' || d.type === 'subtopic') return 85; // Medium collision area for topics
+      return 70; // Smaller collision area for questions
+    }));
+    
+    simulation.force('link', linkForce);
 
     // Add central topic node if it doesn't exist
     if (!nodeData.find(n => n.id === 'central')) {
-      nodeData.unshift({ id: 'central', label: centralTopic, group: 0 });
+      nodeData.unshift({ 
+        id: 'central', 
+        label: centralTopic, 
+        group: 0,
+        type: 'topic' // Mark as a topic node
+      });
       // Connect all nodes to central node if they don't have connections
       nodeData.forEach(node => {
         if (node.id !== 'central' && !linkData.some(link => link.target === node.id)) {
@@ -105,12 +163,14 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic }) => {
 
     // Create the links
     const link = g.append('g')
-      .attr('stroke', '#999')
-      .attr('stroke-opacity', 0.6)
       .selectAll('line')
       .data(linkData)
       .join('line')
-      .attr('stroke-width', 2);
+      .attr('stroke', '#6C63FF') // More visible purple color
+      .attr('stroke-opacity', 0.8) // Higher opacity
+      .attr('stroke-width', 3) // Thicker lines
+      .attr('stroke-linecap', 'round') // Rounded ends
+      .style('filter', 'drop-shadow(0px 1px 2px rgba(0,0,0,0.1))'); // Subtle shadow
 
     // Create the nodes
     const node = g.append('g')
@@ -119,34 +179,112 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic }) => {
       .selectAll('g')
       .data(nodeData)
       .join('g')
-      .call(drag(simulation) as any);
+      .call(drag(simulation) as any)
+      .on('click', function(event, d: any) {
+        if (onTopicClick && (d.type === 'topic' || d.type === 'subtopic')) {
+          onTopicClick(d.id, d.label);
+        }
+      });
 
-    // Add circles to nodes
-    node.append('circle')
-      .attr('r', d => d.id === 'central' ? 40 : 25)
-      .attr('fill', d => {
-        const colors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
-        return d.id === 'central' ? '#4F46E5' : colors[Math.abs(d.id.charCodeAt(0)) % colors.length];
+    // Add rounded rectangles for nodes
+    node.append('rect')
+      .attr('width', d => {
+        // Width based on node type
+        if (d.id === 'central') return 140;
+        if (d.type === 'topic' || d.type === 'subtopic') return 120;
+        return 100;
       })
-      .attr('opacity', d => d.id === 'central' ? 0.8 : 0.7);
+      .attr('height', d => {
+        // Height based on node type
+        if (d.id === 'central') return 40;
+        if (d.type === 'topic' || d.type === 'subtopic') return 35;
+        return 30;
+      })
+      .attr('rx', 15) // Rounded corners
+      .attr('ry', 15) // Rounded corners
+      .attr('x', d => {
+        // Center the rectangle horizontally
+        if (d.id === 'central') return -70;
+        if (d.type === 'topic' || d.type === 'subtopic') return -60;
+        return -50;
+      })
+      .attr('y', d => {
+        // Center the rectangle vertically
+        if (d.id === 'central') return -20;
+        if (d.type === 'topic' || d.type === 'subtopic') return -17.5;
+        return -15;
+      })
+      .attr('fill', d => {
+        // Use app color palette
+        if (d.id === 'central') return '#4F46E5'; // Primary indigo
+        if (d.type === 'topic') return '#10B981'; // Green
+        if (d.type === 'subtopic') return '#8B5CF6'; // Purple
+        return '#F59E0B'; // Amber for question nodes
+      })
+      .attr('opacity', 0.9) // Higher opacity for better visibility
+      .attr('cursor', d => (d.type === 'topic' || d.type === 'subtopic') ? 'pointer' : 'default')
+      // Add subtle shadow for depth
+      .style('filter', 'drop-shadow(0px 3px 3px rgba(0,0,0,0.2))');
 
-    // Add labels to nodes
-    node.append('text')
-      .attr('x', 0)
-      .attr('y', d => d.id === 'central' ? 0 : 30)
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', d => d.id === 'central' ? 'middle' : 'text-before-edge')
-      .style('font-size', d => d.id === 'central' ? '12px' : '10px')
-      .style('font-weight', d => d.id === 'central' ? 'bold' : 'normal')
-      .style('fill', '#333')
-      .text(d => d.label.length > 20 ? d.label.substring(0, 17) + '...' : d.label);
+    // Add foreign object for HTML-based text that wraps properly
+    node.append('foreignObject')
+      .attr('width', d => {
+        // Match the width of the rectangle
+        if (d.id === 'central') return 140;
+        if (d.type === 'topic' || d.type === 'subtopic') return 120;
+        return 100;
+      })
+      .attr('height', d => {
+        // Match the height of the rectangle
+        if (d.id === 'central') return 40;
+        if (d.type === 'topic' || d.type === 'subtopic') return 35;
+        return 30;
+      })
+      .attr('x', d => {
+        // Position to match rectangle
+        if (d.id === 'central') return -70;
+        if (d.type === 'topic' || d.type === 'subtopic') return -60;
+        return -50;
+      })
+      .attr('y', d => {
+        // Position to match rectangle
+        if (d.id === 'central') return -20;
+        if (d.type === 'topic' || d.type === 'subtopic') return -17.5;
+        return -15;
+      })
+      .style('pointer-events', 'none') // Prevent text from interfering with clicks
+      .append('xhtml:div')
+      .style('width', '100%')
+      .style('height', '100%')
+      .style('display', 'flex')
+      .style('align-items', 'center')
+      .style('justify-content', 'center')
+      .style('text-align', 'center')
+      .style('font-size', d => d.id === 'central' ? '13px' : '11px')
+      .style('font-weight', 'bold')
+      .style('color', 'white')
+      .style('overflow', 'hidden')
+      .style('padding', '2px')
+      .html(function(d: any) {
+        // Limit to max 5 words
+        const words = d.label.split(' ');
+        let displayText = '';
+        
+        if (words.length <= 5) {
+          displayText = d.label;
+        } else {
+          displayText = words.slice(0, 5).join(' ') + '...';
+        }
+        
+        return displayText;
+      });
 
     // Add title for tooltip on hover
     node.append('title')
       .text(d => d.label);
 
-    // Update positions on simulation tick
-    simulation.nodes(nodeData as any).on('tick', () => {
+    // Set up the tick function for simulation
+    const ticked = () => {
       link
         .attr('x1', (d: any) => d.source.x)
         .attr('y1', (d: any) => d.source.y)
@@ -154,9 +292,10 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic }) => {
         .attr('y2', (d: any) => d.target.y);
 
       node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
-    });
-
-    simulation.force('link', d3.forceLink(linkData as any).id((d: any) => d.id).distance(100));
+    };
+    
+    // Apply the tick function to the simulation
+    simulation.nodes(nodeData as any).on('tick', ticked);
 
     // Add a subtle animation when new nodes are added
     node.filter((d, i) => i === nodeData.length - 1)

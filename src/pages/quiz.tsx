@@ -7,6 +7,7 @@ import FeedbackModal from '@/components/Quiz/FeedbackModal';
 import CompletionModal from '@/components/Quiz/CompletionModal';
 import { useLearning } from '@/store/LearningContext';
 import questionGenerator from '@/services/ai/questionGenerator';
+import topicGenerator from '@/services/ai/topicGenerator';
 
 const QuizPage: React.FC = () => {
   const router = useRouter();
@@ -73,16 +74,30 @@ const QuizPage: React.FC = () => {
         setCompletedQuestions(prev => [...prev, state.currentQuestionIndex]);
       }
       
+      // Make sure we have a central node first
+      const centralNodeExists = state.nodes.some(node => node.id === 'central');
+      
+      if (!centralNodeExists) {
+        const centralNode = {
+          id: 'central',
+          label: state.topic,
+          type: 'topic' as const,
+          group: 0
+        };
+        dispatch({ type: 'ADD_NODE', payload: centralNode });
+      }
+      
+      // Add the question node
       const newNode = {
         id: currentQuestion.id,
         label: currentQuestion.text.length > 30 
           ? currentQuestion.text.substring(0, 27) + '...'
           : currentQuestion.text,
+        type: 'question' as const
       };
       
       dispatch({ type: 'ADD_NODE', payload: newNode });
       
-      // Create a link from central topic to this node
       const link = {
         source: 'central',
         target: newNode.id,
@@ -98,20 +113,20 @@ const QuizPage: React.FC = () => {
     setShowFeedback(false);
     setSelectedOption(null);
     
-    // Only move to the next question if the answer was correct
     if (isCorrect) {
-      // If there are more questions, move to the next one
       if (state.currentQuestionIndex < state.questions.length - 1) {
         dispatch({
           type: 'SET_CURRENT_QUESTION_INDEX',
           payload: state.currentQuestionIndex + 1,
         });
       } else {
-        // If all questions are answered correctly, show the completion modal
+        // If all questions are answered correctly (or rather, the last question was answered correctly)
         setShowCompletion(true);
       }
+    } else {
+      // If incorrect, do nothing here, user stays on the same question
+      // The selectedOption is already reset, so they can try again
     }
-    // If answer was incorrect, stay on the same question
   };
   
   // Handle starting a new topic
@@ -123,6 +138,62 @@ const QuizPage: React.FC = () => {
   // Handle reviewing the mind map (just closes the modal to see the mind map)
   const handleReviewMindMap = () => {
     setShowCompletion(false);
+  };
+  
+  // Handle topic click in the mind map
+  const handleTopicClick = async (topicId: string, topicLabel: string) => {
+    console.log(`Topic clicked: ${topicLabel} (${topicId})`);
+    
+    try {
+      // Show loading state
+      dispatch({ type: 'SET_LOADING', payload: true });
+      
+      // If this is a subtopic, make it the new central topic
+      if (topicId !== 'central') {
+        // Clear existing nodes and links
+        dispatch({ type: 'CLEAR_MIND_MAP' });
+        
+        // Set this as the new central topic
+        dispatch({ type: 'SET_TOPIC', payload: topicLabel });
+        
+        // Create a new central node
+        const centralNode = {
+          id: 'central',
+          label: topicLabel,
+          type: 'topic' as const,
+          group: 0
+        };
+        
+        dispatch({ type: 'ADD_NODE', payload: centralNode });
+      }
+      
+      // Generate related subtopics using AI
+      const relatedTopics = await topicGenerator.generateRelatedTopics(topicLabel);
+      console.log('Generated related topics:', relatedTopics);
+      
+      // Create subtopic nodes (limit to 2 as requested)
+      const limitedTopics = relatedTopics.slice(0, 2);
+      const subtopicNodes = limitedTopics.map((topic, index) => ({
+        id: `${topicId === 'central' ? 'central' : 'new-central'}-subtopic-${index}`,
+        label: topic,
+        type: 'subtopic' as const,
+        parentId: 'central'
+      }));
+      
+      // Add subtopics to the mind map
+      dispatch({ 
+        type: 'ADD_SUBTOPICS', 
+        payload: { 
+          parentId: 'central', 
+          subtopics: subtopicNodes 
+        } 
+      });
+    } catch (error) {
+      console.error('Error generating related topics:', error);
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to generate related topics' });
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
   };
   
   if (state.isLoading) {
@@ -214,7 +285,7 @@ const QuizPage: React.FC = () => {
           )}
           
           <div className={expandedMindMap ? 'col-span-1' : 'lg:col-span-1'}>
-            <div className="relative">
+            <div className="relative" id="mind-map-container" key={expandedMindMap ? 'expanded' : 'collapsed'}>
               <button 
                 onClick={() => setExpandedMindMap(!expandedMindMap)}
                 className="absolute top-4 right-4 z-10 p-2 bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 transition-colors"
@@ -235,6 +306,7 @@ const QuizPage: React.FC = () => {
                 nodes={state.nodes} 
                 links={state.links} 
                 centralTopic={state.topic}
+                onTopicClick={handleTopicClick}
               />
             </div>
           </div>

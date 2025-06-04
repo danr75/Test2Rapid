@@ -5,6 +5,9 @@ interface Node {
   id: string;
   label: string;
   group?: number;
+  type?: 'topic' | 'question' | 'subtopic';
+  expanded?: boolean;
+  parentId?: string;
 }
 
 interface Link {
@@ -42,7 +45,10 @@ type LearningAction =
   | { type: 'ADD_NODE'; payload: Node }
   | { type: 'ADD_LINK'; payload: Link }
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: string | null };
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'ADD_SUBTOPICS'; payload: { parentId: string, subtopics: Node[] } }
+  | { type: 'SET_TOPIC_EXPANDED'; payload: string }
+  | { type: 'CLEAR_MIND_MAP' };
 
 // Initial state
 const initialState: LearningState = {
@@ -87,6 +93,41 @@ const learningReducer = (state: LearningState, action: LearningAction): Learning
       return { ...state, isLoading: action.payload };
     case 'SET_ERROR':
       return { ...state, error: action.payload };
+    case 'ADD_SUBTOPICS':
+      // Add new subtopic nodes
+      const newNodes = [...state.nodes];
+      // Mark the parent topic as expanded
+      const updatedNodes = newNodes.map(node => 
+        node.id === action.payload.parentId 
+          ? { ...node, expanded: true } 
+          : node
+      );
+      
+      return { 
+        ...state, 
+        nodes: [...updatedNodes, ...action.payload.subtopics],
+        // Add links from parent to each subtopic
+        links: [
+          ...state.links,
+          ...action.payload.subtopics.map(subtopic => ({
+            source: action.payload.parentId,
+            target: subtopic.id
+          }))
+        ]
+      };
+    case 'SET_TOPIC_EXPANDED':
+      return {
+        ...state,
+        nodes: state.nodes.map(node =>
+          node.id === action.payload ? { ...node, expanded: true } : node
+        )
+      };
+    case 'CLEAR_MIND_MAP':
+      return {
+        ...state,
+        nodes: [],
+        links: []
+      };
     default:
       return state;
   }
