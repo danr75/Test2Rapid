@@ -53,7 +53,8 @@ type LearningAction =
   | { type: 'CLEAR_MIND_MAP' }
   | { type: 'ADD_TO_LEARN_NEXT'; payload: string }
   | { type: 'SET_TOPIC_FOR_LEARNING'; payload: string }
-  | { type: 'START_QUEUED_TOPIC'; payload: string };
+  | { type: 'START_QUEUED_TOPIC'; payload: string }
+  | { type: 'COMPLETE_QUEUED_TOPIC'; payload: string };
 
 // Initial state
 const initialState: LearningState = {
@@ -165,18 +166,20 @@ const learningReducer = (state: LearningState, action: LearningAction): Learning
       };
     case 'START_QUEUED_TOPIC':
       return {
+        ...state, // Preserve current state (especially learnNextTopics)
+        topic: action.payload, // Set the new topic
+        questions: [], // Reset questions
+        currentQuestionIndex: 0, // Reset index
+        answeredQuestions: [], // Reset answers
+        nodes: [], // Clear mind map nodes
+        links: [], // Clear mind map links
+        isLoading: true, // Set loading to true to fetch new questions
+        error: null, // Clear any previous error
+      };
+    case 'COMPLETE_QUEUED_TOPIC':
+      return {
         ...state,
-        topic: action.payload,
-        questions: [],
-        currentQuestionIndex: 0,
-        answeredQuestions: [],
-        nodes: [],
-        links: [],
-        isLoading: false,
-        error: null,
-        learnNextTopics: state.learnNextTopics.filter(
-          topic => topic !== action.payload
-        ),
+        learnNextTopics: state.learnNextTopics.filter(t => t !== action.payload),
       };
     default:
       return state;

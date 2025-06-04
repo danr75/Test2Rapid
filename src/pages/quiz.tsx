@@ -172,7 +172,12 @@ const QuizPage: React.FC = () => {
       if (state.currentQuestionIndex < state.questions.length - 1) {
         dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: state.currentQuestionIndex + 1 });
       } else {
-        setShowCompletion(true); // All questions answered correctly
+        // All questions for the current topic are answered correctly.
+        // Check if this topic was in the 'Learn Next' queue and remove it.
+        if (state.learnNextTopics.includes(state.topic)) {
+          dispatch({ type: 'COMPLETE_QUEUED_TOPIC', payload: state.topic });
+        }
+        setShowCompletion(true); // Show completion modal
       }
     } else {
       // If incorrect, user stays on the same question, no index change needed.
