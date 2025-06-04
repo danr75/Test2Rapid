@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import QuestionCard from '@/components/Quiz/QuestionCard';
-import MindMap from '@/components/MindMap/MindMap';
+import { MindMapNode, MindMapLink } from '@/components/MindMap/MindMap';
+import MindMap from '@/components/MindMap/MindMap'; // Default import
 import FeedbackModal from '@/components/Quiz/FeedbackModal';
 import CompletionModal from '@/components/Quiz/CompletionModal';
 import { useLearning } from '@/store/LearningContext';
@@ -29,9 +30,37 @@ const QuizPage: React.FC = () => {
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
   const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
   const [currentThemeStageIndex, setCurrentThemeStageIndex] = useState(0);
+  const [dynamicCentralTopic, setDynamicCentralTopic] = useState<string | null>(null);
+  const [dynamicSubThemes, setDynamicSubThemes] = useState<string[] | null>(null);
+  const [isGeneratingSubthemes, setIsGeneratingSubthemes] = useState(false);
   
   // Get the current question
   const currentQuestion = state.questions[state.currentQuestionIndex];
+
+  // Prepare nodes for MindMap, ensuring type compatibility
+  const nodesForMindMap = state.nodes.map(node => {
+    let finalType: 'central' | 'subtopic' | 'topic' | 'question';
+
+    if (node.id === 'central') {
+      finalType = 'central';
+    } else if (node.type === 'subtopic') {
+      finalType = 'subtopic';
+    } else if (node.type === 'question') {
+      finalType = 'question';
+    } else {
+      // Default to 'topic' if type is undefined, null, or any other value from context
+      // This also covers the case where node.type is already 'topic'
+      finalType = 'topic';
+    }
+
+    return {
+      ...node, // Spread original node properties. This is important to keep other potential fields like x, y, fx, fy if they exist from d3 updates.
+      id: node.id,
+      label: node.label,
+      group: node.group ?? 0, // MindMapNode expects group: number; LearningContext Node has group?: number
+      type: finalType,
+    };
+  }) as MindMapNode[]; // Assert that the result of the map is MindMapNode[]
   
   // Handle case when there's no topic or questions
   useEffect(() => {
@@ -89,7 +118,7 @@ const QuizPage: React.FC = () => {
         const centralNode = {
           id: 'central',
           label: themeStages[0].main, // Use initial theme stage
-          type: 'topic' as const,
+          type: 'central' as const, // Ensure the main topic node is of type 'central'
           group: 0
         };
         dispatch({ type: 'ADD_NODE', payload: centralNode });
@@ -159,6 +188,54 @@ const QuizPage: React.FC = () => {
     setShowCompletion(false);
   };
   
+  // Handle subtheme selection in the mind map
+  const handleSubThemeSelect = async (subThemeLabel: string) => {
+    setDynamicCentralTopic(subThemeLabel);
+    setIsGeneratingSubthemes(true);
+    setDynamicSubThemes([]); // Clear or show loading indicator
+
+    try {
+      const rawGeneratedThemes = await topicGenerator.generateRelatedTopics(subThemeLabel);
+
+      // Map to 5-word limit
+      let processedThemes = rawGeneratedThemes.map(theme => theme.split(' ').slice(0, 5).join(' '));
+
+      // Ensure exactly 3 themes, padding if necessary
+      let finalSubThemes: string[] = [];
+
+      if (processedThemes.length >= 3) {
+        finalSubThemes = processedThemes.slice(0, 3);
+      } else {
+        finalSubThemes = [...processedThemes]; // Start with what we have
+        // Add placeholders until we have 3. Ensure placeholders are unique enough.
+        for (let i = finalSubThemes.length; i < 3; i++) {
+          let placeholderBase = `${subThemeLabel} - Sub ${i + 1}`;
+          // Simple check to avoid duplicate placeholders if subThemeLabel itself is very similar
+          if (finalSubThemes.some(t => t.startsWith(subThemeLabel + " - Sub"))) {
+             placeholderBase = `${subThemeLabel} - More Sub ${i + 1 + finalSubThemes.length}`;
+          }
+          finalSubThemes.push(placeholderBase.split(' ').slice(0, 5).join(' '));
+        }
+      }
+      setDynamicSubThemes(finalSubThemes);
+      dispatch({ type: 'UPDATE_NODE', payload: { id: 'central', newLabel: subThemeLabel } });
+    } catch (error) {
+      console.error("Failed to generate subthemes:", error);
+      const errorPlaceholders = [
+        `${subThemeLabel} - Error Sub 1`,
+        `${subThemeLabel} - Error Sub 2`,
+        `${subThemeLabel} - Error Sub 3`
+      ].map(theme => theme.split(' ').slice(0, 5).join(' '));
+      setDynamicSubThemes(errorPlaceholders);
+      // Optionally, dispatch an error to the state or show a toast notification
+    } finally {
+      setIsGeneratingSubthemes(false);
+    }
+    
+    // If you want to signify that quiz progression is paused or altered by this dynamic exploration:
+    // setCurrentThemeStageIndex(-1); // Or manage a separate state for 'exploration mode'
+  };
+
   // Handle topic click in the mind map
   const handleTopicClick = async (topicId: string, topicLabel: string) => {
     console.log(`Topic clicked: ${topicLabel} (${topicId})`);
@@ -322,11 +399,12 @@ const QuizPage: React.FC = () => {
                 )}
               </button>
               <MindMap 
-                nodes={state.nodes} 
+                nodes={nodesForMindMap} 
                 links={state.links} 
-                centralTopic={themeStages[currentThemeStageIndex]?.main || state.topic} // Dynamic main theme
-                subThemeTitles={themeStages[currentThemeStageIndex]?.sub || []} // Pass subtheme titles
+                centralTopic={dynamicCentralTopic || themeStages[currentThemeStageIndex]?.main || state.topic} 
+                subThemeTitles={dynamicSubThemes || themeStages[currentThemeStageIndex]?.sub || []} 
                 onTopicClick={handleTopicClick}
+                onSubThemeSelect={handleSubThemeSelect}
               />
             </div>
           </div>
