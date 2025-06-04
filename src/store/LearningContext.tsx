@@ -5,7 +5,7 @@ interface Node {
   id: string;
   label: string;
   group?: number;
-  type?: 'topic' | 'question' | 'subtopic';
+  type: 'central' | 'topic' | 'question' | 'subtopic'; // Made type non-optional and added 'central'
   expanded?: boolean;
   parentId?: string;
 }
@@ -35,6 +35,7 @@ interface LearningState {
   links: Link[];
   isLoading: boolean;
   error: string | null;
+  learnNextTopics: string[];
 }
 
 type LearningAction =
@@ -49,7 +50,10 @@ type LearningAction =
   | { type: 'ADD_SUBTOPICS'; payload: { parentId: string, subtopics: Node[] } }
   | { type: 'SET_TOPIC_EXPANDED'; payload: string }
   | { type: 'UPDATE_NODE'; payload: { id: string; newLabel: string } }
-  | { type: 'CLEAR_MIND_MAP' };
+  | { type: 'CLEAR_MIND_MAP' }
+  | { type: 'ADD_TO_LEARN_NEXT'; payload: string }
+  | { type: 'SET_TOPIC_FOR_LEARNING'; payload: string }
+  | { type: 'START_QUEUED_TOPIC'; payload: string };
 
 // Initial state
 const initialState: LearningState = {
@@ -61,6 +65,7 @@ const initialState: LearningState = {
   links: [],
   isLoading: false,
   error: null,
+  learnNextTopics: [],
 };
 
 // Create context
@@ -136,6 +141,41 @@ const learningReducer = (state: LearningState, action: LearningAction): Learning
           node.id === action.payload.id
             ? { ...node, label: action.payload.newLabel }
             : node
+        ),
+      };
+    case 'ADD_TO_LEARN_NEXT':
+      if (state.learnNextTopics.includes(action.payload) || state.topic === action.payload) {
+        return state; // Avoid duplicates or adding current topic
+      }
+      return {
+        ...state,
+        learnNextTopics: [...state.learnNextTopics, action.payload],
+      };
+    case 'SET_TOPIC_FOR_LEARNING':
+      return {
+        ...state,
+        topic: action.payload,
+        questions: [],
+        currentQuestionIndex: 0,
+        answeredQuestions: [],
+        nodes: [],
+        links: [],
+        isLoading: false,
+        error: null,
+      };
+    case 'START_QUEUED_TOPIC':
+      return {
+        ...state,
+        topic: action.payload,
+        questions: [],
+        currentQuestionIndex: 0,
+        answeredQuestions: [],
+        nodes: [],
+        links: [],
+        isLoading: false,
+        error: null,
+        learnNextTopics: state.learnNextTopics.filter(
+          topic => topic !== action.payload
         ),
       };
     default:

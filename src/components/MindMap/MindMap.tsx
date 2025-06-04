@@ -40,9 +40,10 @@ interface MindMapProps {
   subThemeTitles?: string[];
   onTopicClick?: (id: string, label: string) => void;
   onSubThemeSelect?: (subThemeLabel: string) => void; // New prop for subtheme clicks
+  onCentralNodeActionRequested?: (topicLabel: string) => void; // Prop for central node actions
 }
 
-const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeTitles, onTopicClick, onSubThemeSelect }) => {
+const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeTitles, onTopicClick, onSubThemeSelect, onCentralNodeActionRequested }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -266,14 +267,21 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeT
       .attr('class', 'node') // General class for nodes
       .call(drag(simulation) as any) // Apply drag behavior
       .on('click', (event: MouseEvent, d: MindMapNodeWithPositions) => {
-        // Handle different click behaviors based on node type
-        if (d.type === 'subtopic' && onSubThemeSelect) {
+        // Priority for central node action
+        if (d.id === 'central' && onCentralNodeActionRequested) {
+          onCentralNodeActionRequested(d.label);
+        } 
+        // Then subtopic selection
+        else if (d.type === 'subtopic' && onSubThemeSelect) {
           onSubThemeSelect(d.label);
-        } else if (onTopicClick && d.id !== 'central' && d.type === 'topic') {
+        } 
+        // Then other topic/question clicks (excluding central if it might also be 'topic' type)
+        else if ((d.type === 'topic' || d.type === 'question') && onTopicClick && d.id !== 'central') {
           onTopicClick(d.id, d.label);
         }
 
         // Zoom and center on the clicked node, if it has valid coordinates
+        // This zoom should happen regardless of which action above was taken, or if no action was taken.
         if (typeof d.x === 'number' && typeof d.y === 'number') {
           const k = 1.2; // Zoom factor
           const xPos = dimensions.width / 2 - d.x * k;
@@ -285,9 +293,8 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeT
               d3.zoomIdentity.translate(xPos, yPos).scale(k)
             );
           }
-        } else {
-          console.warn('Clicked node does not have valid x/y coordinates for zoom:', d);
         }
+        // event.stopPropagation(); // Uncomment if clicks on nodes should not propagate to canvas zoom/pan
       })
       .attr('cursor', (d: MindMapNodeWithPositions) => {
         if (d.type === 'subtopic' || (d.type === 'topic' && d.id !== 'central')) {

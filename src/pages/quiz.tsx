@@ -9,6 +9,7 @@ import CompletionModal from '@/components/Quiz/CompletionModal';
 import { useLearning } from '@/store/LearningContext';
 import questionGenerator from '@/services/ai/questionGenerator';
 import topicGenerator from '@/services/ai/topicGenerator';
+import LearnNowNextModal from '@/components/Quiz/LearnNowNextModal';
 
 const themeStages = [
   { main: "AI Fundamentals", sub: ["Defining AI", "History of AI", "Types of AI"] }, // Questions 1-3
@@ -33,6 +34,8 @@ const QuizPage: React.FC = () => {
   const [dynamicCentralTopic, setDynamicCentralTopic] = useState<string | null>(null);
   const [dynamicSubThemes, setDynamicSubThemes] = useState<string[] | null>(null);
   const [isGeneratingSubthemes, setIsGeneratingSubthemes] = useState(false);
+  const [isLearnNowNextModalOpen, setIsLearnNowNextModalOpen] = useState(false);
+  const [selectedModalTopic, setSelectedModalTopic] = useState<string>('');
   
   // Get the current question
   const currentQuestion = state.questions[state.currentQuestionIndex];
@@ -188,6 +191,40 @@ const QuizPage: React.FC = () => {
     setShowCompletion(false);
   };
   
+  const handleCentralNodeActionRequested = (topicLabel: string) => {
+    setSelectedModalTopic(topicLabel);
+    setIsLearnNowNextModalOpen(true);
+  };
+
+  const handleLearnNow = () => {
+    if (selectedModalTopic) {
+      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: selectedModalTopic });
+      setDynamicCentralTopic(null); 
+      setDynamicSubThemes(null);
+      setCurrentThemeStageIndex(0); 
+      // Reset other relevant local state if necessary
+      setCompletedQuestions([]);
+      setCorrectAnswersCount(0);
+      setExpandedMindMap(false); // Collapse mind map view
+    }
+    setIsLearnNowNextModalOpen(false);
+    setSelectedModalTopic('');
+  };
+
+  const handleLearnNext = () => {
+    if (selectedModalTopic) {
+      dispatch({ type: 'ADD_TO_LEARN_NEXT', payload: selectedModalTopic });
+      // console.log(`${selectedModalTopic} added to 'Learn Next' queue.`);
+    }
+    setIsLearnNowNextModalOpen(false);
+    setSelectedModalTopic('');
+  };
+
+  const handleCloseLearnNowNextModal = () => {
+    setIsLearnNowNextModalOpen(false);
+    setSelectedModalTopic('');
+  };
+
   // Handle subtheme selection in the mind map
   const handleSubThemeSelect = async (subThemeLabel: string) => {
     setDynamicCentralTopic(subThemeLabel);
@@ -401,10 +438,11 @@ const QuizPage: React.FC = () => {
               <MindMap 
                 nodes={nodesForMindMap} 
                 links={state.links} 
-                centralTopic={dynamicCentralTopic || themeStages[currentThemeStageIndex]?.main || state.topic} 
-                subThemeTitles={dynamicSubThemes || themeStages[currentThemeStageIndex]?.sub || []} 
-                onTopicClick={handleTopicClick}
+                centralTopic={dynamicCentralTopic || state.topic}
+                subThemeTitles={dynamicSubThemes || (currentThemeStageIndex < themeStages.length ? themeStages[currentThemeStageIndex].sub : [])}
+                onTopicClick={(id, label) => console.log('Topic clicked:', id, label)} // Placeholder for other topic clicks
                 onSubThemeSelect={handleSubThemeSelect}
+                onCentralNodeActionRequested={handleCentralNodeActionRequested}
               />
             </div>
           </div>
@@ -429,6 +467,15 @@ const QuizPage: React.FC = () => {
           totalQuestions={state.questions.length}
           onStartNew={handleStartNewTopic}
           onReview={handleReviewMindMap}
+        />
+      )}
+      {isLearnNowNextModalOpen && (
+        <LearnNowNextModal
+          isOpen={isLearnNowNextModalOpen}
+          topicName={selectedModalTopic}
+          onLearnNow={handleLearnNow}
+          onLearnNext={handleLearnNext}
+          onClose={handleCloseLearnNowNextModal}
         />
       )}
     </div>
