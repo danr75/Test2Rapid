@@ -48,6 +48,7 @@ type LearningAction =
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'ADD_SUBTOPICS'; payload: { parentId: string, subtopics: Node[] } }
   | { type: 'SET_TOPIC_EXPANDED'; payload: string }
+  | { type: 'UPDATE_NODE'; payload: { id: string; newLabel: string } }
   | { type: 'CLEAR_MIND_MAP' };
 
 // Initial state
@@ -127,6 +128,15 @@ const learningReducer = (state: LearningState, action: LearningAction): Learning
         ...state,
         nodes: [],
         links: []
+      };
+    case 'UPDATE_NODE':
+      return {
+        ...state,
+        nodes: state.nodes.map(node =>
+          node.id === action.payload.id
+            ? { ...node, label: action.payload.newLabel }
+            : node
+        ),
       };
     default:
       return state;

@@ -9,6 +9,13 @@ import { useLearning } from '@/store/LearningContext';
 import questionGenerator from '@/services/ai/questionGenerator';
 import topicGenerator from '@/services/ai/topicGenerator';
 
+const themeStages = [
+  { main: "AI Fundamentals", sub: ["Defining AI", "History of AI", "Types of AI"] }, // Questions 1-3
+  { main: "Machine Learning Core", sub: ["Supervised Learning", "Unsupervised Learning", "Key Algorithms"] }, // Questions 4-6
+  { main: "Deep Learning Explained", sub: ["Neural Networks", "Backpropagation", "Architectures"] }, // Questions 7-9
+  { main: "AI's Real-World Impact", sub: ["Applications", "Ethics", "Future Outlook"] } // Question 10
+];
+
 const QuizPage: React.FC = () => {
   const router = useRouter();
   const { state, dispatch } = useLearning();
@@ -21,6 +28,7 @@ const QuizPage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
   const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
+  const [currentThemeStageIndex, setCurrentThemeStageIndex] = useState(0);
   
   // Get the current question
   const currentQuestion = state.questions[state.currentQuestionIndex];
@@ -80,7 +88,7 @@ const QuizPage: React.FC = () => {
       if (!centralNodeExists) {
         const centralNode = {
           id: 'central',
-          label: state.topic,
+          label: themeStages[0].main, // Use initial theme stage
           type: 'topic' as const,
           group: 0
         };
@@ -111,21 +119,32 @@ const QuizPage: React.FC = () => {
   // Handle continue button click
   const handleContinue = () => {
     setShowFeedback(false);
-    setSelectedOption(null);
-    
-    if (isCorrect) {
+    setSelectedOption(null); // Reset selected option for the next question
+
+    if (isCorrect) { // Only advance and update theme if the answer was correct
+      // Determine if theme stage should change BEFORE incrementing currentQuestionIndex
+      // Based on the question index that was just correctly answered
+      const nextQuestionAbsoluteIndex = state.currentQuestionIndex + 1; // e.g., if q0 was correct, next is q1
+      const newStageIndex = Math.min(Math.floor(nextQuestionAbsoluteIndex / 3), themeStages.length - 1);
+      
+      if (newStageIndex !== currentThemeStageIndex) {
+        setCurrentThemeStageIndex(newStageIndex);
+        if (themeStages[newStageIndex]) { // Ensure stage exists
+          dispatch({ 
+            type: 'UPDATE_NODE', 
+            payload: { id: 'central', newLabel: themeStages[newStageIndex].main } 
+          });
+        }
+      }
+
       if (state.currentQuestionIndex < state.questions.length - 1) {
-        dispatch({
-          type: 'SET_CURRENT_QUESTION_INDEX',
-          payload: state.currentQuestionIndex + 1,
-        });
+        dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: state.currentQuestionIndex + 1 });
       } else {
-        // If all questions are answered correctly (or rather, the last question was answered correctly)
-        setShowCompletion(true);
+        setShowCompletion(true); // All questions answered correctly
       }
     } else {
-      // If incorrect, do nothing here, user stays on the same question
-      // The selectedOption is already reset, so they can try again
+      // If incorrect, user stays on the same question, no index change needed.
+      // Modal is closed, they can try again.
     }
   };
   
@@ -305,7 +324,8 @@ const QuizPage: React.FC = () => {
               <MindMap 
                 nodes={state.nodes} 
                 links={state.links} 
-                centralTopic={state.topic}
+                centralTopic={themeStages[currentThemeStageIndex]?.main || state.topic} // Dynamic main theme
+                subThemeTitles={themeStages[currentThemeStageIndex]?.sub || []} // Pass subtheme titles
                 onTopicClick={handleTopicClick}
               />
             </div>
