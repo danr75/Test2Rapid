@@ -8,6 +8,8 @@ interface Node {
   type?: 'topic' | 'question' | 'subtopic';
   expanded?: boolean;
   parentId?: string;
+  fx?: number | null; // For D3 fixed x position
+  fy?: number | null; // For D3 fixed y position
 }
 
 interface Link {
@@ -29,40 +31,31 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, onTopicCl
   const simulationRef = useRef<any>(null);
   const zoomRef = useRef<any>(null);
 
-  // Update dimensions when the container size changes
+  // Update dimensions using ResizeObserver
   useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const newDimensions = {
-          width: containerRef.current.clientWidth,
-          height: containerRef.current.clientHeight,
-        };
-        
-        setDimensions(newDimensions);
-        
-        // If we have a simulation running, update its center force
-        if (simulationRef.current) {
-          simulationRef.current
-            .force('center', d3.forceCenter(newDimensions.width / 2, newDimensions.height / 2))
-            .alpha(0.3)
-            .restart();
-        }
-        
-        // If we have zoom behavior, reset to center
-        if (zoomRef.current && svgRef.current) {
-          const svg = d3.select(svgRef.current);
-          svg.call(zoomRef.current.transform, d3.zoomIdentity.translate(
-            newDimensions.width / 2 - newDimensions.width / 4, 
-            newDimensions.height / 2 - newDimensions.height / 4
-          ));
-        }
+    const currentContainer = containerRef.current;
+    if (!currentContainer) return;
+
+    const observer = new ResizeObserver(entries => {
+      if (entries && entries[0]) {
+        const { width, height } = entries[0].contentRect;
+        setDimensions(prevDimensions => {
+          // Only update if dimensions actually changed to avoid potential loops
+          if (prevDimensions.width !== width || prevDimensions.height !== height) {
+            return { width, height };
+          }
+          return prevDimensions;
+        });
+      }
+    });
+    observer.observe(currentContainer);
+    return () => {
+      // Check currentContainer again for cleanup as it might have changed
+      if (currentContainer) { 
+        observer.unobserve(currentContainer);
       }
     };
-
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
+  }, []); // Empty dependency array ensures this runs once to set up the observer
 
   // Create the mind map visualization
   useEffect(() => {
@@ -99,35 +92,43 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, onTopicCl
     const g = svg.append('g');
 
     // Add zoom functionality
+    const k = 0.8; // Desired zoom scale for initial view (e.g., 0.8 for 80%)
+    const targetX = dimensions.width / 2; // Pinned central node's x in simulation space
+    const targetY = dimensions.height / 2; // Pinned central node's y in simulation space
+
+    // Calculate the transform to center the view on (targetX, targetY) with scale k
+    const initialTransform = d3.zoomIdentity
+      .translate(dimensions.width / 2, dimensions.height / 2) // Step 1: Move SVG origin to center of view
+      .scale(k) // Step 2: Apply desired scale
+      .translate(-targetX, -targetY); // Step 3: Translate so (targetX, targetY) in sim space is at the (scaled) origin
+
     const zoom = d3.zoom()
-      .scaleExtent([0.5, 3])
+      .scaleExtent([0.2, 4]) // Adjusted scale extent for more zoom flexibility
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
       });
     
-    // Store zoom reference for resize handling
-    zoomRef.current = zoom;
-
-    // Initial zoom to center
-    svg.call(zoom as any);
-    
-    // Apply initial transform - need to cast to any to avoid TypeScript errors
-    const initialTransform = d3.zoomIdentity.translate(
-      dimensions.width / 2 - dimensions.width / 4,
-      dimensions.height / 2 - dimensions.height / 4
-    );
-    (zoom.transform as any)(svg, initialTransform);
+    zoomRef.current = zoom; // Store zoom reference
+    svg.call(zoom as any); // Apply zoom behavior to SVG element
+    svg.call(zoom.transform as any, initialTransform); // Set the initial zoom transform
 
     // Prepare the data
     const nodeData = nodes.map(node => ({ ...node }));
     const linkData = links.map(link => ({ ...link }));
+
+    // Pin the central node to the center of the SVG
+    const centralNode = nodeData.find((n: any) => n.id === 'central');
+    if (centralNode) {
+      centralNode.fx = dimensions.width / 2;
+      centralNode.fy = dimensions.height / 2;
+    }
     
     // Create the simulation with improved forces for better spacing
     const simulation = d3.forceSimulation(nodeData as any)
       .force('charge', d3.forceManyBody().strength(-800)) // Stronger repulsion
-      .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2));
-      
-    // Store simulation reference for resize handling
+      .force('link', d3.forceLink(linkData as any).id((d: any) => d.id).distance(120).strength(0.6)) // Increased distance, adjusted strength
+      .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2)) // Keeps overall graph centered
+      .force('collide', d3.forceCollide().radius((d: any) => (d.id === 'central' ? 75 : (d.type === 'topic' || d.type === 'subtopic' ? 55 : 40))).strength(0.8)); // Adjusted radii and strength for pinned central node
     simulationRef.current = simulation;
     
     // Add the link force separately to avoid timing issues
