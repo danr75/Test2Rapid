@@ -27,15 +27,22 @@ export interface MindMapLink {
 export type MindMapNodeWithPositions = MindMapNode & d3.SimulationNodeDatum;
 
 // Props for the MindMap component
+// Constants for node styling and text layout
+const TEXT_PADDING_X = 15; // Horizontal padding inside the node for text
+const TEXT_PADDING_Y = 12;  // Vertical padding inside the node for text
+const MIN_NODE_HEIGHT = 70; // Minimum height for a node
+const BASE_NODE_WIDTH = 280; // Base width for most non-central nodes
+
 interface MindMapProps {
   nodes: MindMapNode[]; // Use the clean MindMapNode type
   links: MindMapLink[]; // Use the clean MindMapLink type
   centralTopic: string;
   subThemeTitles?: string[];
   onTopicClick?: (id: string, label: string) => void;
+  onSubThemeSelect?: (subThemeLabel: string) => void; // New prop for subtheme clicks
 }
 
-const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeTitles, onTopicClick }) => {
+const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeTitles, onTopicClick, onSubThemeSelect }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -257,30 +264,37 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeT
       .data(nodeData, (d: MindMapNodeWithPositions): string => d.id) // Use d.id as the key for object constancy
       .join('g')
       .attr('class', 'node') // General class for nodes
-      .call(drag(simulation) as any)
-      .on('click', (event: MouseEvent, d: MindMapNodeWithPositions) => { 
-        // Call onTopicClick only for 'topic' type nodes, excluding 'central'
-        if (onTopicClick && d.id !== 'central' && d.type === 'topic') { 
+      .call(drag(simulation) as any) // Apply drag behavior
+      .on('click', (event: MouseEvent, d: MindMapNodeWithPositions) => {
+        // Handle different click behaviors based on node type
+        if (d.type === 'subtopic' && onSubThemeSelect) {
+          onSubThemeSelect(d.label);
+        } else if (onTopicClick && d.id !== 'central' && d.type === 'topic') {
           onTopicClick(d.id, d.label);
         }
 
         // Zoom and center on the clicked node, if it has valid coordinates
         if (typeof d.x === 'number' && typeof d.y === 'number') {
           const k = 1.2; // Zoom factor
-          const x = dimensions.width / 2 - d.x * k;
-          const y = dimensions.height / 2 - d.y * k;
+          const xPos = dimensions.width / 2 - d.x * k;
+          const yPos = dimensions.height / 2 - d.y * k;
           
           if (svgRef.current && zoomRef.current) {
             d3.select(svgRef.current).transition().duration(750).call(
               zoomRef.current.transform as any,
-              d3.zoomIdentity.translate(x, y).scale(k)
+              d3.zoomIdentity.translate(xPos, yPos).scale(k)
             );
           }
         } else {
           console.warn('Clicked node does not have valid x/y coordinates for zoom:', d);
         }
       })
-      .attr('cursor', (d: any) => (d.id === 'central' || d.type === 'question') ? 'default' : 'pointer'); // Set cursor based on type
+      .attr('cursor', (d: MindMapNodeWithPositions) => {
+        if (d.type === 'subtopic' || (d.type === 'topic' && d.id !== 'central')) {
+          return 'pointer';
+        }
+        return 'default';
+      });
 
     // Add rounded rectangles for nodes
     nodeElements.append('rect')
@@ -335,6 +349,70 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, links, centralTopic, subThemeT
     // Add title for tooltip on hover
     nodeElements.append('title')
       .text(d => d.label);
+
+    // Autosize nodes based on text content
+    nodeElements.each(function(dNode: MindMapNodeWithPositions) {
+      const nodeGroup = d3.select(this);
+      const foreignObjectElem = nodeGroup.select<SVGForeignObjectElement>('foreignObject').node();
+      const textDivElem = nodeGroup.select<HTMLDivElement>('foreignObject div').node(); // More specific selector
+      const backgroundRectElem = nodeGroup.select<SVGRectElement>('rect').node();
+
+      if (!textDivElem || !foreignObjectElem || !backgroundRectElem) {
+        console.warn('Missing elements for node sizing:', dNode.id);
+        return;
+      }
+
+      let nodeWidth: number;
+      const initialDimensions = getNodeDimensions(dNode, dimensions.height, dimensions.width);
+
+      if (dNode.id === 'central') {
+        nodeWidth = initialDimensions.width; // Central node can have width from getNodeDimensions
+      } else {
+        nodeWidth = BASE_NODE_WIDTH; // Other nodes use a base width
+      }
+
+      // Ensure textDiv is selected with d3 for styling and measurement
+      const textDiv = d3.select(textDivElem);
+      const foreignObject = d3.select(foreignObjectElem);
+      const backgroundRect = d3.select(backgroundRectElem);
+
+      const label = dNode.label.split(' ').slice(0, 5).join(' ') + (dNode.label.split(' ').length > 5 ? '...' : '');
+      
+      textDiv
+        .html(label)
+        .style('width', (nodeWidth - 2 * TEXT_PADDING_X) + 'px')
+        .style('height', 'auto') // Allow div to expand for scrollHeight measurement
+        .style('word-wrap', 'break-word')
+        .style('white-space', 'normal')
+        .style('padding-left', TEXT_PADDING_X + 'px')
+        .style('padding-right', TEXT_PADDING_X + 'px')
+        .style('padding-top', TEXT_PADDING_Y + 'px')
+        .style('padding-bottom', TEXT_PADDING_Y + 'px');
+
+      let calculatedNodeHeight = textDivElem.scrollHeight;
+      calculatedNodeHeight = Math.max(MIN_NODE_HEIGHT, calculatedNodeHeight);
+      
+      // Update backgroundRect dimensions
+      backgroundRect
+        .attr('width', nodeWidth)
+        .attr('height', calculatedNodeHeight)
+        .attr('x', -nodeWidth / 2)
+        .attr('y', -calculatedNodeHeight / 2)
+        .attr('rx', calculatedNodeHeight * 0.2)
+        .attr('ry', calculatedNodeHeight * 0.2);
+
+      // Update foreignObject dimensions
+      foreignObject
+        .attr('width', nodeWidth)
+        .attr('height', calculatedNodeHeight)
+        .attr('x', -nodeWidth / 2)
+        .attr('y', -calculatedNodeHeight / 2);
+      
+      textDiv.style('height', '100%'); // For flex centering
+
+      const newFontSize = Math.max(18, Math.min(28, calculatedNodeHeight * 0.22)) + 'px'; // Substantially increased font size
+      textDiv.style('font-size', newFontSize);
+    });
 
     // Set up the tick function for simulation
     const ticked = () => {
