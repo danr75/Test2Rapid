@@ -3,13 +3,40 @@ import Head from 'next/head';
 import TopicInput from '@/components/UI/TopicInput';
 import { useLearning } from '@/store/LearningContext';
 import { useRouter } from 'next/router';
-import { ChatBubbleOvalLeftEllipsisIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { ChatBubbleOvalLeftEllipsisIcon, DocumentTextIcon, BookOpenIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 type LearningMode = 'Q&A' | 'Scenario'; // Add more as needed
 
 const learningModes: { id: LearningMode; label: string; path: string; icon: React.ElementType }[] = [
   { id: 'Q&A', label: 'Q&A Mode', path: '/qa-learn', icon: ChatBubbleOvalLeftEllipsisIcon },
   { id: 'Scenario', label: 'Scenario Mode', path: '/scenario-learn', icon: DocumentTextIcon },
+];
+
+
+interface StrategicFocusCardData {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  topicToSet: string;
+  // path and learningMode removed, will be determined by current selection
+}
+
+const strategicFocusTopics: StrategicFocusCardData[] = [
+  {
+    id: 'legacy-modern',
+    title: 'Legacy vs. Modern',
+    description: 'Compare traditional IT governance with modern AI-first approaches',
+    icon: BookOpenIcon,
+    topicToSet: 'Legacy vs. Modern IT Governance',
+  },
+  {
+    id: 'team-impact',
+    title: 'Team Impact',
+    description: 'How to lead technical teams through AI transformation',
+    icon: UsersIcon,
+    topicToSet: 'Leading Teams in AI Transformation',
+  }
 ];
 
 const Home: React.FC = () => {
@@ -39,20 +66,33 @@ const Home: React.FC = () => {
   };
 
   const handleTopicSubmit = (topic: string) => {
-    dispatch({ type: 'SET_TOPIC', payload: topic });
-    // Use currentLearningMode from context for navigation
+    // currentLearningMode is derived from state: state.learningMode || 'Q&A'
+    // Ensure the learning mode is explicitly set in the context before navigating
+    dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
+    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic }); // Clears old questions
+    
     const modeDetails = learningModes.find(m => m.id === currentLearningMode);
     if (modeDetails) {
       router.push(modeDetails.path);
     } else {
-      // This case should ideally not be reached if currentLearningMode is always 'Q&A' or 'Scenario'
-      router.push('/qa-learn'); // Fallback to Q&A mode
+      // Fallback logic, though currentLearningMode should always be valid
+      router.push(currentLearningMode === 'Q&A' ? '/qa-learn' : '/scenario-learn');
     }
   };
 
   const oldHandleStartQueuedTopic = (topic: string) => {
     dispatch({ type: 'START_QUEUED_TOPIC', payload: topic });
     router.push('/quiz'); // This function is now oldHandleStartQueuedTopic, will be removed or updated if needed
+  };
+
+  const handleStrategicFocusClick = (card: StrategicFocusCardData) => {
+    // currentLearningMode is already derived from state: state.learningMode || 'Q&A'
+    const targetModeDetails = learningModes.find(m => m.id === currentLearningMode);
+    const targetPath = targetModeDetails ? targetModeDetails.path : (currentLearningMode === 'Q&A' ? '/qa-learn' : '/scenario-learn');
+
+    dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
+    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: card.topicToSet }); // Clears old questions
+    router.push(targetPath);
   };
 
   return (
@@ -95,29 +135,34 @@ const Home: React.FC = () => {
             </div>
             {/* Removed 'Enter a Topic for...' heading */}
             <TopicInput onTopicSubmit={handleTopicSubmit} />
-          </div>
-          
-          {/* Removed 'How it works' section */}
 
-          {state.learnNextTopics && state.learnNextTopics.length > 0 && (
-            <div className="card shadow-lg border border-gray-100 mt-8 p-6">
-              <h2 className="text-2xl font-semibold mb-6 text-center text-primary">
-                Your Learning Queue
+            {/* Today's Strategic Focus Section */}
+            <div className="mt-8"> {/* Adjusted top margin for inside the card */}
+              <h2 className="text-2xl font-semibold mb-4 text-center text-gray-700"> {/* Slightly smaller heading */}
+                Today's Strategic Focus
               </h2>
-              <div className="flex flex-wrap justify-center gap-3">
-                {state.learnNextTopics.map((topic) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> {/* Smaller gap */}
+                {strategicFocusTopics.map((card) => (
                   <button
-                    key={topic}
-                    onClick={() => handleStartQueuedTopic(topic)}
-                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-medium py-2 px-4 rounded-lg shadow-md transition-all duration-150 ease-in-out transform hover:scale-105"
-                    title={`Start learning: ${topic}`}
+                    key={card.id}
+                    onClick={() => handleStrategicFocusClick(card)}
+                    className="bg-slate-50 p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+                    // Simplified card styling for nesting
                   >
-                    {topic}
+                    <div>
+                      <div className="flex items-center mb-2">
+                        <card.icon className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
+                        <h3 className="text-lg font-semibold text-gray-800">{card.title}</h3>
+                      </div>
+                      <p className="text-gray-600 text-xs">{card.description}</p> {/* Smaller description text */}
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
-          )}
+          </div>
+
+
         </div>
       </main>
     </div>

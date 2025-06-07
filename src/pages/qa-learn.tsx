@@ -411,14 +411,24 @@ const QuizPage: React.FC = () => {
         <div className={`grid grid-cols-1 ${expandedMindMap ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6 relative`}>
           {!expandedMindMap && (
             <div className="lg:col-span-2">
-              <QuestionCard
-                question={currentQuestion.text}
-                options={currentQuestion.options}
-                onAnswerSelected={handleAnswerSelected}
-                questionNumber={state.currentQuestionIndex + 1}
-                totalQuestions={state.questions.length}
-                completedQuestions={completedQuestions}
-              />
+              {state.isLoading && <p className="text-center text-lg">Loading questions...</p>}
+              {state.error && <p className="text-center text-lg text-red-500">Error: {state.error}</p>}
+              {!state.isLoading && !state.error && currentQuestion && (
+                <QuestionCard
+                  question={currentQuestion.text}
+                  options={currentQuestion.options}
+                  onAnswerSelected={handleAnswerSelected}
+                  questionNumber={state.currentQuestionIndex + 1}
+                  totalQuestions={state.questions.length}
+                  completedQuestions={completedQuestions}
+                />
+              )}
+              {!state.isLoading && !state.error && !currentQuestion && state.questions.length > 0 && (
+                 <p className="text-center text-lg">Question loaded, but current question is invalid. Index: {state.currentQuestionIndex}, Total: {state.questions.length}</p>
+              )}
+              {!state.isLoading && !state.error && !currentQuestion && state.questions.length === 0 && state.topic && (
+                <p className="text-center text-lg">No questions available for this topic yet. Please wait or try another topic.</p>
+              )}
             </div>
           )}
           

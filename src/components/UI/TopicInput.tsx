@@ -75,24 +75,6 @@ const TopicInput: React.FC<TopicInputProps> = ({ onTopicSubmit }) => {
           {isLoading ? 'Loading...' : 'Start Learning'}
         </button>
       </form>
-      
-      <div className="mt-8">
-        <div className="mb-4 text-center">
-          <span className="text-sm text-gray-500 font-medium">Popular topics</span>
-        </div>
-        <div className="flex flex-wrap gap-2 justify-center">
-          {suggestedTopics.map((suggestedTopic) => (
-            <button
-              key={suggestedTopic}
-              onClick={() => selectSuggestedTopic(suggestedTopic)}
-              className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm"
-              disabled={isLoading}
-            >
-              {suggestedTopic}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
