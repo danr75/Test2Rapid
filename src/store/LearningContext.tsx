@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Define types
+export type LearningMode = 'Q&A' | 'Scenario'; // Exporting for use in other files if needed
 interface Node {
   id: string;
   label: string;
@@ -36,6 +37,7 @@ interface LearningState {
   isLoading: boolean;
   error: string | null;
   learnNextTopics: string[];
+  learningMode: LearningMode | null;
 }
 
 type LearningAction =
@@ -54,7 +56,8 @@ type LearningAction =
   | { type: 'ADD_TO_LEARN_NEXT'; payload: string }
   | { type: 'SET_TOPIC_FOR_LEARNING'; payload: string }
   | { type: 'START_QUEUED_TOPIC'; payload: string }
-  | { type: 'COMPLETE_QUEUED_TOPIC'; payload: string };
+  | { type: 'COMPLETE_QUEUED_TOPIC'; payload: string }
+  | { type: 'SET_LEARNING_MODE'; payload: LearningMode };
 
 // Initial state
 const initialState: LearningState = {
@@ -67,6 +70,7 @@ const initialState: LearningState = {
   isLoading: false,
   error: null,
   learnNextTopics: [],
+  learningMode: null, // Initialize learningMode
 };
 
 // Create context
@@ -83,6 +87,8 @@ const learningReducer = (state: LearningState, action: LearningAction): Learning
   switch (action.type) {
     case 'SET_TOPIC':
       return { ...state, topic: action.payload };
+    case 'SET_LEARNING_MODE':
+      return { ...state, learningMode: action.payload };
     case 'SET_QUESTIONS':
       return { ...state, questions: action.payload };
     case 'SET_CURRENT_QUESTION_INDEX':

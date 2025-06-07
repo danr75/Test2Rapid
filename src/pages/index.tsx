@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import TopicInput from '@/components/UI/TopicInput';
 import { useLearning } from '@/store/LearningContext';
@@ -13,9 +13,22 @@ const learningModes: { id: LearningMode; label: string; path: string; icon: Reac
 ];
 
 const Home: React.FC = () => {
-  const [selectedMode, setSelectedMode] = useState<LearningMode>('Q&A');
   const { state, dispatch } = useLearning();
   const router = useRouter();
+
+  // Derive current mode from context, default to 'Q&A'
+  const currentLearningMode = state.learningMode || 'Q&A';
+
+  // Effect to initialize context's learningMode if it's not set (e.g., on first app load)
+  useEffect(() => {
+    if (!state.learningMode) {
+      dispatch({ type: 'SET_LEARNING_MODE', payload: 'Q&A' }); // Default to Q&A
+    }
+  }, [state.learningMode, dispatch]); // Only re-run if these change
+
+  const handleModeChange = (newMode: LearningMode) => {
+    dispatch({ type: 'SET_LEARNING_MODE', payload: newMode });
+  };
 
   const handleStartQueuedTopic = (topic: string) => {
     // When starting a queued topic, we should probably decide which mode it defaults to,
@@ -27,10 +40,12 @@ const Home: React.FC = () => {
 
   const handleTopicSubmit = (topic: string) => {
     dispatch({ type: 'SET_TOPIC', payload: topic });
-    const modeDetails = learningModes.find(m => m.id === selectedMode);
+    // Use currentLearningMode from context for navigation
+    const modeDetails = learningModes.find(m => m.id === currentLearningMode);
     if (modeDetails) {
       router.push(modeDetails.path);
     } else {
+      // This case should ideally not be reached if currentLearningMode is always 'Q&A' or 'Scenario'
       router.push('/qa-learn'); // Fallback to Q&A mode
     }
   };
@@ -64,9 +79,9 @@ const Home: React.FC = () => {
                 {learningModes.map((mode) => (
                   <button
                     key={mode.id}
-                    onClick={() => setSelectedMode(mode.id)}
+                    onClick={() => handleModeChange(mode.id)}
                     className={`flex items-center justify-center flex-1 sm:flex-none px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-slate-100 mx-0.5
-                      ${selectedMode === mode.id
+                      ${currentLearningMode === mode.id
                         ? 'bg-white text-slate-700 shadow-md'
                         : 'bg-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/70'
                       }

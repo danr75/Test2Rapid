@@ -2,154 +2,270 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useLearning } from '@/store/LearningContext';
+import { InformationCircleIcon, FlagIcon, LightBulbIcon, CheckCircleIcon, ChevronRightIcon, ArrowLeftIcon, ChevronDownIcon, ChevronUpIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
-interface ScenarioCardData {
+// --- Data Structures for Dynamic Scenarios ---
+interface DynamicScenarioOption {
   id: string;
-  title: string;
-  summary: string;
-  category: 'Investment' | 'Governance' | 'Risk' | 'Architecture' | 'Operations' | 'Strategy';
-  complexity: 'Simple' | 'Moderate' | 'Complex';
+  text: string;
 }
 
-const mockScenarios: ScenarioCardData[] = [
-  {
-    id: 'scenario1',
-    title: 'New Market Entry Strategy',
-    summary: 'A promising new international market has been identified. Assess the risks and opportunities of expanding operations to this region, considering cultural and regulatory differences.',
-    category: 'Strategy',
-    complexity: 'Complex',
-  },
-  {
-    id: 'scenario2',
-    title: 'Critical System Outage Response',
-    summary: 'A core IT system has experienced a major outage impacting thousands of customers globally. You must prioritize recovery efforts and manage internal and external communication effectively.',
-    category: 'Operations',
-    complexity: 'Moderate',
-  },
-  {
-    id: 'scenario3',
-    title: 'AI Integration Proposal Evaluation',
-    summary: 'A department proposes integrating a new AI-powered tool to automate a key business process. Evaluate the potential ROI, implementation challenges, and ethical implications before making a decision.',
-    category: 'Architecture',
-    complexity: 'Moderate',
-  },
-  {
-    id: 'scenario4',
-    title: 'Sudden Competitor Move',
-    summary: 'A major competitor has unexpectedly launched a product that directly challenges your flagship offering. Analyze the threat and formulate a swift, effective response.',
-    category: 'Strategy',
-    complexity: 'Complex',
-  },
-];
+interface DynamicScenarioStep {
+  id: string;
+  stepNumber: number;
+  title: string;
+  questionText: string;
+  options: DynamicScenarioOption[];
+  correctOptionId: string;
+  feedbackCorrect: string;
+  feedbackTip: string;
+}
+
+interface DynamicScenarioData {
+  id: string;
+  topic: string;
+  objective: string;
+  overallContext: string;
+  overallGoal: string;
+  steps: DynamicScenarioStep[];
+}
+
+// --- Mock Data for the Dynamic Scenario ---
+const mockDynamicLlmScenario: DynamicScenarioData = {
+  id: 'llm-choice-scenario-1',
+  topic: 'Choosing an LLM for a Project',
+  objective: 'To understand the key factors in selecting an LLM and apply them to a practical decision-making process.',
+  overallContext: 'You are a tech lead at a startup. Your team needs to integrate a Large Language Model (LLM) for a new customer support chatbot feature. Budget is a consideration, as is the ease of integration and the model\'s capabilities for understanding nuanced customer queries.',
+  overallGoal: 'Select the most suitable LLM based on a series of practical considerations and justify your choice.',
+  steps: [
+    {
+      id: 'step1',
+      stepNumber: 1,
+      title: "Step 1: Clearly Define Project Requirements & Scope",
+      questionText: "Your team is eager to start. What's the most crucial first action to ensure the LLM selection process is effective?",
+      options: [
+        { id: 'a', text: "Immediately start testing popular LLMs like GPT-4o mini and Llama 3." },
+        { id: 'b', text: "Hold a workshop to define specific chatbot features, performance metrics, and budget constraints." },
+      ],
+      correctOptionId: 'b',
+      feedbackCorrect: "Correct! Defining clear requirements (features, performance, budget) upfront prevents wasted effort and ensures the chosen LLM aligns with actual needs.",
+      feedbackTip: "A detailed requirements document acts as your compass throughout the selection process. Consider aspects like response time, accuracy, supported languages, and data handling policies.",
+    },
+    {
+      id: 'step2',
+      stepNumber: 2,
+      title: "Step 2: Research & Shortlist Potential LLM Candidates",
+      questionText: "With requirements defined, how do you approach identifying potential LLMs?",
+      options: [
+        { id: 'a', text: "Focus only on the most well-known, large-scale commercial models." },
+        { id: 'b', text: "Research a mix of open-source and commercial models, comparing them against your defined requirements." },
+      ],
+      correctOptionId: 'b',
+      feedbackCorrect: "Excellent! A broad search considering both open-source and commercial options against your specific needs is key to finding the best fit.",
+      feedbackTip: "Look at model benchmarks, community support (for open-source), pricing models, and integration complexity. Create a comparison matrix.",
+    },
+    {
+      id: 'step3',
+      stepNumber: 3,
+      title: "Step 3: Evaluate and Pilot Test Top Candidates",
+      questionText: "You've shortlisted 2-3 promising LLMs. What's the next practical step?",
+      options: [
+        { id: 'a', text: "Select the LLM with the most features listed on its website." },
+        { id: 'b', text: "Develop small pilot projects or proof-of-concepts for each shortlisted LLM to test real-world performance on your specific use cases." },
+      ],
+      correctOptionId: 'b',
+      feedbackCorrect: "Spot on! Pilot testing is crucial to see how LLMs perform with your actual data and use cases, beyond marketing claims.",
+      feedbackTip: "Define clear success criteria for your pilot tests. Evaluate not just the output quality, but also ease of use, developer experience, and any unexpected challenges.",
+    },
+  ],
+};
 
 const ScenarioLearnPage: React.FC = () => {
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
-  const { state } = useLearning();
+  const { state: learningContextState } = useLearning();
 
-  const handleScenarioSelect = (scenarioId: string) => {
-    setSelectedScenarioId(scenarioId);
-    window.scrollTo(0, 0); // Scroll to top for better UX
+  const [currentScenario, setCurrentScenario] = useState<DynamicScenarioData>(mockDynamicLlmScenario);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [revealedSteps, setRevealedSteps] = useState<DynamicScenarioStep[]>([]);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [showFeedback, setShowFeedback] = useState<boolean>(false);
+  const [scenarioCompleted, setScenarioCompleted] = useState<boolean>(false);
+
+  const currentStepData = !scenarioCompleted && currentScenario.steps[currentStepIndex] ? currentScenario.steps[currentStepIndex] : null;
+  const isCorrect = currentStepData && selectedOptionId === currentStepData.correctOptionId;
+
+  const handleOptionSelect = (optionId: string) => {
+    setSelectedOptionId(optionId);
+    setShowFeedback(true);
+    //   setIsContextExpanded(false); // No longer needed
+    // }
   };
 
-  const handleClearSelection = () => {
-    setSelectedScenarioId(null);
-  };
+  const handleNextStep = () => {
+    if (!currentStepData || !isCorrect) return;
 
-  const selectedScenario = selectedScenarioId ? mockScenarios.find(s => s.id === selectedScenarioId) : null;
+    const newRevealedSteps = [...revealedSteps, currentStepData];
+    setRevealedSteps(newRevealedSteps);
+
+    if (currentStepIndex < currentScenario.steps.length - 1) {
+      setCurrentStepIndex(currentStepIndex + 1);
+      setSelectedOptionId(null);
+      setShowFeedback(false);
+      // setIsContextExpanded(true); // No longer auto-expanding on every next step. It defaults to true on load, and collapses after Q1.
+    } else {
+      setScenarioCompleted(true); // All steps completed
+    }
+  };
+  
+  // Scenario Completion View
+  if (scenarioCompleted) {
+    return (
+        <div className="min-h-screen bg-background text-foreground flex flex-col items-center py-12 sm:py-16">
+            <main className="container mx-auto px-4 max-w-2xl">
+                <h2 className="text-2xl sm:text-3xl font-bold text-green-600 mb-4">Scenario Complete!</h2>
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Objective:</h3>
+                  <p className="text-muted-foreground">{currentScenario.objective}</p>
+                </div>
+                <div className="bg-background p-6 rounded-lg border border-border shadow-sm">
+                  <h3 className="text-xl font-semibold text-foreground mb-4">Your Path:</h3>
+                  <ul className="space-y-3">
+                    {revealedSteps.map((step, index) => (
+                      <li key={index} className="p-3 bg-background rounded-md border border-border shadow-sm">
+                        <p className="font-semibold text-primary">{step.title}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-10 text-center">
+                    <Link href="/" legacyBehavior>
+                        <a className="bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 font-medium py-2 px-4 rounded-md shadow-sm flex items-center justify-center space-x-2 transition-colors duration-150 mx-auto w-auto">
+                            <ArrowLeftIcon className="h-5 w-5" />
+                            <span>Hub</span>
+                        </a>
+                    </Link>
+                </div>
+            </main>
+        </div>
+    );
+  }
+  
+  // Current Step View (if scenario is not completed and currentStepData exists)
+  if (!currentStepData) {
+    // Fallback for unexpected state, should ideally be covered by scenarioCompleted
+    return <div className="min-h-screen flex items-center justify-center">Loading scenario step...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Head>
-        <title>Scenario Mode - {state.topic || 'Learn'}</title>
-        <meta name="description" content={`Scenario-based learning for ${state.topic}`} />
+        <title>{`Scenario: ${currentScenario.topic} - ${learningContextState.topic || 'Interactive Learning'}`}</title>
+        <meta name="description" content={`Interactive scenario on ${currentScenario.topic} for ${learningContextState.topic || 'your selected topic'}`} />
       </Head>
 
-      <main className="container mx-auto px-4 py-16">
-        <div className="max-w-5xl mx-auto"> {/* Widened container for cards */}
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-primary mb-4">
-              Scenario Learning Mode
+      <main className="container mx-auto px-4 py-12 sm:py-16">
+        <div className="max-w-2xl mx-auto">
+          {/* Updated Heading and Hub Button Container */}
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-primary">
+              {learningContextState.topic ? learningContextState.topic : currentScenario.topic}
             </h1>
-            {state.topic ? (
-              <p className="text-xl text-muted-foreground mb-2">
-                Topic: <span className="font-semibold text-accent">{state.topic}</span>
-              </p>
-            ) : (
-              <p className="text-xl mb-8">No topic selected. Please select a topic from the home page.</p>
-            )}
-            <p className="text-lg mb-10">Select a scenario to dive into:</p>
+            <Link href="/">
+              <button className="bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 font-medium py-2 px-4 rounded-md shadow-sm flex items-center space-x-2 transition-colors duration-150">
+                <ArrowLeftIcon className="h-5 w-5" />
+                <span>Hub</span>
+              </button>
+            </Link>
           </div>
 
-          {state.topic ? (
-            selectedScenarioId && selectedScenario ? (
-              // Placeholder for Full Scenario Deep Dive View
-              <div className="bg-card p-8 rounded-xl shadow-xl border border-border">
-                <button 
-                  onClick={handleClearSelection}
-                  className="mb-6 bg-secondary text-secondary-foreground hover:bg-secondary/80 font-medium py-2 px-4 rounded-lg shadow-sm transition-colors duration-150 text-sm"
+          {/* Objective Block */}
+          <div className="bg-card p-6 rounded-lg shadow-lg border border-border mb-8">
+            <h2 className="text-xl font-semibold text-foreground mb-2">Objective</h2>
+            <p className="text-muted-foreground">{currentScenario.objective}</p>
+          </div>
+
+
+
+          {/* Current Decision Point Block */}
+          <div className="bg-card p-6 rounded-lg shadow-lg border border-border mb-8">
+            <div className="flex items-start mb-4">
+              <h3 className="text-xl font-semibold text-foreground">
+                <span className="mr-2">{currentStepData.stepNumber}.</span>{currentStepData.questionText}
+              </h3>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {currentStepData.options.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleOptionSelect(option.id)}
+                  disabled={showFeedback && !!isCorrect} /* <-- FIXED TS ERROR & MODIFIED LOGIC */
+                  className={`w-full p-4 rounded-md border text-left transition-all duration-150 
+                    ${showFeedback && selectedOptionId === option.id ? 
+                      (isCorrect ? 'bg-green-500 border-green-600 text-white ring-2 ring-green-400 ring-offset-2 ring-offset-background' : 'bg-red-500 border-red-600 text-white ring-2 ring-red-400 ring-offset-2 ring-offset-background') :
+                      'bg-background hover:bg-muted border-border hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed'
+                    }
+                    /* Apply different styles if options are disabled due to correctness vs other reasons if needed */
+                    /* For now, the existing disabled:opacity-50 should cover it when isCorrect is true */
+                  `}
                 >
-                  &larr; Back to Scenarios
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <span className={`font-semibold mr-2 ${showFeedback && selectedOptionId === option.id ? 'text-white' : 'text-primary'}`}>
+                        {option.id.toUpperCase()})
+                      </span>
+                      {option.text}
+                    </div>
+                    {showFeedback && selectedOptionId === option.id && (
+                      isCorrect ? <CheckCircleIcon className="h-5 w-5 text-white" /> : <XCircleIcon className="h-5 w-5 text-white" />
+                    )}
+                  </div>
                 </button>
-                <h2 className="text-3xl font-bold text-primary mb-4">{selectedScenario.title}</h2>
-                <p className="text-lg text-muted-foreground mb-2">Category: {selectedScenario.category} | Complexity: {selectedScenario.complexity}</p>
-                <hr className="my-6 border-border" />
-                <p className="text-xl font-semibold mb-4">Full Scenario Details (Coming Soon):</p>
-                <div className="prose prose-lg max-w-none text-foreground">
-                  <p>Executive briefing, data snapshot, and decision points for "{selectedScenario.title}" will appear here.</p>
-                  <p>{selectedScenario.summary}</p>
+              ))}
+            </div>
+          </div>
+
+          {/* Inline Tip display area */}
+          {showFeedback && !isCorrect && currentStepData && (
+            <div className="mt-4 p-4 rounded-md bg-red-50 border border-red-200 text-red-700 mb-8">
+              <div className="flex items-start">
+                <LightBulbIcon className="h-5 w-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold">Tip:</h4>
+                  <p>{currentStepData.feedbackTip}</p>
                 </div>
               </div>
-            ) : (
-              // Display grid of cards (if no scenario selected or scenario not found)
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockScenarios.map((scenario) => (
-                  <div 
-                    key={scenario.id} 
-                    className="bg-card p-6 rounded-xl shadow-lg border border-border hover:shadow-primary/20 hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-                    onClick={() => handleScenarioSelect(scenario.id)}
-                  >
-                    <div>
-                      <h2 className="text-xl font-semibold text-primary mb-2">{scenario.title}</h2>
-                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed h-20 overflow-hidden">
-                        {scenario.summary}
-                      </p>
-                    </div>
-                    <div className="mt-auto pt-4 border-t border-border/50">
-                      <div className="flex justify-between items-center text-xs mb-1">
-                        <span className="font-medium text-gray-500">Category:</span>
-                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-semibold">{scenario.category}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="font-medium text-gray-500">Complexity:</span>
-                        <span 
-                          className={`px-2 py-0.5 rounded-full font-semibold ${ 
-                            scenario.complexity === 'Simple' ? 'bg-green-100 text-green-700' : 
-                            scenario.complexity === 'Moderate' ? 'bg-yellow-100 text-yellow-700' : 
-                            'bg-red-100 text-red-700'
-                          }`}
-                        >
-                          {scenario.complexity}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+            </div>
+          )}
+
+          {/* "Next Step" Button Area - Moved Here */}
+          {showFeedback && isCorrect && (
+            <div className="mb-8 text-right"> {/* Added margin-bottom */}
+              <button
+                onClick={handleNextStep}
+                className="bg-primary text-white hover:bg-primary/90 font-medium py-2.5 px-6 rounded-lg shadow-md transition-colors duration-150 flex items-center ml-auto" /* Added ml-auto for right alignment */
+              >
+                {currentStepIndex === currentScenario.steps.length - 1 ? 'Finish Scenario' : 'Next Step'}
+                <ChevronRightIcon className="ml-2 h-5 w-5" />
+              </button>
+            </div>
+          )}
+
+          {/* Revealed Steps Display Area - MOVED HERE */}
+          {revealedSteps.length > 0 && (
+            <div className="bg-card p-6 rounded-lg shadow-lg border border-border mb-8">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Your Progress:</h2>
+              <ul className="space-y-3">
+                {revealedSteps.map((step, index) => (
+                  <li key={index} className="p-3 bg-background rounded-md border border-border shadow-sm">
+                    <p className="font-semibold text-primary">{step.title}</p>
+                  </li>
                 ))}
-              </div>
-            )
-          ) : (
-            <div className="text-center bg-card p-8 rounded-lg shadow-xl border border-border">
-              <p className="text-xl text-muted-foreground">Please select a topic on the home page to see available scenarios.</p>
+              </ul>
             </div>
           )}
 
 
-          <div className="mt-12 text-center">
-            <Link href="/" legacyBehavior>
-              <a className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium py-3 px-8 rounded-lg shadow-md transition-colors duration-150">
-                Back to Home
-              </a>
-            </Link>
-          </div>
+          {/* Old Hub link location removed */}
         </div>
       </main>
     </div>
