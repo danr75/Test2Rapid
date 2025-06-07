@@ -11,7 +11,11 @@ const suggestedTopics = [
   'Climate Science'
 ];
 
-const TopicInput: React.FC = () => {
+interface TopicInputProps {
+  onTopicSubmit: (topic: string) => void;
+}
+
+const TopicInput: React.FC<TopicInputProps> = ({ onTopicSubmit }) => {
   const [topic, setTopic] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -23,30 +27,18 @@ const TopicInput: React.FC = () => {
     if (topic.trim()) {
       setIsLoading(true);
       
-      // Set the topic in our global state
-      dispatch({ type: 'SET_TOPIC', payload: topic });
-      
-      // Reset any previous questions
-      dispatch({ type: 'SET_QUESTIONS', payload: [] });
-      dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: 0 });
-      
-      // Navigate to the quiz page
-      router.push('/quiz');
+      // Call the callback with the topic
+      onTopicSubmit(topic);
+      // setIsLoading(false); // Or manage loading state based on parent component
     }
   };
   
   const selectSuggestedTopic = (suggestedTopic: string) => {
     setIsLoading(true);
     
-    // Set the topic in our global state
-    dispatch({ type: 'SET_TOPIC', payload: suggestedTopic });
-    
-    // Reset any previous questions
-    dispatch({ type: 'SET_QUESTIONS', payload: [] });
-    dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: 0 });
-    
-    // Navigate directly to the quiz page
-    router.push('/quiz');
+    // Call the callback with the suggested topic
+    onTopicSubmit(suggestedTopic);
+    // setIsLoading(false); // Or manage loading state based on parent component
   };
   
   return (
