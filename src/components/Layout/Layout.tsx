@@ -6,19 +6,9 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const router = useRouter();
-  const isHomePage = router.pathname === '/' || router.pathname === '/index';
-
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-primary text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          {!isHomePage && (
-            <h1 className="text-xl font-bold">Interactive Learning Hub</h1>
-          )}
-          {/* Future navigation items can be added here */}
-        </div>
-      </header>
+      {/* Header removed to prevent duplication with the new Header component */}
       
       <main className="flex-grow">
         {children}

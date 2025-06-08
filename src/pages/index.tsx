@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import TopicInput from '@/components/UI/TopicInput';
+import Header from '@/components/Layout/Header';
 import { useLearning, LearningMode } from '@/store/LearningContext';
 import { useRouter } from 'next/router';
 import { 
@@ -150,115 +152,111 @@ const Home: React.FC = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Digital Executive Advisor Header */}
-      <header className="bg-blue-800 text-white shadow-md">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex flex-col">
-            <h1 className="text-xl font-semibold">Digital Executive Advisor</h1>
-            <p className="text-sm text-blue-200">Strategic Learning Platform</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="text-right">
-              <div className="font-medium">John Director</div>
-              <div className="text-sm text-blue-200">Chief Digital Officer</div>
-            </div>
-            <div className="bg-blue-700 rounded-full p-1">
-              <UserCircleIcon className="h-8 w-8 text-white" />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Navigation Menu */}
-      <nav className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-1 flex justify-center">
-          <div className="flex justify-between items-center w-full max-w-2xl">
-            <button className="flex flex-col items-center p-2 text-gray-500 hover:text-gray-800">
-              <AcademicCapIcon className="h-5 w-5" />
-              <span className="text-xs mt-1">Learning Coach</span>
-            </button>
-            
-            <button className="flex flex-col items-center p-2 text-blue-600 border-b-2 border-blue-600">
-              <ChatBubbleLeftRightIcon className="h-5 w-5" />
-              <span className="text-xs mt-1">Assistant</span>
-            </button>
-            
-            <button className="flex flex-col items-center p-2 text-gray-500 hover:text-gray-800">
-              <RssIcon className="h-5 w-5" />
-              <span className="text-xs mt-1">Daily Feed</span>
-            </button>
-            
-            <button className="flex flex-col items-center p-2 text-gray-500 hover:text-gray-800">
-              <ChartBarIcon className="h-5 w-5" />
-              <span className="text-xs mt-1">Skill Tracker</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+      {/* Header with Navigation */}
+      <Header activeTab="assistant" />
 
       <main className="container mx-auto px-4 py-8">
-        {/* No need for additional title since we have the header */}
-        <div className="max-w-4xl mx-auto text-center mb-8">
-          {/* Adjusted spacing by reducing margin */}
-        </div>
-        
-        <div className="max-w-2xl mx-auto">
-          <div className="card shadow-lg border border-gray-100 p-6"> {/* Added padding to card */}
-            <div className="mb-10">
-              {/* Removed 'Choose a Learning Mode:' heading to match image */}
-              <div className="flex justify-center bg-slate-100 p-1.5 rounded-xl shadow-sm">
-                {learningModes.map((mode) => (
-                  <button
-                    key={mode.id}
-                    onClick={() => {
-                      // Set the mode first
-                      handleModeChange(mode.id);
-                      // Log the click
-                      console.log('Mode tab clicked:', mode.id, 'with path:', mode.path);
-                    }}
-                    className={`flex items-center justify-center flex-1 sm:flex-none px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-slate-100 mx-0.5
-                      ${currentLearningMode === mode.id
-                        ? 'bg-white text-slate-700 shadow-md'
-                        : 'bg-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-200/70'
-                      }
-                    `}
-                  >
-                    <mode.icon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden="true" />
-                    <span>{mode.label}</span>
-                  </button>
-                ))}
+        {/* Strategic Technical Assistant UI */}
+        <div className="max-w-4xl mx-auto mt-4">
+          {/* Assistant Header Card */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+            <div className="flex items-start">
+              <div className="mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
               </div>
-            </div>
-            {/* Removed 'Enter a Topic for...' heading */}
-            <TopicInput onTopicSubmit={handleTopicSubmit} />
-
-            {/* Today's Strategic Focus Section */}
-            <div className="mt-8"> {/* Adjusted top margin for inside the card */}
-              <h2 className="text-2xl font-semibold mb-4 text-center text-gray-700"> {/* Slightly smaller heading */}
-                Today's Strategic Focus
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> {/* Smaller gap */}
-                {strategicFocusTopics.map((card) => (
-                  <button
-                    key={card.id}
-                    onClick={() => handleStrategicFocusClick(card)}
-                    className="bg-slate-50 p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-                    // Simplified card styling for nesting
-                  >
-                    <div>
-                      <div className="flex items-center mb-2">
-                        <card.icon className="h-5 w-5 text-primary mr-2 flex-shrink-0" />
-                        <h3 className="text-lg font-semibold text-gray-800">{card.title}</h3>
-                      </div>
-                      <p className="text-gray-600 text-xs">{card.description}</p> {/* Smaller description text */}
-                    </div>
-                  </button>
-                ))}
+              <div>
+                <h2 className="text-lg font-semibold text-gray-800">Strategic Technical Assistant</h2>
+                <p className="text-sm text-gray-500">Get quick answers to technical questions and strategic decision support</p>
               </div>
             </div>
           </div>
 
+          {/* Chat Interface */}
+          <div className="bg-gray-50 rounded-lg p-6 mb-6">
+            <div className="flex items-center mb-4">
+              <div className="bg-gray-800 rounded-full h-8 w-8 flex items-center justify-center text-white font-medium mr-3">
+                AI
+              </div>
+              <p className="text-gray-700 font-medium">How can I help you today?</p>
+            </div>
 
+            {/* Quick Suggestion Buttons - 2x2 Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 my-4">
+              <button className="bg-white p-3 rounded border border-gray-200 text-left hover:bg-gray-50 text-gray-700 text-sm">
+                Explain microservices vs monolith trade-offs
+              </button>
+              <button className="bg-white p-3 rounded border border-gray-200 text-left hover:bg-gray-50 text-gray-700 text-sm">
+                Compare cloud providers for data lakes
+              </button>
+              <button className="bg-white p-3 rounded border border-gray-200 text-left hover:bg-gray-50 text-gray-700 text-sm">
+                AI model deployment strategies
+              </button>
+              <button className="bg-white p-3 rounded border border-gray-200 text-left hover:bg-gray-50 text-gray-700 text-sm">
+                Digital transformation budget planning
+              </button>
+            </div>
+
+            {/* Input Field */}
+            <div className="mt-6 flex">
+              <input 
+                type="text" 
+                placeholder="Ask about technology strategy, architecture decisions, or emerging trends..." 
+                className="flex-grow px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <button className="bg-gray-900 text-white px-4 py-2 rounded-r hover:bg-gray-800 font-medium">
+                Ask
+              </button>
+            </div>
+          </div>
+
+          {/* Two-Column Layout for Recent Conversations and Quick References */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Recent Conversations */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Recent Conversations</h3>
+              <div className="space-y-3">
+                <div className="border border-gray-100 rounded p-3 hover:bg-gray-50 cursor-pointer">
+                  <p className="text-gray-800">Cloud-native architecture migration</p>
+                  <p className="text-xs text-gray-500 mt-1">Yesterday, 2:30 PM</p>
+                </div>
+                <div className="border border-gray-100 rounded p-3 hover:bg-gray-50 cursor-pointer">
+                  <p className="text-gray-800">AI ethics framework implementation</p>
+                  <p className="text-xs text-gray-500 mt-1">2 days ago, 4:15 PM</p>
+                </div>
+                <div className="border border-gray-100 rounded p-3 hover:bg-gray-50 cursor-pointer">
+                  <p className="text-gray-800">Data governance vs data management</p>
+                  <p className="text-xs text-gray-500 mt-1">3 days ago, 10:20 AM</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick References */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Quick References</h3>
+              <div className="space-y-3">
+                <div className="border border-gray-100 rounded p-3 hover:bg-gray-50 cursor-pointer flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <p className="text-gray-800">Technology ROI Calculator</p>
+                </div>
+                <div className="border border-gray-100 rounded p-3 hover:bg-gray-50 cursor-pointer flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <p className="text-gray-800">Team Structure Templates</p>
+                </div>
+                <div className="border border-gray-100 rounded p-3 hover:bg-gray-50 cursor-pointer flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <p className="text-gray-800">Strategic Planning Framework</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
