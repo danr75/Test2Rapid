@@ -111,7 +111,14 @@ const ScenarioLearnPage: React.FC = () => {
           setSelectedOptionId(null);
           setShowFeedback(false);
         } else {
-          setScenarioCompleted(true); // All steps completed
+          // On final step, wait 1 sec before showing completion screen
+          console.log('Final step complete, waiting 1 second before showing completion');
+          // Don't immediately set scenarioCompleted - wait for the timeout below
+          // Instead we'll set a separate timeout for the completion screen
+          setTimeout(() => {
+            console.log('Showing scenario completion screen');
+            setScenarioCompleted(true);
+          }, 1000);
         }
       }, 1000);
     }
@@ -279,11 +286,10 @@ const ScenarioLearnPage: React.FC = () => {
           {/* Revealed Steps Display Area - MOVED HERE */}
           {revealedSteps.length > 0 && (
             <div className="bg-card p-6 rounded-lg shadow-lg border border-border mb-8">
-              <h2 className="text-xl font-semibold text-foreground mb-4">Your Progress:</h2>
-              <ul className="space-y-3">
+              <ul className="space-y-2">
                 {revealedSteps.map((step, index) => (
-                  <li key={index} className="p-3 bg-background rounded-md border border-border shadow-sm">
-                    <p className="font-semibold text-primary">{step.title}</p>
+                  <li key={index} className="py-1">
+                    <p className="font-semibold text-foreground">{step.title}</p>
                   </li>
                 ))}
               </ul>
