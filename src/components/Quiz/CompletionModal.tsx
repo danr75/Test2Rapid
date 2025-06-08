@@ -79,7 +79,7 @@ const CompletionModal: React.FC<CompletionModalProps> = ({
             onClick={onStartNew} 
             className="py-3 rounded-md font-semibold text-white bg-primary hover:bg-indigo-600 transition-colors"
           >
-            New Topic
+            Hub
             <span className="ml-1 text-xs opacity-75">(Enter)</span>
           </button>
         </div>

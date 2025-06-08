@@ -13,6 +13,9 @@ interface QuestionCardProps {
   questionNumber: number;
   totalQuestions: number;
   completedQuestions?: number[];
+  selectedOptionId?: string | null;
+  showFeedback?: boolean;
+  isCorrect?: boolean;
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({
@@ -22,6 +25,9 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   questionNumber,
   totalQuestions,
   completedQuestions = [],
+  selectedOptionId = null,
+  showFeedback = false,
+  isCorrect = false,
 }) => {
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
   
@@ -47,21 +53,36 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             onClick={() => onAnswerSelected(option)}
             onMouseEnter={() => setHoveredOption(option.id)}
             onMouseLeave={() => setHoveredOption(null)}
-            className={`w-full text-left p-4 border rounded-lg transition-all ${hoveredOption === option.id ? 'border-primary bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}
+            disabled={showFeedback}
+            className={`w-full text-left p-4 border rounded-lg transition-all 
+              ${showFeedback && option.isCorrect ? 'bg-green-500 border-green-600 text-white ring-2 ring-green-400 ring-offset-2' : 
+                showFeedback && selectedOptionId === option.id ? 'bg-red-500 border-red-600 text-white ring-2 ring-red-400 ring-offset-2' : 
+                hoveredOption === option.id ? 'border-primary bg-blue-50' : 'border-gray-200 hover:bg-gray-50'}`}
           >
-            <div className="flex items-center">
-              <div className={`w-6 h-6 rounded-full mr-3 flex items-center justify-center ${hoveredOption === option.id ? 'bg-primary text-white' : 'bg-gray-100'}`}>
-                {String.fromCharCode(65 + options.indexOf(option))}
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center">
+                <div className={`w-6 h-6 rounded-full mr-3 flex items-center justify-center 
+                  ${showFeedback && (selectedOptionId === option.id || option.isCorrect) ? 'bg-white text-gray-800' : 
+                    hoveredOption === option.id ? 'bg-primary text-white' : 'bg-gray-100'}`}>
+                  {String.fromCharCode(65 + options.indexOf(option))}
+                </div>
+                <span>{option.text}</span>
               </div>
-              <span>{option.text}</span>
+              {showFeedback && (option.isCorrect || selectedOptionId === option.id) && (
+                option.isCorrect ? 
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg> : 
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+              )}
             </div>
           </button>
         ))}
       </div>
       
-      <div className="mt-6 text-sm text-gray-500 italic">
-        Select the best answer from the options above
-      </div>
+      {/* Instruction text removed as requested */}
     </div>
   );
 };

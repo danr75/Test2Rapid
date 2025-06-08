@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import QuestionCard from '@/components/Quiz/QuestionCard';
 import { MindMapNode, MindMapLink } from '@/components/MindMap/MindMap';
 import MindMap from '@/components/MindMap/MindMap'; // Default import
-import FeedbackModal from '@/components/Quiz/FeedbackModal';
 import CompletionModal from '@/components/Quiz/CompletionModal';
 import { useLearning } from '@/store/LearningContext';
 import questionGenerator from '@/services/ai/questionGenerator';
@@ -36,6 +35,9 @@ const QuizPage: React.FC = () => {
   const [isGeneratingSubthemes, setIsGeneratingSubthemes] = useState(false);
   const [isLearnNowNextModalOpen, setIsLearnNowNextModalOpen] = useState(false);
   const [selectedModalTopic, setSelectedModalTopic] = useState<string>('');
+  
+  // Ref for auto-progression timer
+  const autoProgressTimerRef = useRef<number | null>(null);
   
   // Get the current question
   const currentQuestion = state.questions[state.currentQuestionIndex];
@@ -92,48 +94,54 @@ const QuizPage: React.FC = () => {
   
   // Handle answer selection
   const handleAnswerSelected = (option: { id: string; text: string; isCorrect: boolean }) => {
+    // Set states immediately
     setIsCorrect(option.isCorrect);
     setSelectedOption(option.id);
+    setShowFeedback(true);
     
-    if (currentQuestion) {
-      setExplanation(currentQuestion.explanation);
+    // Save the current question before any state updates
+    const questionBeingAnswered = currentQuestion;
+    
+    if (questionBeingAnswered) {
+      setExplanation(questionBeingAnswered.explanation);
       
       // Find the correct answer text to display in feedback
-      const correctOption = currentQuestion.options.find(opt => opt.isCorrect);
+      const correctOption = questionBeingAnswered.options.find(opt => opt.isCorrect);
       if (correctOption) {
         setCorrectAnswer(correctOption.text);
       }
-    }
     
-    // If the answer is correct, add a node to the mind map, increment correct answers count, and mark question as completed
-    if (option.isCorrect && currentQuestion) {
-      setCorrectAnswersCount(prev => prev + 1);
-      
-      // Mark this question as completed
+      // Mark this question as completed right away
       if (!completedQuestions.includes(state.currentQuestionIndex)) {
         setCompletedQuestions(prev => [...prev, state.currentQuestionIndex]);
       }
       
-      // Make sure we have a central node first
+      // Update correct answers count if needed
+      if (option.isCorrect) {
+        setCorrectAnswersCount(prev => prev + 1);
+      }
+      
+      // Always make sure we have a central node first
       const centralNodeExists = state.nodes.some(node => node.id === 'central');
       
       if (!centralNodeExists) {
         const centralNode = {
           id: 'central',
-          label: themeStages[0].main, // Use initial theme stage
-          type: 'central' as const, // Ensure the main topic node is of type 'central'
+          label: themeStages[0].main,
+          type: 'central' as const,
           group: 0
         };
         dispatch({ type: 'ADD_NODE', payload: centralNode });
       }
       
-      // Add the question node
+      // Always add the question node to the mind map for both correct and incorrect answers
       const newNode = {
-        id: currentQuestion.id,
-        label: currentQuestion.text.length > 30 
-          ? currentQuestion.text.substring(0, 27) + '...'
-          : currentQuestion.text,
-        type: 'question' as const
+        id: questionBeingAnswered.id,
+        label: questionBeingAnswered.text.length > 30 
+          ? questionBeingAnswered.text.substring(0, 27) + '...'
+          : questionBeingAnswered.text,
+        type: 'question' as const,
+        status: option.isCorrect ? 'correct' : 'incorrect' // Add status to show green/red in mind map
       };
       
       dispatch({ type: 'ADD_NODE', payload: newNode });
@@ -145,7 +153,19 @@ const QuizPage: React.FC = () => {
       dispatch({ type: 'ADD_LINK', payload: link });
     }
     
-    setShowFeedback(true);
+    // Clear any existing timers before setting new ones
+    if (autoProgressTimerRef.current) {
+      clearTimeout(autoProgressTimerRef.current);
+      autoProgressTimerRef.current = null;
+    }
+    
+    // Set auto-progress timers with different delays based on correctness
+    // Correct: 1 second, Incorrect: 3 seconds
+    const delay = option.isCorrect ? 1000 : 3000;
+    autoProgressTimerRef.current = window.setTimeout(() => {
+      console.log(`Auto-progressing to next question after ${option.isCorrect ? 'correct' : 'incorrect'} answer (${delay/1000}s delay)`);
+      handleContinue();
+    }, delay);
   };
   
   // Handle continue button click
@@ -153,35 +173,42 @@ const QuizPage: React.FC = () => {
     setShowFeedback(false);
     setSelectedOption(null); // Reset selected option for the next question
 
-    if (isCorrect) { // Only advance and update theme if the answer was correct
-      // Determine if theme stage should change BEFORE incrementing currentQuestionIndex
-      // Based on the question index that was just correctly answered
-      const nextQuestionAbsoluteIndex = state.currentQuestionIndex + 1; // e.g., if q0 was correct, next is q1
-      const newStageIndex = Math.min(Math.floor(nextQuestionAbsoluteIndex / 3), themeStages.length - 1);
-      
-      if (newStageIndex !== currentThemeStageIndex) {
-        setCurrentThemeStageIndex(newStageIndex);
-        if (themeStages[newStageIndex]) { // Ensure stage exists
-          dispatch({ 
-            type: 'UPDATE_NODE', 
-            payload: { id: 'central', newLabel: themeStages[newStageIndex].main } 
-          });
-        }
+    // Track if we've completed all questions to show completion screen
+    let shouldShowCompletion = false;
+    
+    // If this was the last question, show completion
+    if (state.currentQuestionIndex >= state.questions.length - 1) {
+      // All questions for the current topic are completed
+      // Check if this topic was in the 'Learn Next' queue and remove it if correct answer
+      if (isCorrect && state.learnNextTopics.includes(state.topic)) {
+        dispatch({ type: 'COMPLETE_QUEUED_TOPIC', payload: state.topic });
       }
-
-      if (state.currentQuestionIndex < state.questions.length - 1) {
-        dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: state.currentQuestionIndex + 1 });
-      } else {
-        // All questions for the current topic are answered correctly.
-        // Check if this topic was in the 'Learn Next' queue and remove it.
-        if (state.learnNextTopics.includes(state.topic)) {
-          dispatch({ type: 'COMPLETE_QUEUED_TOPIC', payload: state.topic });
-        }
-        setShowCompletion(true); // Show completion modal
-      }
+      shouldShowCompletion = true;
     } else {
-      // If incorrect, user stays on the same question, no index change needed.
-      // Modal is closed, they can try again.
+      // Always progress to the next question, regardless of correct/incorrect answer
+      dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: state.currentQuestionIndex + 1 });
+      
+      // If correct answer, update theme stage if needed
+      if (isCorrect) {
+        // Determine if theme stage should change after incrementing currentQuestionIndex
+        const nextQuestionIndex = state.currentQuestionIndex + 1;
+        const newStageIndex = Math.min(Math.floor(nextQuestionIndex / 3), themeStages.length - 1);
+        
+        if (newStageIndex !== currentThemeStageIndex) {
+          setCurrentThemeStageIndex(newStageIndex);
+          if (themeStages[newStageIndex]) { // Ensure stage exists
+            dispatch({ 
+              type: 'UPDATE_NODE', 
+              payload: { id: 'central', newLabel: themeStages[newStageIndex].main } 
+            });
+          }
+        }
+      }
+    }
+    
+    // If we've completed all questions, show the completion modal
+    if (shouldShowCompletion) {
+      setShowCompletion(true);
     }
   };
   
@@ -404,7 +431,7 @@ const QuizPage: React.FC = () => {
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            New Topic
+            Hub
           </button>
         </div>
         
@@ -414,14 +441,52 @@ const QuizPage: React.FC = () => {
               {state.isLoading && <p className="text-center text-lg">Loading questions...</p>}
               {state.error && <p className="text-center text-lg text-red-500">Error: {state.error}</p>}
               {!state.isLoading && !state.error && currentQuestion && (
-                <QuestionCard
-                  question={currentQuestion.text}
-                  options={currentQuestion.options}
-                  onAnswerSelected={handleAnswerSelected}
-                  questionNumber={state.currentQuestionIndex + 1}
-                  totalQuestions={state.questions.length}
-                  completedQuestions={completedQuestions}
-                />
+                <>
+                  <QuestionCard
+                    question={currentQuestion.text}
+                    options={currentQuestion.options}
+                    onAnswerSelected={handleAnswerSelected}
+                    questionNumber={state.currentQuestionIndex + 1}
+                    totalQuestions={state.questions.length}
+                    completedQuestions={completedQuestions}
+                    selectedOptionId={selectedOption}
+                    showFeedback={showFeedback}
+                    isCorrect={isCorrect}
+                  />
+
+                  {/* Inline Feedback - Show tip box only for incorrect answers */}
+                  {showFeedback && !isCorrect && (
+                    <div className="bg-red-50 p-6 rounded-lg border border-red-200 mb-8">
+                      <div className="flex items-start">
+                        <div className="text-red-500 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <span className="font-semibold text-red-500">Tip:</span>
+                          <p className="text-gray-700 mt-1">
+                            {explanation}
+                          </p>
+                          
+                          {/* Button hidden but action happens after delay */}
+                          <button 
+                            onClick={handleContinue} 
+                            className="hidden"
+                            aria-hidden="true"
+                          >
+                            Next Question
+                          </button>
+                          
+                          {/* Hidden button for accessibility */}
+                          {/* No visible timer message as requested */}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Auto-progress will happen without any visible message */}
+                </>
               )}
               {!state.isLoading && !state.error && !currentQuestion && state.questions.length > 0 && (
                  <p className="text-center text-lg">Question loaded, but current question is invalid. Index: {state.currentQuestionIndex}, Total: {state.questions.length}</p>
@@ -466,14 +531,7 @@ const QuizPage: React.FC = () => {
         </div>
       </main>
       
-      {showFeedback && (
-        <FeedbackModal
-          isCorrect={isCorrect}
-          explanation={explanation}
-          onContinue={handleContinue}
-          correctAnswer={!isCorrect ? correctAnswer : undefined}
-        />
-      )}
+      {/* Feedback is now shown inline instead of in a modal */}
       
       {showCompletion && (
         <CompletionModal
