@@ -3,7 +3,18 @@ import Head from 'next/head';
 import TopicInput from '@/components/UI/TopicInput';
 import { useLearning, LearningMode } from '@/store/LearningContext';
 import { useRouter } from 'next/router';
-import { ChatBubbleOvalLeftEllipsisIcon, DocumentTextIcon, BookOpenIcon, UsersIcon, BoltIcon } from '@heroicons/react/24/outline';
+import { 
+  ChatBubbleOvalLeftEllipsisIcon, 
+  DocumentTextIcon, 
+  BookOpenIcon, 
+  UsersIcon, 
+  BoltIcon,
+  UserCircleIcon,
+  AcademicCapIcon,
+  ChatBubbleLeftRightIcon,
+  RssIcon,
+  ChartBarIcon
+} from '@heroicons/react/24/outline';
 
 
 
@@ -56,7 +67,19 @@ const Home: React.FC = () => {
   }, [state.learningMode, dispatch]); // Only re-run if these change
 
   const handleModeChange = (newMode: LearningMode) => {
+    console.log('handleModeChange called with:', newMode);
+    console.log('Previous learning mode was:', state.learningMode);
+    
+    // Set the learning mode in the context
     dispatch({ type: 'SET_LEARNING_MODE', payload: newMode });
+    
+    // Log after dispatching
+    console.log('Learning mode dispatched to context with payload:', newMode);
+    
+    // After a short delay, check if mode has updated
+    setTimeout(() => {
+      console.log('Current learning mode after change:', state.learningMode);
+    }, 100);
   };
 
   const handleStartQueuedTopic = (topic: string) => {
@@ -68,18 +91,26 @@ const Home: React.FC = () => {
   };
 
   const handleTopicSubmit = (topic: string) => {
-    // currentLearningMode is derived from state: state.learningMode || 'Q&A'
-    // Ensure the learning mode is explicitly set in the context before navigating
-    dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
-    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic }); // Clears old questions
+    // Debug output to track the current flow
+    console.log('Topic submitted:', topic);
+    console.log('Current learning mode is:', currentLearningMode);
     
-    const modeDetails = learningModes.find(m => m.id === currentLearningMode);
-    if (modeDetails) {
-      router.push(modeDetails.path);
-    } else {
-      // Fallback logic, this should ideally not be hit if currentLearningMode is always valid
-      console.warn('Learning mode details not found, defaulting to Q&A path');
-      router.push('/qa-learn'); 
+    // Setting both the topic and mode before navigation
+    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic });
+    dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
+    
+    // Using a more direct navigation approach to each mode
+    if (currentLearningMode === 'Scenario') {
+      console.log('Navigating to Scenario mode');
+      router.push('/scenario-learn');
+    } 
+    else if (currentLearningMode === 'Speed') {
+      console.log('Navigating to Speed mode');
+      router.push('/speed-learn');
+    }
+    else {
+      console.log('Navigating to Q&A mode');
+      router.push('/qa-learn');
     }
   };
 
@@ -89,30 +120,86 @@ const Home: React.FC = () => {
   };
 
   const handleStrategicFocusClick = (card: StrategicFocusCardData) => {
-    // currentLearningMode is already derived from state: state.learningMode || 'Q&A'
-    const targetModeDetails = learningModes.find(m => m.id === currentLearningMode);
-    // Fallback to /qa-learn if mode not found, though this should be robust
-    const targetPath = targetModeDetails ? targetModeDetails.path : '/qa-learn';
-
+    // Use the currently selected learning mode instead of forcing Q&A mode
+    console.log('Strategic focus clicked with mode:', currentLearningMode);
+    
+    // Setting both the topic and mode before navigation
+    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: card.topicToSet });
     dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
-    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: card.topicToSet }); // Clears old questions
-    router.push(targetPath);
+    
+    // Using the same direct navigation approach as handleTopicSubmit
+    if (currentLearningMode === 'Scenario') {
+      console.log('Navigating strategic focus to Scenario mode');
+      router.push('/scenario-learn');
+    }
+    else if (currentLearningMode === 'Speed') {
+      console.log('Navigating strategic focus to Speed mode');
+      router.push('/speed-learn');
+    }
+    else {
+      console.log('Navigating strategic focus to Q&A mode');
+      router.push('/qa-learn');
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Head>
-        <title>Interactive Learning Hub</title>
-        <meta name="description" content="AI-powered learning with mind maps" />
+        <title>Digital Executive Advisor</title>
+        <meta name="description" content="Strategic Learning Platform" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      {/* Digital Executive Advisor Header */}
+      <header className="bg-blue-800 text-white shadow-md">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex flex-col">
+            <h1 className="text-xl font-semibold">Digital Executive Advisor</h1>
+            <p className="text-sm text-blue-200">Strategic Learning Platform</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="text-right">
+              <div className="font-medium">John Director</div>
+              <div className="text-sm text-blue-200">Chief Digital Officer</div>
+            </div>
+            <div className="bg-blue-700 rounded-full p-1">
+              <UserCircleIcon className="h-8 w-8 text-white" />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Navigation Menu */}
+      <nav className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-1 flex justify-center">
+          <div className="flex justify-between items-center w-full max-w-2xl">
+            <button className="flex flex-col items-center p-2 text-gray-500 hover:text-gray-800">
+              <AcademicCapIcon className="h-5 w-5" />
+              <span className="text-xs mt-1">Learning Coach</span>
+            </button>
+            
+            <button className="flex flex-col items-center p-2 text-blue-600 border-b-2 border-blue-600">
+              <ChatBubbleLeftRightIcon className="h-5 w-5" />
+              <span className="text-xs mt-1">Assistant</span>
+            </button>
+            
+            <button className="flex flex-col items-center p-2 text-gray-500 hover:text-gray-800">
+              <RssIcon className="h-5 w-5" />
+              <span className="text-xs mt-1">Daily Feed</span>
+            </button>
+            
+            <button className="flex flex-col items-center p-2 text-gray-500 hover:text-gray-800">
+              <ChartBarIcon className="h-5 w-5" />
+              <span className="text-xs mt-1">Skill Tracker</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 text-primary">
-            Interactive Learning Hub
-          </h1>
-          {/* Removed AI-generated text as requested */}
+        {/* No need for additional title since we have the header */}
+        <div className="max-w-4xl mx-auto text-center mb-8">
+          {/* Adjusted spacing by reducing margin */}
         </div>
         
         <div className="max-w-2xl mx-auto">
@@ -123,7 +210,12 @@ const Home: React.FC = () => {
                 {learningModes.map((mode) => (
                   <button
                     key={mode.id}
-                    onClick={() => handleModeChange(mode.id)}
+                    onClick={() => {
+                      // Set the mode first
+                      handleModeChange(mode.id);
+                      // Log the click
+                      console.log('Mode tab clicked:', mode.id, 'with path:', mode.path);
+                    }}
                     className={`flex items-center justify-center flex-1 sm:flex-none px-4 sm:px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-slate-100 mx-0.5
                       ${currentLearningMode === mode.id
                         ? 'bg-white text-slate-700 shadow-md'
