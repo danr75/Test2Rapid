@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import TopicInput from '@/components/UI/TopicInput';
-import { useLearning } from '@/store/LearningContext';
+import { useLearning, LearningMode } from '@/store/LearningContext';
 import { useRouter } from 'next/router';
-import { ChatBubbleOvalLeftEllipsisIcon, DocumentTextIcon, BookOpenIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { ChatBubbleOvalLeftEllipsisIcon, DocumentTextIcon, BookOpenIcon, UsersIcon, BoltIcon } from '@heroicons/react/24/outline';
 
-type LearningMode = 'Q&A' | 'Scenario'; // Add more as needed
+
 
 const learningModes: { id: LearningMode; label: string; path: string; icon: React.ElementType }[] = [
   { id: 'Q&A', label: 'Q&A Mode', path: '/qa-learn', icon: ChatBubbleOvalLeftEllipsisIcon },
   { id: 'Scenario', label: 'Scenario Mode', path: '/scenario-learn', icon: DocumentTextIcon },
+  { id: 'Speed', label: 'Speed Mode', path: '/speed-learn', icon: BoltIcon },
 ];
 
 
@@ -49,7 +50,8 @@ const Home: React.FC = () => {
   // Effect to initialize context's learningMode if it's not set (e.g., on first app load)
   useEffect(() => {
     if (!state.learningMode) {
-      dispatch({ type: 'SET_LEARNING_MODE', payload: 'Q&A' }); // Default to Q&A
+      // Default to Q&A, or any other preferred default
+      dispatch({ type: 'SET_LEARNING_MODE', payload: 'Q&A' }); 
     }
   }, [state.learningMode, dispatch]); // Only re-run if these change
 
@@ -75,8 +77,9 @@ const Home: React.FC = () => {
     if (modeDetails) {
       router.push(modeDetails.path);
     } else {
-      // Fallback logic, though currentLearningMode should always be valid
-      router.push(currentLearningMode === 'Q&A' ? '/qa-learn' : '/scenario-learn');
+      // Fallback logic, this should ideally not be hit if currentLearningMode is always valid
+      console.warn('Learning mode details not found, defaulting to Q&A path');
+      router.push('/qa-learn'); 
     }
   };
 
@@ -88,7 +91,8 @@ const Home: React.FC = () => {
   const handleStrategicFocusClick = (card: StrategicFocusCardData) => {
     // currentLearningMode is already derived from state: state.learningMode || 'Q&A'
     const targetModeDetails = learningModes.find(m => m.id === currentLearningMode);
-    const targetPath = targetModeDetails ? targetModeDetails.path : (currentLearningMode === 'Q&A' ? '/qa-learn' : '/scenario-learn');
+    // Fallback to /qa-learn if mode not found, though this should be robust
+    const targetPath = targetModeDetails ? targetModeDetails.path : '/qa-learn';
 
     dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
     dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: card.topicToSet }); // Clears old questions

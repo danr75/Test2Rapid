@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Define types
-export type LearningMode = 'Q&A' | 'Scenario'; // Exporting for use in other files if needed
+export type LearningMode = 'Q&A' | 'Scenario' | 'Speed'; // Exporting for use in other files if needed
 interface Node {
   id: string;
   label: string;
