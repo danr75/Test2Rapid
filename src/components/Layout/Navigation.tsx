@@ -8,7 +8,7 @@ import {
   ChartBarIcon 
 } from '@heroicons/react/24/outline';
 
-export type NavigationTab = 'assistant' | 'learning-coach' | 'daily-feed' | 'skill-tracker';
+export type NavigationTab = 'learning-coach' | 'daily-feed' | 'skill-tracker';
 
 interface NavigationProps {
   activeTab: NavigationTab;
@@ -19,18 +19,6 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab }) => {
     <nav className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-1 flex justify-center">
         <div className="flex justify-between items-center w-full max-w-2xl">
-          {/* Assistant Tab */}
-          <Link 
-            href="/" 
-            className={`flex flex-col items-center p-2 ${
-              activeTab === 'assistant' 
-                ? 'text-blue-600 border-b-2 border-blue-600' 
-                : 'text-gray-500 hover:text-gray-800'
-            }`}
-          >
-            <ChatBubbleLeftRightIcon className="h-5 w-5" />
-            <span className="text-xs mt-1">Assistant</span>
-          </Link>
           
           {/* Learning Coach Tab */}
           <Link 

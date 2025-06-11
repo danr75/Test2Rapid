@@ -155,50 +155,18 @@ const DailyFeedPage: React.FC = () => {
           </div>
 
           {/* Bottom sections */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Trending Topics */}
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-              <h2 className="font-semibold text-lg mb-4">Today's Trending Topics</h2>
-              <div className="flex flex-wrap gap-2">
-                <span className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700">#GenerativeAI</span>
-                <span className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700">#DataMesh</span>
-                <span className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700">#CloudNative</span>
-                <span className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700">#AIGovernance</span>
-              </div>
+          {/* Trending Topics */}
+          <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl shadow border border-blue-100 flex flex-col items-start justify-between h-full w-full">
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" /></svg>
+              <h2 className="font-semibold text-lg text-blue-700">Today's Trending Topics</h2>
             </div>
-
-            {/* Industry Focus */}
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-              <h2 className="font-semibold text-lg mb-4">Industry Focus</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Financial Services</span>
-                  <span className="text-sm text-gray-500">12 articles</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Healthcare</span>
-                  <span className="text-sm text-gray-500">8 articles</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Manufacturing</span>
-                  <span className="text-sm text-gray-500">6 articles</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Reading Time */}
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-              <h2 className="font-semibold text-lg mb-4">Reading Time</h2>
-              <div className="mb-2">
-                <div className="font-medium mb-1">Today</div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div className="bg-primary h-2.5 rounded-full" style={{ width: '75%' }}></div>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>45 min</span>
-                </div>
-              </div>
-              <div className="text-xs text-gray-500 mt-3">Target: 60 minutes daily</div>
+            <p className="text-gray-600 text-sm mb-4">Stay current with top AI, data, and digital trends. Click a tag to explore more.</p>
+            <div className="flex flex-wrap gap-3">
+              <button className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-sm">#GenerativeAI</button>
+              <button className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-sm">#DataMesh</button>
+              <button className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-sm">#CloudNative</button>
+              <button className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-medium transition-colors shadow-sm">#AIGovernance</button>
             </div>
           </div>
         </div>

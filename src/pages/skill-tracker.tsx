@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Header from '@/components/Layout/Header';
-import { DocumentTextIcon, LinkIcon, DocumentArrowUpIcon, UserIcon, AcademicCapIcon, UserGroupIcon, PlayIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, LinkIcon, DocumentArrowUpIcon, UserIcon, AcademicCapIcon, UserGroupIcon, PlayIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 
 const SkillTrackerPage: React.FC = () => {
   const router = useRouter();
@@ -21,6 +21,25 @@ const SkillTrackerPage: React.FC = () => {
       query: { topic: capability }
     });
   };
+
+  // Handle drag events
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    // Handle file drop logic here
+  };
+  
   return (
     <div className="min-h-screen bg-background">
       <Head>
@@ -33,120 +52,88 @@ const SkillTrackerPage: React.FC = () => {
       {/* Page content */}
       <div className="container mx-auto px-4 py-10">
         <div className="max-w-4xl mx-auto">
-          {/* Skills Profile Generator */}
+          {/* Skills Profile Generator - REPLACED with clean screenshot-matching block */}
           <div className="mb-10">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="text-purple-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h1 className="text-3xl font-bold text-gray-800">Generate Your Skills Profile</h1>
-            </div>
-            <p className="text-gray-600 mb-8 ml-11">Upload files, provide URLs, or paste content to automatically identify and track your skills</p>
-            
-            {/* Tab Navigation */}
-            <div className="grid grid-cols-3 gap-2 mb-8">
-              <button 
-                className={`flex items-center justify-center gap-2 p-4 border rounded-lg ${activeTab === 'upload' ? 'bg-white border-gray-300 shadow-sm' : 'bg-gray-50 border-gray-100'}`}
-                onClick={() => setActiveTab('upload')}
-              >
-                <DocumentArrowUpIcon className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-700">File Upload</span>
-              </button>
-              <button 
-                className={`flex items-center justify-center gap-2 p-4 border rounded-lg ${activeTab === 'url' ? 'bg-white border-gray-300 shadow-sm' : 'bg-gray-50 border-gray-100'}`}
-                onClick={() => setActiveTab('url')}
-              >
-                <LinkIcon className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-700">URL Analysis</span>
-              </button>
-              <button 
-                className={`flex items-center justify-center gap-2 p-4 border rounded-lg ${activeTab === 'text' ? 'bg-white border-gray-300 shadow-sm' : 'bg-gray-50 border-gray-100'}`}
-                onClick={() => setActiveTab('text')}
-              >
-                <DocumentTextIcon className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-700">Text Input</span>
-              </button>
-            </div>
-            
-            {/* Tab Content */}
-            <div className="border border-dashed border-gray-300 rounded-lg p-8 bg-gray-50">
-              {activeTab === 'upload' && (
-                <div 
-                  className={`flex flex-col items-center justify-center h-48 ${dragActive ? 'bg-gray-100' : ''}`}
-                  onDragEnter={() => setDragActive(true)}
-                  onDragLeave={() => setDragActive(false)}
-                  onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDragActive(false);
-                    // Handle file drop here
-                  }}
+            <div className="bg-white rounded-xl border border-gray-200 p-8">
+              <div className="flex items-start gap-3 mb-6">
+  <span className="text-purple-600 mt-1">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  </span>
+  <div>
+    <h1 className="text-3xl font-bold text-gray-900">Build AI skills for your current or target role</h1>
+    <p className="text-gray-500 text-base mb-8 mt-1">Upload files, provide URLs, or paste content to customise your personal learning hub</p>
+  </div>
+</div>
+              <div className="flex gap-2 mb-8 justify-center">
+                <button
+                  className={`flex items-center gap-2 px-8 py-4 border rounded-lg font-medium text-gray-700 text-base ${activeTab === 'upload' ? 'bg-white border-gray-300 shadow-sm' : 'bg-gray-50 border-gray-100'}`}
+                  onClick={() => setActiveTab('upload')}
                 >
-                  <div className="text-gray-400 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                    </svg>
+                  <DocumentArrowUpIcon className="h-5 w-5 text-gray-600" />
+                  File Upload
+                </button>
+                <button
+                  className={`flex items-center gap-2 px-8 py-4 border rounded-lg font-medium text-gray-700 text-base ${activeTab === 'url' ? 'bg-white border-gray-300 shadow-sm' : 'bg-gray-50 border-gray-100'}`}
+                  onClick={() => setActiveTab('url')}
+                >
+                  <LinkIcon className="h-5 w-5 text-gray-600" />
+                  URL Analysis
+                </button>
+                <button
+                  className={`flex items-center gap-2 px-8 py-4 border rounded-lg font-medium text-gray-700 text-base ${activeTab === 'text' ? 'bg-white border-gray-300 shadow-sm' : 'bg-gray-50 border-gray-100'}`}
+                  onClick={() => setActiveTab('text')}
+                >
+                  <DocumentTextIcon className="h-5 w-5 text-gray-600" />
+                  Text Input
+                </button>
+              </div>
+              <div className="border-2 border-dashed border-gray-200 rounded-xl bg-white flex flex-col items-center justify-center py-16">
+                {activeTab === 'upload' && (
+                  <label htmlFor="file-upload" className="flex flex-col items-center cursor-pointer">
+                    <ArrowUpTrayIcon className="h-16 w-16 text-gray-300 mb-4" />
+                    <input type="file" multiple hidden id="file-upload" />
+                    <p className="text-lg text-gray-600 mb-1">Drop your files here or click to browse</p>
+                    <p className="text-sm text-gray-400">Supports PDF, DOC, TXT, and more</p>
+                  </label>
+                )}
+                {activeTab === 'url' && (
+                  <div className="flex flex-col items-center w-full max-w-md">
+                    <input
+                      type="url"
+                      placeholder="Enter URL to analyze"
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                    <button className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors">
+                      Analyze URL
+                    </button>
                   </div>
-                  <p className="text-gray-600 text-lg mb-2">Drop your files here or click to browse</p>
-                  <p className="text-gray-400 text-sm">Supports PDF, DOC, TXT, and more</p>
-                  <input type="file" className="hidden" multiple />
-                </div>
-              )}
-              
-              {activeTab === 'url' && (
-                <div className="flex flex-col items-center justify-center h-48">
-                  <div className="w-full max-w-md">
-                    <label className="block text-gray-600 mb-4 text-center text-lg">Enter URL to analyze for skills</label>
-                    <div className="mt-2">
-                      <input 
-                        type="text" 
-                        className="block w-full rounded-md border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary"
-                        placeholder="https://example.com/your-content"
-                      />
-                    </div>
-                    <div className="mt-4 text-center">
-                      <button className="bg-primary text-white py-2 px-6 rounded-md hover:bg-primary-dark">
-                        Analyze URL
-                      </button>
-                    </div>
+                )}
+                {activeTab === 'text' && (
+                  <div className="flex flex-col items-center w-full max-w-md">
+                    <textarea
+                      placeholder="Paste text content here..."
+                      className="w-full h-32 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                    <button className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors">
+                      Analyze Text
+                    </button>
                   </div>
-                </div>
-              )}
-              
-              {activeTab === 'text' && (
-                <div className="flex flex-col items-center justify-center h-48">
-                  <div className="w-full max-w-md">
-                    <label className="block text-gray-600 mb-4 text-center text-lg">Paste text to extract skills</label>
-                    <div className="mt-2">
-                      <textarea
-                        rows={4}
-                        className="block w-full rounded-md border-0 py-3 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary"
-                        placeholder="Paste your text here..."
-                      />
-                    </div>
-                    <div className="mt-4 text-center">
-                      <button className="bg-primary text-white py-2 px-6 rounded-md hover:bg-primary-dark">
-                        Extract Skills
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
           
           {/* Explore General Skills Section */}
           <div className="mb-10 mt-12 bg-white p-8 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-bold text-center mb-3">Explore General Skills</h2>
-            <p className="text-gray-600 text-center mb-10">Choose a role to see relevant capabilities and start your skills assessment</p>
-            
-            {/* Role-Based Skills */}
+            <div className="flex items-center gap-3 mb-6">
+              <AcademicCapIcon className="h-8 w-8 text-blue-500" />
+              <h2 className="text-3xl font-bold text-gray-900">Build AI skills starting at your chosen level</h2>
+            </div>
+
             <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-2">Role-Based Skills</h3>
               <p className="text-gray-600 mb-6">Select a role below to explore the key capabilities and generate a personalized skills assessment</p>
-              
               {/* Role Tabs */}
               <div className="grid grid-cols-4 gap-2 mb-8">
                 <button 
