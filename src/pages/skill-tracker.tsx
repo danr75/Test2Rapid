@@ -461,14 +461,14 @@ const SkillTrackerB: React.FC = () => {
                       <span className="text-white text-xs font-medium">{skill.percentage}%</span>
                     </div>
                     
-                    {/* Gap indicator for DevOps - positioned ABOVE the bar */}
+                    {/* Gap indicator for DevOps - horizontal bar between Intermediate and Advanced */}
                     {skill.percentage < skill.targetPercentage && skill.category === "DevOps" && (
                       <div 
-                        className="absolute -top-6 h-5 bg-orange-100 border border-orange-300 rounded flex items-center justify-end pr-2"
+                        className="absolute bottom-0 h-5 bg-orange-100 border border-orange-300 rounded flex items-center justify-center"
                         style={{ 
-                          left: `${skill.percentage}%`,
-                          width: `${skill.targetPercentage - skill.percentage}%`,
-                          zIndex: 30
+                          left: `30%`, /* Start from the end of the blue bar */
+                          width: `45%`, /* Span to Advanced marker (75%) */
+                          zIndex: 10
                         }}
                       >
                         <span className="text-orange-800 text-xs font-medium">{skill.targetPercentage - skill.percentage}% gap</span>
@@ -476,7 +476,7 @@ const SkillTrackerB: React.FC = () => {
                     )}
                     
                     {/* Target level indicator (blue triangle) */}
-                    <div className="absolute bottom-0 left-0 pointer-events-none"
+                    <div className="absolute bottom-0 left-0 pointer-events-none z-50"
                       style={{ left: `${skill.targetPercentage}%` }}
                     >
                       <div className="relative">
