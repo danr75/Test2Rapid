@@ -384,46 +384,8 @@ const SkillTrackerB: React.FC = () => {
                     </div>
                   </div>
                   
-                  {/* Empty container for spacing - indicators moved to progress bar */}
-                  <div className="relative mb-1">
-                    {skill.percentage < skill.targetPercentage ? (
-                      null
-                    ) : skill.percentage > skill.targetPercentage ? (
-                      /* For exceeding target, position from target to end of blue bar */
-                      <div 
-                        className="absolute flex items-center justify-start"
-                        style={{ 
-                          left: `${skill.targetPercentage}%`,
-                          width: `${skill.percentage - skill.targetPercentage}%`,
-                          zIndex: 30
-                        }}
-                      >
-                        <div className="flex items-center bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span className="text-xs font-medium">Exceeding target by {skill.percentage - skill.targetPercentage}%</span>
-                        </div>
-                      </div>
-                    ) : (
-                      /* For on target, position at target percentage */
-                      <div 
-                        className="absolute flex items-center justify-end"
-                        style={{ 
-                          left: `${skill.targetPercentage - 10}%`,
-                          width: `20%`,
-                          zIndex: 30
-                        }}
-                      >
-                        <div className="flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span className="text-xs font-medium">On target</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  {/* Spacing before progress bar */}
+                  <div className="relative mb-1"></div>
                   
                   {/* Progress bar with improved visual design */}
                   <div className="relative w-full h-12 bg-gray-100 rounded-lg mb-16">
@@ -461,17 +423,45 @@ const SkillTrackerB: React.FC = () => {
                       <span className="text-white text-xs font-medium">{skill.percentage}%</span>
                     </div>
                     
-                    {/* Gap indicator for DevOps - horizontal bar between Intermediate and Advanced */}
-                    {skill.percentage < skill.targetPercentage && skill.category === "DevOps" && (
+                    {/* Gap indicator - horizontal bar between current and target */}
+                    {skill.percentage < skill.targetPercentage && (
                       <div 
                         className="absolute bottom-0 h-5 bg-orange-100 border border-orange-300 rounded flex items-center justify-center"
                         style={{ 
-                          left: `30%`, /* Start from the end of the blue bar */
-                          width: `45%`, /* Span to Advanced marker (75%) */
+                          left: `${skill.percentage}%`, /* Start from the end of the blue bar */
+                          width: `${skill.targetPercentage - skill.percentage}%`, /* Span to target percentage */
                           zIndex: 10
                         }}
                       >
                         <span className="text-orange-800 text-xs font-medium">{skill.targetPercentage - skill.percentage}% gap</span>
+                      </div>
+                    )}
+                    
+                    {/* Exceeding target indicator - horizontal bar between target and current */}
+                    {skill.percentage > skill.targetPercentage && (
+                      <div 
+                        className="absolute bottom-0 h-5 bg-green-100 border border-green-300 rounded flex items-center justify-center"
+                        style={{ 
+                          left: `${skill.targetPercentage}%`, /* Start from target percentage */
+                          width: `${skill.percentage - skill.targetPercentage}%`, /* Span to current percentage */
+                          zIndex: 10
+                        }}
+                      >
+                        <span className="text-green-800 text-xs font-medium">+{skill.percentage - skill.targetPercentage}% over</span>
+                      </div>
+                    )}
+                    
+                    {/* On target indicator - shown when current equals target */}
+                    {skill.percentage === skill.targetPercentage && (
+                      <div 
+                        className="absolute bottom-0 h-5 bg-blue-100 border border-blue-300 rounded flex items-center justify-center"
+                        style={{ 
+                          left: `${skill.targetPercentage - 10}%`, /* Center around target */
+                          width: '20%', /* Fixed width */
+                          zIndex: 10
+                        }}
+                      >
+                        <span className="text-blue-800 text-xs font-medium">On target</span>
                       </div>
                     )}
                     
