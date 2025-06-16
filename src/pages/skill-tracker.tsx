@@ -320,7 +320,7 @@ const SkillTrackerB: React.FC = () => {
     // Save the current state if needed before navigating
     console.log('[DEBUG] Committing role selection:', selectedRoleOnResultsPage);
     // Navigate to the learning road page
-    router.push('/');
+    router.push('/learning-road');
   };
 
   // Removed handleSetTargetLevels as it's no longer needed
