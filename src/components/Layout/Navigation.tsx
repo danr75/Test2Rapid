@@ -15,6 +15,27 @@ interface NavigationProps {
 }
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab }) => {
+  const router = useRouter();
+  
+  // Handle Skill Tracker navigation based on assessment completion
+  const handleSkillTrackerClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (typeof window !== 'undefined') {
+      const assessmentCompleted = localStorage.getItem('assessmentCompleted') === 'true';
+      const selectedRole = localStorage.getItem('selectedRole');
+      
+      // If assessment is completed, go to learning road, otherwise go to skill tracker
+      if (assessmentCompleted && selectedRole) {
+        console.log('[DEBUG] Navigation: Assessment completed, navigating to learning road');
+        router.push('/learning-road');
+      } else {
+        console.log('[DEBUG] Navigation: Assessment not completed, navigating to skill tracker');
+        router.push('/skill-tracker');
+      }
+    }
+  };
+  
   return (
     <nav className="bg-white shadow-sm">
       <div className="container mx-auto px-4 py-1 flex justify-center">
@@ -46,9 +67,10 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab }) => {
             <span className="text-xs mt-1">Daily Feed</span>
           </Link>
           
-          {/* Skill Tracker Tab */}
-          <Link 
-            href="/skill-tracker" 
+          {/* Skill Tracker Tab - Using onClick instead of href for client-side routing */}
+          <a 
+            href="#"
+            onClick={handleSkillTrackerClick}
             className={`flex flex-col items-center p-2 ${
               activeTab === 'skill-tracker' 
                 ? 'text-blue-600 border-b-2 border-blue-600' 
@@ -57,7 +79,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab }) => {
           >
             <ChartBarIcon className="h-5 w-5" />
             <span className="text-xs mt-1">Skill Tracker</span>
-          </Link>
+          </a>
         </div>
       </div>
     </nav>

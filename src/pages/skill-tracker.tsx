@@ -109,13 +109,24 @@ const SkillTrackerB: React.FC = () => {
     if (typeof window !== 'undefined') {
       console.log('[DEBUG] SkillTrackerB MOUNT location:', window.location.href);
       console.log('[DEBUG] SkillTrackerB MOUNT localStorage:', {...window.localStorage});
+      
+      // Check if assessment is already completed
+      const assessmentCompleted = localStorage.getItem('assessmentCompleted') === 'true';
+      const selectedRole = localStorage.getItem('selectedRole');
+      
+      // If assessment is completed, redirect to learning road
+      if (assessmentCompleted && selectedRole) {
+        console.log('[DEBUG] Assessment already completed, redirecting to learning road');
+        router.push('/learning-road');
+      }
     }
     return () => {
       if (typeof window !== 'undefined') {
-        console.log('[DEBUG] SkillTrackerB UNMOUNT');
+        console.log('[DEBUG] SkillTrackerB UNMOUNT location:', window.location.href);
+        console.log('[DEBUG] SkillTrackerB UNMOUNT localStorage:', {...window.localStorage});
       }
     };
-  }, []);
+  }, [router]);
 
   // State for selected role on results page
   const [selectedRoleOnResultsPage, setSelectedRoleOnResultsPage] = React.useState<string | null>(null);
@@ -317,8 +328,16 @@ const SkillTrackerB: React.FC = () => {
 
   // Function to navigate to the learning road page
   const handleCommit = () => {
-    // Save the current state if needed before navigating
+    // Save the current state and mark assessment as completed
     console.log('[DEBUG] Committing role selection:', selectedRoleOnResultsPage);
+    
+    // Store assessment completion status in localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('assessmentCompleted', 'true');
+      localStorage.setItem('selectedRole', selectedRoleOnResultsPage || '');
+      console.log('[DEBUG] Assessment marked as completed in localStorage');
+    }
+    
     // Navigate to the learning road page
     router.push('/learning-road');
   };
