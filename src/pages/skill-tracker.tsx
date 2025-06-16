@@ -85,7 +85,7 @@ const assessmentSteps: AssessmentStep[] = [
   },
 ];
 
-const stepTitles = ['Assessment', 'Results', 'Set Targets', 'Confirm'];
+const stepTitles = ['Assessment', 'Results'];
 
 const roleOptions = [
   'Frontend Developer',
@@ -101,15 +101,147 @@ const roleOptions = [
 ];
 
 const SkillTrackerB: React.FC = () => {
+  // Only log document and localStorage in useEffect to avoid SSR crash
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('[DEBUG] SkillTrackerB MOUNT location:', window.location.href);
+      console.log('[DEBUG] SkillTrackerB MOUNT localStorage:', {...window.localStorage});
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        console.log('[DEBUG] SkillTrackerB UNMOUNT');
+      }
+    };
+  }, []);
+
+  // State for selected role on results page
+  const [selectedRoleOnResultsPage, setSelectedRoleOnResultsPage] = React.useState<string | null>(null);
+
   const [currentStep, setCurrentStep] = useState(0); // Stepper progress
+  React.useEffect(() => {
+    console.log('[DEBUG] currentStep changed:', currentStep);
+  }, [currentStep]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<(number | null)[]>(
     Array(assessmentSteps.length).fill(null)
   );
   
   // For target roles
-  const [targetRoles, setTargetRoles] = useState<TargetRole[]>([]);
-  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [targetRoles, _setTargetRoles] = useState<TargetRole[]>([]);
+  const setTargetRoles = (roles: TargetRole[]) => {
+    console.log('[DEBUG] setTargetRoles called with:', roles);
+    _setTargetRoles(roles);
+  };
+  
+  // Function to add a new target role when selecting from Results page dropdown
+  const handleAddTargetRole = (role: string) => {
+    if (!role) return;
+    // Prevent duplicates
+    if (targetRoles.some(r => r.name === role)) {
+      return;
+    }
+    
+    // Set meaningful default target percentages based on the role
+    const defaultTargetLevels = skillResults.map(skill => {
+      // Define default target percentages based on role and skill category
+      let targetPercentage = 75; // Default target percentage
+      let targetLevel = 'Advanced';
+      
+      // Frontend Developer role
+      if (role === 'Frontend Developer') {
+        if (skill.category === 'Frontend Development') {
+          targetPercentage = 90;
+          targetLevel = 'Expert';
+        } else if (skill.category === 'Backend Development') {
+          targetPercentage = 50;
+          targetLevel = 'Intermediate';
+        } else if (skill.category === 'DevOps') {
+          targetPercentage = 40;
+          targetLevel = 'Intermediate';
+        }
+      }
+      // Backend Developer role
+      else if (role === 'Backend Developer') {
+        if (skill.category === 'Frontend Development') {
+          targetPercentage = 50;
+          targetLevel = 'Intermediate';
+        } else if (skill.category === 'Backend Development') {
+          targetPercentage = 90;
+          targetLevel = 'Expert';
+        } else if (skill.category === 'DevOps') {
+          targetPercentage = 60;
+          targetLevel = 'Advanced';
+        }
+      }
+      // Full Stack Developer role
+      else if (role === 'Full Stack Developer') {
+        if (skill.category === 'Frontend Development') {
+          targetPercentage = 80;
+          targetLevel = 'Advanced';
+        } else if (skill.category === 'Backend Development') {
+          targetPercentage = 80;
+          targetLevel = 'Advanced';
+        } else if (skill.category === 'DevOps') {
+          targetPercentage = 60;
+          targetLevel = 'Advanced';
+        }
+      }
+      // DevOps Engineer role
+      else if (role === 'DevOps Engineer') {
+        if (skill.category === 'Frontend Development') {
+          targetPercentage = 40;
+          targetLevel = 'Intermediate';
+        } else if (skill.category === 'Backend Development') {
+          targetPercentage = 60;
+          targetLevel = 'Advanced';
+        } else if (skill.category === 'DevOps') {
+          targetPercentage = 90;
+          targetLevel = 'Expert';
+        }
+      }
+      
+      return {
+        category: skill.category,
+        currentPercentage: skill.percentage,
+        currentLevel: skill.level || 'Beginner',
+        targetPercentage: targetPercentage,
+        targetLevel: targetLevel
+      };
+    });
+    
+    // Create new target role
+    const newTargetRoles = [
+      ...targetRoles,
+      { name: role, targetLevels: defaultTargetLevels }
+    ];
+    setTargetRoles(newTargetRoles);
+  };
+
+  // Persist targetRoles to localStorage and load on mount
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const stored = window.localStorage.getItem('targetRoles');
+    console.log('[DEBUG] useEffect (load targetRoles) localStorage:', stored);
+    if (stored) {
+      try {
+        setTargetRoles(JSON.parse(stored));
+        console.log('[DEBUG] useEffect (load targetRoles) setTargetRoles:', JSON.parse(stored));
+      } catch (e) {
+        console.log('[DEBUG] useEffect (load targetRoles) parse error:', e);
+      }
+    }
+    console.log('[DEBUG] useEffect (load targetRoles) localStorage (full):', {...window.localStorage});
+    console.log('[DEBUG] useEffect (load targetRoles) location:', window.location.href);
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    console.log('[DEBUG] useEffect (save targetRoles) targetRoles:', targetRoles);
+    window.localStorage.setItem('targetRoles', JSON.stringify(targetRoles));
+    console.log('[DEBUG] useEffect (save targetRoles) localStorage (full):', {...window.localStorage});
+  }, [targetRoles]);
+
+  // Removed selectedRole state as it's no longer needed
 
   // For the results page
   const [skillResults, setSkillResults] = useState<SkillResult[]>([
@@ -168,13 +300,7 @@ const SkillTrackerB: React.FC = () => {
     }, 1000);
   };
 
-  const handleNext = () => {
-    if (currentQuestionIndex < assessmentSteps.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      setCurrentStep(1); // Move to Results step
-    }
-  };
+  // Auto-advance is handled by handleOptionSelect, so this function is no longer needed
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
@@ -186,118 +312,23 @@ const SkillTrackerB: React.FC = () => {
     setCurrentStep(0);
   };
 
-  const handleSetTargetLevels = () => {
-    setCurrentStep(2);
-  };
+  // Removed handleSetTargetLevels as it's no longer needed
 
-  const handleBackToResults = () => {
-    setCurrentStep(1);
-  };
+  // Removed handleBackToResults as it's no longer needed
 
-  const handleReviewAndConfirm = () => {
-    setCurrentStep(3);
-  };
+  // Removed handleReviewAndConfirm as it's no longer needed
 
-  const handleAddTargetRole = () => {
-    if (selectedRole && !targetRoles.some(role => role.name === selectedRole)) {
-      // Create a new target role with default target levels
-      const newTargetRole: TargetRole = {
-        name: selectedRole,
-        targetLevels: [
-          {
-            category: 'Programming',
-            currentPercentage: 25,
-            targetPercentage: 75,
-            currentLevel: 'Beginner',
-            targetLevel: 'Advanced'
-          },
-          {
-            category: 'Frontend',
-            currentPercentage: 100,
-            targetPercentage: 50,
-            currentLevel: 'Expert',
-            targetLevel: 'Intermediate'
-          },
-          {
-            category: 'Backend',
-            currentPercentage: 75,
-            targetPercentage: 25,
-            currentLevel: 'Advanced',
-            targetLevel: 'Beginner'
-          },
-          {
-            category: 'DevOps',
-            currentPercentage: 25,
-            targetPercentage: 50,
-            currentLevel: 'Beginner',
-            targetLevel: 'Intermediate'
-          },
-          {
-            category: 'Management',
-            currentPercentage: 50,
-            targetPercentage: 25,
-            currentLevel: 'Intermediate',
-            targetLevel: 'Beginner'
-          },
-        ]
-      };
-      
-      setTargetRoles([...targetRoles, newTargetRole]);
-      setSelectedRole('');
+  // Debug logging for Results page - placed after all state declarations
+  React.useEffect(() => {
+    if (currentStep === 1) {
+      console.log('[DEBUG][RESULTS:RENDER] targetRoles:', targetRoles);
+      console.log('[DEBUG][RESULTS:RENDER] selectedRoleOnResultsPage:', selectedRoleOnResultsPage);
+      console.log('[DEBUG][RESULTS:RENDER] skillResults:', skillResults);
     }
-  };
-  
-  const handleRemoveRole = (roleName: string) => {
-    setTargetRoles(targetRoles.filter(role => role.name !== roleName));
-  };
-  
-  const handleTargetChange = (roleName: string, category: string, value: number) => {
-    setTargetRoles(targetRoles.map(role => {
-      if (role.name === roleName) {
-        return {
-          ...role,
-          targetLevels: role.targetLevels.map(level => {
-            if (level.category === category) {
-              // Determine the target level based on percentage
-              let targetLevel = 'Beginner';
-              if (value >= 75) targetLevel = 'Expert';
-              else if (value >= 50) targetLevel = 'Advanced';
-              else if (value >= 25) targetLevel = 'Intermediate';
-              
-              return {
-                ...level,
-                targetPercentage: value,
-                targetLevel
-              };
-            }
-            return level;
-          })
-        };
-      }
-      return role;
-    }));
-  };
-
-  const getLevelBadgeClass = (level: string) => {
-    switch (level.toLowerCase()) {
-      case 'beginner':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'intermediate':
-        return 'bg-green-100 text-green-800';
-      case 'advanced':
-        return 'bg-blue-100 text-blue-800';
-      case 'expert':
-        return 'bg-purple-100 text-purple-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  }, [currentStep, targetRoles, selectedRoleOnResultsPage, skillResults]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 flex flex-col items-center">
-      <Head>
-        <title>Skill Assessment Tool</title>
-      </Head>
       <h1 className="text-3xl font-bold text-center mb-2">Skill Assessment Tool</h1>
       <p className="text-gray-600 text-center mb-6">
         Discover your capabilities and set your career targets
@@ -350,37 +381,21 @@ const SkillTrackerB: React.FC = () => {
             </span>
           </div>
           <div className="space-y-3 mb-6">
-            {currentAssessment.options.map((option, idx) => {
-  // Feedback coloring logic
-  let optionClass = 'border-gray-200 bg-white hover:bg-gray-50';
-  if (answerStatus) {
-    if (idx === selectedOptions[currentQuestionIndex]) {
-      if (answerStatus === 'correct') optionClass = 'border-green-500 bg-green-50';
-      if (answerStatus === 'incorrect') optionClass = 'border-red-500 bg-red-50';
-    }
-    if (answerStatus === 'incorrect' && idx === correctOptionIdx) {
-      optionClass = 'border-green-500 bg-green-50';
-    }
-  } else if (selectedOptions[currentQuestionIndex] === idx) {
-    optionClass = 'border-blue-500 bg-blue-50';
-  }
-  return (
-    <label
-      key={option}
-      className={`flex items-center border rounded px-4 py-3 cursor-pointer transition-all ${optionClass}`}
-    >
-      <input
-        type="radio"
-        name={`question-${currentQuestionIndex}`}
-        className="mr-3 accent-blue-500"
-        checked={selectedOptions[currentQuestionIndex] === idx}
-        onChange={() => handleOptionSelect(idx)}
-        disabled={answerLocked}
-      />
-      <span className="text-gray-800">{option}</span>
-    </label>
-  );
-})}
+            {currentAssessment.options.map((option, idx) => (
+              <label
+                key={option}
+                className={`flex items-center border rounded px-4 py-3 cursor-pointer transition-all border-gray-200 bg-white hover:bg-gray-50`}
+              >
+                <input
+                  type="radio"
+                  name={`question-${currentQuestionIndex}`}
+                  className="mr-3 accent-blue-500"
+                  checked={selectedOptions[currentQuestionIndex] === idx}
+                  onChange={() => handleOptionSelect(idx)}
+                />
+                <span className="text-gray-800">{option}</span>
+              </label>
+            ))}
           </div>
           <div className="flex justify-between">
             <button
@@ -390,7 +405,6 @@ const SkillTrackerB: React.FC = () => {
             >
               Previous
             </button>
-            
           </div>
         </div>
       )}
@@ -400,7 +414,31 @@ const SkillTrackerB: React.FC = () => {
         <div className="bg-white rounded-lg shadow p-6 w-full max-w-2xl">
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Your Assessment Results</h2>
-            
+
+            {/* Target Role Selector */}
+            <div className="mb-6">
+              <label htmlFor="target-role-select" className="block text-gray-700 font-medium mb-2">Select Target Role:</label>
+              <select
+                id="target-role-select"
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                value={selectedRoleOnResultsPage || ''}
+                onChange={(e) => {
+                  const role = e.target.value || null;
+                  setSelectedRoleOnResultsPage(role);
+                  if (role) {
+                    if (!targetRoles.some(r => r.name === role)) {
+                      handleAddTargetRole(role);
+                    }
+                  }
+                }}
+              >
+                <option value="">-- None --</option>
+                {roleOptions.map(role => (
+                  <option key={role} value={role}>{role}</option>
+                ))}
+              </select>
+            </div>
+
             {/* Skill categories with progress bars */}
             <div className="space-y-4">
               {skillResults.map((skill, index) => (
@@ -410,9 +448,6 @@ const SkillTrackerB: React.FC = () => {
                       <span className="font-medium text-lg">{skill.category}</span>
                     </div>
                   </div>
-                  
-                  {/* Spacing before progress bar */}
-                  <div className="relative mb-1"></div>
                   
                   {/* Progress bar with improved visual design */}
                   <div className="relative w-full h-12 bg-gray-100 rounded-lg mb-16">
@@ -432,8 +467,6 @@ const SkillTrackerB: React.FC = () => {
                       </div>
                     </div>
                     
-
-                    
                     {/* Background grid lines */}
                     <div className="absolute inset-0 flex justify-between pointer-events-none">
                       <div className="w-px h-full bg-gray-300"></div>
@@ -449,197 +482,60 @@ const SkillTrackerB: React.FC = () => {
                     >
                       <span className="text-white text-xs font-medium">{skill.percentage}%</span>
                     </div>
-                    
-                    {/* Gap indicator - horizontal bar between current and target */}
-                    {skill.percentage < skill.targetPercentage && (
-                      <div 
-                        className="absolute bottom-0 h-5 bg-orange-100 border border-orange-300 rounded flex items-center justify-center"
-                        style={{ 
-                          left: `${skill.percentage}%`, /* Start from the end of the blue bar */
-                          width: `${skill.targetPercentage - skill.percentage}%`, /* Span to target percentage */
-                          zIndex: 10
-                        }}
-                      >
-                        <span className="text-orange-800 text-xs font-medium">{skill.targetPercentage - skill.percentage}% gap</span>
-                      </div>
-                    )}
-                    
-                    {/* Exceeding target indicator - horizontal bar between target and current */}
-                    {skill.percentage > skill.targetPercentage && (
-                      <div 
-                        className="absolute bottom-0 h-5 bg-green-100 border border-green-300 rounded flex items-center justify-center"
-                        style={{ 
-                          left: `${skill.targetPercentage}%`, /* Start from target percentage */
-                          width: `${skill.percentage - skill.targetPercentage}%`, /* Span to current percentage */
-                          zIndex: 10
-                        }}
-                      >
-                        <span className="text-green-800 text-xs font-medium">+{skill.percentage - skill.targetPercentage}% over</span>
-                      </div>
-                    )}
-                    
-                    {/* On target indicator - shown when current equals target */}
-                    {skill.percentage === skill.targetPercentage && (
-                      <div 
-                        className="absolute bottom-0 h-5 bg-blue-100 border border-blue-300 rounded flex items-center justify-center"
-                        style={{ 
-                          left: `${skill.targetPercentage - 10}%`, /* Center around target */
-                          width: '20%', /* Fixed width */
-                          zIndex: 10
-                        }}
-                      >
-                        <span className="text-blue-800 text-xs font-medium">On target</span>
-                      </div>
-                    )}
-                    
-                    {/* Target level indicator (blue triangle) */}
-                    <div className="absolute bottom-0 left-0 pointer-events-none z-50"
-                      style={{ left: `${skill.targetPercentage}%` }}
-                    >
-                      <div className="relative">
-                        <div className="absolute left-0 bottom-0 w-0 h-0 
-                          border-l-[8px] border-r-[8px] border-b-[12px] 
-                          border-l-transparent border-r-transparent border-b-blue-600 
-                          transform -translate-x-1/2">
-                        </div>
-                      </div>
-                    </div>
-                    
 
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation buttons */}
-          <div className="flex justify-between mt-8">
-            <button 
-              onClick={handleBackToAssessment}
-              className="flex items-center px-4 py-2 border border-gray-300 rounded bg-white text-gray-700"
-            >
-              <span className="mr-1">←</span> Back to Assessment
-            </button>
-            <button 
-              onClick={handleSetTargetLevels}
-              className="px-6 py-2 bg-blue-600 text-white rounded"
-            >
-              Set Target Levels <span className="ml-1">→</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Set Target Levels Step */}
-      {currentStep === 2 && (
-        <div className="bg-white rounded-lg shadow p-6 w-full max-w-2xl">
-          <h2 className="text-2xl font-bold mb-2 flex items-center">
-            <span className="mr-2">🎯</span> Set Your Target Levels
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Choose roles you're interested in and set target capability levels for each
-          </p>
-          
-          {/* Add Target Role */}
-          <div className="mb-8">
-            <h3 className="text-lg font-medium mb-4">Add Target Role</h3>
-            <div className="flex">
-              <div className="relative flex-grow">
-                <select
-                  value={selectedRole}
-                  onChange={(e) => setSelectedRole(e.target.value)}
-                  className="block w-full px-4 py-3 pr-8 border border-gray-300 rounded appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select a role...</option>
-                  {roleOptions.map((role) => (
-                    <option key={role} value={role}>{role}</option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-              <button
-                onClick={handleAddTargetRole}
-                disabled={!selectedRole}
-                className="ml-2 px-4 py-3 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50 flex items-center justify-center"
-              >
-                <span className="text-xl">+</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Target Roles List */}
-          {targetRoles.length > 0 ? (
-            <div className="mb-8">
-              {targetRoles.map((role) => (
-                <div key={role.name} className="border border-gray-200 rounded-lg p-4 mb-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-medium text-lg">{role.name}</h4>
-                    <button 
-                      onClick={() => handleRemoveRole(role.name)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      ×
-                    </button>
-                  </div>
-                  
-                  {/* Skills with current and target levels */}
-                  <div className="space-y-6">
-                    {role.targetLevels.map((skill) => (
-                      <div key={`${role.name}-${skill.category}`} className="mb-20">
-                        <div className="mb-2">
-                          <div className="flex justify-between items-center">
-                            <span className="font-medium text-lg">{skill.category}</span>
-                          </div>
-                        </div>
-                        
-                        {/* Progress bar with improved visual design */}
-                        <div className="relative w-full h-12 bg-gray-100 rounded-lg mb-6">
-                          {/* Level markers */}
-                          <div className="absolute -bottom-6 left-0 w-full flex justify-between px-1">
-                            <div className="flex flex-col items-center">
-                              <span className="text-xs font-medium">Beginner</span>
+                    {/* Target indicators and bar, only if a role is selected and target exists for this skill */}
+                    {(() => {
+                      if (!selectedRoleOnResultsPage) return null;
+                      const targetRole = targetRoles.find(role => role.name === selectedRoleOnResultsPage);
+                      if (!targetRole) return null;
+                      const targetLevel = targetRole.targetLevels.find(level => level.category === skill.category);
+                      if (!targetLevel) return null;
+                      const targetPercentage = targetLevel.targetPercentage;
+                      if (targetPercentage === 0) return null;
+                      return (
+                        <>
+                          {/* Gap indicator - horizontal bar between current and target */}
+                          {skill.percentage < targetPercentage && (
+                            <div 
+                              className="absolute bottom-0 h-5 bg-orange-100 border border-orange-300 rounded flex items-center justify-center"
+                              style={{ 
+                                left: `${skill.percentage}%`,
+                                width: `${targetPercentage - skill.percentage}%`,
+                                zIndex: 10
+                              }}
+                            >
+                              <span className="text-orange-800 text-xs font-medium">{targetPercentage - skill.percentage}% gap</span>
                             </div>
-                            <div className="flex flex-col items-center">
-                              <span className="text-xs font-medium">Intermediate</span>
+                          )}
+                          {/* Exceeding target indicator - horizontal bar between target and current */}
+                          {skill.percentage > targetPercentage && (
+                            <div 
+                              className="absolute bottom-0 h-5 bg-green-100 border border-green-300 rounded flex items-center justify-center"
+                              style={{ 
+                                left: `${targetPercentage}%`,
+                                width: `${skill.percentage - targetPercentage}%`,
+                                zIndex: 10
+                              }}
+                            >
+                              <span className="text-green-800 text-xs font-medium">+{skill.percentage - targetPercentage}% over</span>
                             </div>
-                            <div className="flex flex-col items-center">
-                              <span className="text-xs font-medium">Advanced</span>
+                          )}
+                          {/* On target indicator - shown when current equals target */}
+                          {skill.percentage === targetPercentage && (
+                            <div 
+                              className="absolute bottom-0 h-5 bg-blue-100 border border-blue-300 rounded flex items-center justify-center"
+                              style={{ 
+                                left: `${targetPercentage - 10}%`,
+                                width: '20%',
+                                zIndex: 10
+                              }}
+                            >
+                              <span className="text-blue-800 text-xs font-medium">On target</span>
                             </div>
-                            <div className="flex flex-col items-center">
-                              <span className="text-xs font-medium">Expert</span>
-                            </div>
-                          </div>
-                          
-                          {/* Background grid lines */}
-                          <div className="absolute inset-0 flex justify-between pointer-events-none">
-                            <div className="w-px h-full bg-gray-300"></div>
-                            <div className="w-px h-full bg-gray-300"></div>
-                            <div className="w-px h-full bg-gray-300"></div>
-                            <div className="w-px h-full bg-gray-300"></div>
-                            <div className="w-px h-full bg-gray-300"></div>
-                          </div>
-                          
-                          {/* Current capability bar */}
-                          <div className="absolute top-1 left-1 h-5 bg-blue-600 rounded transition-all duration-300"
-                            style={{ width: `calc(${skill.currentPercentage}% - 2px)` }}
-                          >
-                            <div className="absolute right-0 top-full mt-1 transform translate-x-1/2">
-                              <div className="flex flex-col items-center">
-                                <div className="w-2 h-2 bg-blue-600 transform rotate-45"></div>
-                                <div className="bg-blue-600 text-white text-xs px-1 py-0.5 rounded">
-                                  {skill.currentPercentage}%
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          
+                          )}
                           {/* Target level indicator (blue triangle) */}
-                          <div className="absolute bottom-0 left-0 pointer-events-none"
-                            style={{ left: `${skill.targetPercentage}%` }}
+                          <div className="absolute bottom-0 left-0 pointer-events-none z-50"
+                            style={{ left: `${targetPercentage}%` }}
                           >
                             <div className="relative">
                               <div className="absolute left-0 bottom-0 w-0 h-0 
@@ -649,89 +545,28 @@ const SkillTrackerB: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                          
-                          {/* Exceeding indicator */}
-                          {skill.currentPercentage > skill.targetPercentage && (
-                            <div className="absolute -top-6 left-0 transform"
-                              style={{ left: `${(skill.currentPercentage + skill.targetPercentage) / 2}%` }}
-                            >
-                              <div className="flex flex-col items-center">
-                                <div className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
-                                  +{skill.currentPercentage - skill.targetPercentage}% above target
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {/* Gap indicator */}
-                          {skill.currentPercentage < skill.targetPercentage && (
-                            <div className="absolute -top-6 left-0 transform"
-                              style={{ left: `${(skill.currentPercentage + skill.targetPercentage) / 2}%` }}
-                            >
-                              <div className="flex flex-col items-center">
-                                <div className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
-                                  {skill.targetPercentage - skill.currentPercentage}% to target
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {/* Target level slider */}
-                          <input 
-                            type="range" 
-                            min="0" 
-                            max="100" 
-                            step="25"
-                            value={skill.targetPercentage}
-                            onChange={(e) => handleTargetChange(role.name, skill.category, parseInt(e.target.value))}
-                            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-20"
-                            aria-label={`Set target level for ${skill.category}`}
-                          />
-                        </div>
-                        
-
-                      </div>
-                    ))}
+                          {/* Target level text */}
+                          <div className="absolute -top-7 left-0" style={{ left: `calc(${targetPercentage}% - 36px)` }}>
+                            <span className="bg-blue-600 text-white text-xs rounded px-2 py-1 shadow">Target: {targetLevel.targetLevel}</span>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="text-center text-gray-500 py-8">
-              Add at least one target role to continue
-            </div>
-          )}
+          </div>
 
           {/* Navigation buttons */}
-          <div className="flex justify-between mt-8">
+          <div className="flex justify-between mt-6">
             <button 
-              onClick={handleBackToResults}
-              className="flex items-center px-4 py-2 border border-gray-300 rounded bg-white text-gray-700"
+              onClick={handleBackToAssessment}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded transition-colors"
             >
-              <span className="mr-1">←</span> Back to Results
-            </button>
-            <button 
-              onClick={handleReviewAndConfirm}
-              disabled={targetRoles.length === 0}
-              className="px-6 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
-            >
-              Review & Confirm <span className="ml-1">→</span>
+              Back to Assessment
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Confirm Step Placeholder */}
-      {currentStep === 3 && (
-        <div className="bg-white rounded-lg shadow p-6 w-full max-w-2xl text-center">
-          <h2 className="text-2xl font-bold mb-4">Review & Confirm</h2>
-          <p className="text-gray-600 mb-8">This step is coming soon</p>
-          <button 
-            onClick={() => setCurrentStep(2)}
-            className="px-6 py-2 border border-gray-300 rounded bg-white text-gray-700"
-          >
-            Back to Target Levels
-          </button>
         </div>
       )}
     </div>

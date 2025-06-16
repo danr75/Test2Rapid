@@ -1,5 +1,13 @@
 # Interactive Learning Hub Troubleshooting Log
 
+## Remote GitHub Repository
+
+The remote GitHub repository for this project is:
+
+https://github.com/danr75/Test2Rapid.git
+
+Use this URL for all future git backups and pushes.
+
 This document tracks issues encountered during development and their solutions.
 
 ## Table of Contents
