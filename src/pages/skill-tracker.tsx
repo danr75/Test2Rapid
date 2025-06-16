@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface AssessmentStep {
   question: string;
@@ -101,6 +102,8 @@ const roleOptions = [
 ];
 
 const SkillTrackerB: React.FC = () => {
+  const router = useRouter();
+  
   // Only log document and localStorage in useEffect to avoid SSR crash
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -312,6 +315,14 @@ const SkillTrackerB: React.FC = () => {
     setCurrentStep(0);
   };
 
+  // Function to navigate to the learning road page
+  const handleCommit = () => {
+    // Save the current state if needed before navigating
+    console.log('[DEBUG] Committing role selection:', selectedRoleOnResultsPage);
+    // Navigate to the learning road page
+    router.push('/');
+  };
+
   // Removed handleSetTargetLevels as it's no longer needed
 
   // Removed handleBackToResults as it's no longer needed
@@ -329,35 +340,9 @@ const SkillTrackerB: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 flex flex-col items-center">
-      <h1 className="text-3xl font-bold text-center mb-2">Skill Assessment Tool</h1>
-      <p className="text-gray-600 text-center mb-6">
-        Discover your capabilities and set your career targets
-      </p>
-      {/* Stepper */}
-      <div className="bg-white rounded-lg shadow p-4 w-full max-w-3xl mb-8">
-        <div className="flex items-center justify-between mb-2">
-          {stepTitles.map((title, idx) => (
-            <div key={title} className="flex-1 flex flex-col items-center">
-              <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${
-                  idx === currentStep
-                    ? 'border-blue-600 bg-blue-600 text-white'
-                    : 'border-gray-300 bg-white text-gray-500'
-                } font-semibold`}
-              >
-                {idx + 1}
-              </div>
-              <span
-                className={`mt-1 text-xs font-medium ${
-                  idx === currentStep ? 'text-blue-600' : 'text-gray-500'
-                }`}
-              >
-                {title}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="border-t border-gray-200 mt-2" />
+      <div className="w-full max-w-3xl mb-12 text-center">
+        <h1 className="text-5xl font-bold mb-5 text-gray-800 tracking-tight">Assessing Your Capability Level</h1>
+        <div className="h-1.5 w-32 bg-blue-500 mx-auto rounded-full"></div>
       </div>
 
       {/* Assessment Card */}
@@ -381,21 +366,47 @@ const SkillTrackerB: React.FC = () => {
             </span>
           </div>
           <div className="space-y-3 mb-6">
-            {currentAssessment.options.map((option, idx) => (
-              <label
-                key={option}
-                className={`flex items-center border rounded px-4 py-3 cursor-pointer transition-all border-gray-200 bg-white hover:bg-gray-50`}
-              >
-                <input
-                  type="radio"
-                  name={`question-${currentQuestionIndex}`}
-                  className="mr-3 accent-blue-500"
-                  checked={selectedOptions[currentQuestionIndex] === idx}
-                  onChange={() => handleOptionSelect(idx)}
-                />
-                <span className="text-gray-800">{option}</span>
-              </label>
-            ))}
+            {currentAssessment.options.map((option, idx) => {
+              // Determine the styling based on answer status
+              let optionClasses = "flex items-center border rounded px-4 py-3 transition-all ";
+              
+              if (answerLocked) {
+                // If this is the correct answer
+                if (idx === correctOptionIdx) {
+                  optionClasses += "border-green-500 bg-green-50 text-green-800 ";
+                } 
+                // If this is the selected incorrect answer
+                else if (selectedOptions[currentQuestionIndex] === idx) {
+                  optionClasses += "border-red-500 bg-red-50 text-red-800 ";
+                }
+                // Other options when answer is locked
+                else {
+                  optionClasses += "border-gray-200 bg-gray-100 text-gray-400 ";
+                }
+                // Disable pointer events when locked
+                optionClasses += "pointer-events-none";
+              } else {
+                // Normal state (not answered yet)
+                optionClasses += "border-gray-200 bg-white hover:bg-gray-50 cursor-pointer";
+              }
+              
+              return (
+                <label
+                  key={option}
+                  className={optionClasses}
+                >
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestionIndex}`}
+                    className="mr-3 accent-blue-500"
+                    checked={selectedOptions[currentQuestionIndex] === idx}
+                    onChange={() => handleOptionSelect(idx)}
+                    disabled={answerLocked}
+                  />
+                  <span>{option}</span>
+                </label>
+              );
+            })}
           </div>
           <div className="flex justify-between">
             <button
@@ -437,6 +448,8 @@ const SkillTrackerB: React.FC = () => {
                   <option key={role} value={role}>{role}</option>
                 ))}
               </select>
+              
+              {/* Commit button removed from here and moved to the bottom */}
             </div>
 
             {/* Skill categories with progress bars */}
@@ -563,6 +576,16 @@ const SkillTrackerB: React.FC = () => {
             >
               Back to Assessment
             </button>
+            
+            {/* Learn button - only shown when a role is selected */}
+            {selectedRoleOnResultsPage && (
+              <button
+                onClick={handleCommit}
+                className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors"
+              >
+                Learn
+              </button>
+            )}
           </div>
         </div>
       )}
