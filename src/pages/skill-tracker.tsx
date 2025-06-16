@@ -545,10 +545,7 @@ const SkillTrackerB: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                          {/* Target level text */}
-                          <div className="absolute -top-7 left-0" style={{ left: `calc(${targetPercentage}% - 36px)` }}>
-                            <span className="bg-blue-600 text-white text-xs rounded px-2 py-1 shadow">Target: {targetLevel.targetLevel}</span>
-                          </div>
+                          {/* Target level text removed as requested */}
                         </>
                       );
                     })()}
