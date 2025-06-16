@@ -141,10 +141,31 @@ const SkillTrackerB: React.FC = () => {
   // Progress bar calculation
   const progress = ((currentQuestionIndex + 1) / assessmentSteps.length) * 100;
 
+  const [answerStatus, setAnswerStatus] = useState<string | null>(null);
+  const [answerLocked, setAnswerLocked] = useState(false);
+  const correctOptionIdx = currentAssessment.options.length - 1;
+
   const handleOptionSelect = (optionIdx: number) => {
+    if (answerLocked) return;
     const updated = [...selectedOptions];
     updated[currentQuestionIndex] = optionIdx;
     setSelectedOptions(updated);
+    // Check if correct (last option is correct)
+    if (optionIdx === correctOptionIdx) {
+      setAnswerStatus('correct');
+    } else {
+      setAnswerStatus('incorrect');
+    }
+    setAnswerLocked(true);
+    setTimeout(() => {
+      setAnswerStatus(null);
+      setAnswerLocked(false);
+      if (currentQuestionIndex < assessmentSteps.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
+        setCurrentStep(1); // Move to Results step
+      }
+    }, 1000);
   };
 
   const handleNext = () => {
@@ -329,25 +350,37 @@ const SkillTrackerB: React.FC = () => {
             </span>
           </div>
           <div className="space-y-3 mb-6">
-            {currentAssessment.options.map((option, idx) => (
-              <label
-                key={option}
-                className={`flex items-center border rounded px-4 py-3 cursor-pointer transition-all ${
-                  selectedOptions[currentQuestionIndex] === idx
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 bg-white hover:bg-gray-50'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name={`question-${currentQuestionIndex}`}
-                  className="mr-3 accent-blue-500"
-                  checked={selectedOptions[currentQuestionIndex] === idx}
-                  onChange={() => handleOptionSelect(idx)}
-                />
-                <span className="text-gray-800">{option}</span>
-              </label>
-            ))}
+            {currentAssessment.options.map((option, idx) => {
+  // Feedback coloring logic
+  let optionClass = 'border-gray-200 bg-white hover:bg-gray-50';
+  if (answerStatus) {
+    if (idx === selectedOptions[currentQuestionIndex]) {
+      if (answerStatus === 'correct') optionClass = 'border-green-500 bg-green-50';
+      if (answerStatus === 'incorrect') optionClass = 'border-red-500 bg-red-50';
+    }
+    if (answerStatus === 'incorrect' && idx === correctOptionIdx) {
+      optionClass = 'border-green-500 bg-green-50';
+    }
+  } else if (selectedOptions[currentQuestionIndex] === idx) {
+    optionClass = 'border-blue-500 bg-blue-50';
+  }
+  return (
+    <label
+      key={option}
+      className={`flex items-center border rounded px-4 py-3 cursor-pointer transition-all ${optionClass}`}
+    >
+      <input
+        type="radio"
+        name={`question-${currentQuestionIndex}`}
+        className="mr-3 accent-blue-500"
+        checked={selectedOptions[currentQuestionIndex] === idx}
+        onChange={() => handleOptionSelect(idx)}
+        disabled={answerLocked}
+      />
+      <span className="text-gray-800">{option}</span>
+    </label>
+  );
+})}
           </div>
           <div className="flex justify-between">
             <button
@@ -357,13 +390,7 @@ const SkillTrackerB: React.FC = () => {
             >
               Previous
             </button>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
-              onClick={handleNext}
-              disabled={selectedOptions[currentQuestionIndex] === null}
-            >
-              {currentQuestionIndex === assessmentSteps.length - 1 ? 'Next' : 'Next'}
-            </button>
+            
           </div>
         </div>
       )}
