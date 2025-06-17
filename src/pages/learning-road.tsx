@@ -3,28 +3,25 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Header from '../components/Layout/Header';
 import { NavigationTab } from '../components/Layout/Navigation';
+import CapabilityBar from '../components/UI/CapabilityBar';
 
 const LearningRoad: React.FC = () => {
   const router = useRouter();
   const activeTab: NavigationTab = 'skill-tracker';
-  const [selectedRole, setSelectedRole] = useState<string>('');
-  const [assessmentCompleted, setAssessmentCompleted] = useState<boolean>(false);
+  const [selectedRole, setSelectedRole] = useState<string>('Full Stack Developer');
+  const [assessmentCompleted, setAssessmentCompleted] = useState<boolean>(true);
 
   // Check localStorage for assessment completion status and selected role
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedRole = localStorage.getItem('selectedRole') || '';
+      const storedRole = localStorage.getItem('selectedRole') || 'Full Stack Developer';
       const completed = localStorage.getItem('assessmentCompleted') === 'true';
       
       setSelectedRole(storedRole);
       setAssessmentCompleted(completed);
       
-      console.log('[DEBUG] Learning Road - Assessment completed:', completed);
-      console.log('[DEBUG] Learning Road - Selected role:', storedRole);
-      
       // If assessment is not completed, redirect to skill tracker
       if (!completed) {
-        console.log('[DEBUG] Assessment not completed, redirecting to skill tracker');
         router.push('/skill-tracker');
       }
     }
@@ -34,13 +31,12 @@ const LearningRoad: React.FC = () => {
     // Clear assessment completion status to allow re-assessment
     if (typeof window !== 'undefined') {
       localStorage.removeItem('assessmentCompleted');
-      console.log('[DEBUG] Assessment completion status cleared');
     }
     router.push('/skill-tracker');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Head>
         <title>Learning Road | Interactive Learning Hub</title>
         <meta name="description" content="Your personalized learning journey" />
@@ -55,92 +51,72 @@ const LearningRoad: React.FC = () => {
           {/* Dashboard Layout */}
           <div className="flex flex-col md:flex-row gap-6">
             {/* Left Column - Skill Progress */}
-            <div className="w-full md:w-7/12 bg-white rounded-lg shadow p-6">
-              {/* Role Selection Banner */}
-              {selectedRole && (
-                <div className="mb-6 py-3 px-5 bg-blue-50 border border-blue-100 rounded-lg flex justify-between items-center">
-                  <p className="text-blue-800 font-medium">Selected Role: {selectedRole}</p>
-                  <button
-                    onClick={handleAssessCapability}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors"
-                  >
-                    Reassess Your Capability Level
-                  </button>
-                </div>
-              )}
-              
-              {/* Skill Progress Bars */}
-              <div className="space-y-6">
-                {/* AI Strategy & Governance */}
-                <div className="mb-4">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-700 font-medium">AI Strategy & Governance</span>
-                    <span className="text-green-500 font-medium">+12%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-200 rounded-full">
-                    <div className="h-full bg-gray-800 rounded-full" style={{ width: '75%' }}></div>
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-xs text-gray-500">75%</span>
+            <div className="w-full md:w-7/12 space-y-6">
+              {/* Current/Target Role Row */}
+              <div className="flex flex-row gap-4 mb-4">
+                {/* Current Role Box */}
+                <div className="w-1/2 bg-blue-50 border border-blue-100 rounded-lg shadow p-6 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <h3 className="text-lg font-semibold text-blue-900">Current Role</h3>
+                    </div>
+                    <div className="mb-2">
+                      <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium">
+                        {selectedRole || 'Full Stack Developer'}
+                      </span>
+                    </div>
+                    <p className="text-blue-800 text-sm">
+                      Your role determines the AI leadership insights and tools available to you.
+                    </p>
                   </div>
                 </div>
-                
-                {/* Data Architecture */}
-                <div className="mb-4">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-700 font-medium">Data Architecture</span>
-                    <span className="text-green-500 font-medium">+8%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-200 rounded-full">
-                    <div className="h-full bg-gray-800 rounded-full" style={{ width: '68%' }}></div>
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-xs text-gray-500">68%</span>
-                  </div>
-                </div>
-                
-                {/* Cloud Transformation */}
-                <div className="mb-4">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-700 font-medium">Cloud Transformation</span>
-                    <span className="text-green-500 font-medium">+15%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-200 rounded-full">
-                    <div className="h-full bg-gray-800 rounded-full" style={{ width: '82%' }}></div>
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-xs text-gray-500">82%</span>
-                  </div>
-                </div>
-                
-                {/* Digital Product Strategy */}
-                <div className="mb-4">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-700 font-medium">Digital Product Strategy</span>
-                    <span className="text-green-500 font-medium">+10%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-200 rounded-full">
-                    <div className="h-full bg-gray-800 rounded-full" style={{ width: '71%' }}></div>
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-xs text-gray-500">71%</span>
-                  </div>
-                </div>
-                
-                {/* Emerging Technologies */}
-                <div className="mb-4">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-gray-700 font-medium">Emerging Technologies</span>
-                    <span className="text-green-500 font-medium">+18%</span>
-                  </div>
-                  <div className="h-2 w-full bg-gray-200 rounded-full">
-                    <div className="h-full bg-gray-800 rounded-full" style={{ width: '63%' }}></div>
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-xs text-gray-500">63%</span>
+                {/* Target Role Box */}
+                <div className="w-1/2 bg-blue-50 border border-blue-100 rounded-lg shadow p-6 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <h3 className="text-lg font-semibold text-blue-900">Target Role</h3>
+                    </div>
+                    <div className="mb-2">
+                      <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium">
+                        Target Role Placeholder
+                      </span>
+                    </div>
+                    <p className="text-blue-800 text-sm">
+                      Set your target role to personalize your learning journey.
+                    </p>
                   </div>
                 </div>
               </div>
+
+              {/* Frontend Development */}
+              <CapabilityBar
+                skill={{ category: 'Frontend Development', percentage: 85 }}
+                targetLevel={{ targetPercentage: 50, targetLevel: 'Advanced' }}
+              />
+              
+              {/* Backend Development */}
+              <CapabilityBar
+                skill={{ category: 'Backend Development', percentage: 60 }}
+                targetLevel={{ targetPercentage: 90, targetLevel: 'Expert' }}
+              />
+              
+              {/* DevOps */}
+              <CapabilityBar
+                skill={{ category: 'DevOps', percentage: 30 }}
+                targetLevel={{ targetPercentage: 60, targetLevel: 'Advanced' }}
+              />
+                
+              {/* Emerging Technologies */}
+              <CapabilityBar
+                skill={{ category: 'Emerging Technologies', percentage: 63 }}
+                targetLevel={{ targetPercentage: 45, targetLevel: 'Intermediate' }}
+              />
             </div>
             
             {/* Right Column - Insights and Actions */}
