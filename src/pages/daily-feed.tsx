@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useLearning } from '@/store/LearningContext';
@@ -7,6 +7,10 @@ import Header from '@/components/Layout/Header';
 const DailyFeedPage: React.FC = () => {
   const router = useRouter();
   const { dispatch } = useLearning();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(600); // 10 minutes in seconds
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Function to handle launching a learning mode with a specific topic
   const handleLaunchLearning = (topic: string, mode: 'Q&A' | 'Scenario' | 'Speed') => {
@@ -22,6 +26,38 @@ const DailyFeedPage: React.FC = () => {
     } else if (mode === 'Speed') {
       router.push('/speed-learn');
     }
+  };
+
+  // Function to handle the audio player
+  const togglePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  // Function to update audio time
+  const updateTime = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  // Function to handle taking the knowledge test
+  const handleTakeTest = () => {
+    dispatch({ type: 'SET_TOPIC', payload: 'Current AI Trends' });
+    router.push('/qa-learn');
+  };
+
+  // Format time for display (MM:SS)
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
   return (
     <div className="min-h-screen bg-background">
@@ -41,6 +77,75 @@ const DailyFeedPage: React.FC = () => {
               <h1 className="text-2xl font-bold text-gray-800">Essential news and trends to know</h1>
             </div>
             <p className="text-gray-600 text-sm mb-8">Rapidly grasp and retain emerging digital, data, and AI trends and news that matter for executive decision-making through interactive learning.</p>
+            
+            {/* Quick Learning Tools - 10-Min Catch-up and Knowledge Test */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {/* 10-Minute AI Catch-up */}
+              <div className="bg-blue-50 rounded-lg p-6 flex flex-col">
+                <div className="flex items-center mb-4">
+                  <div className="bg-blue-100 rounded-full p-2 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-800">10-Minute AI Catch-up</h2>
+                </div>
+                
+                <div className="mb-4">
+                  <button 
+                    onClick={togglePlayPause}
+                    className="bg-blue-900 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-800 transition-colors"
+                    aria-label={isPlaying ? "Pause audio" : "Play audio"}
+                  >
+                    {isPlaying ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    )}
+                  </button>
+                  <div className="mt-2 text-xs text-gray-500 flex justify-between">
+                    <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+                  </div>
+                  
+                  {/* Hidden audio element */}
+                  <audio 
+                    ref={audioRef} 
+                    src="/audio/ai-catchup.mp3" 
+                    onTimeUpdate={updateTime} 
+                    onEnded={() => setIsPlaying(false)}
+                    onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+                  />
+                </div>
+                
+                <p className="text-sm text-gray-600">Quick audio summary of today's AI developments</p>
+              </div>
+              
+              {/* Knowledge Test */}
+              <div className="bg-purple-50 rounded-lg p-6 flex flex-col">
+                <div className="flex items-center mb-4">
+                  <div className="bg-purple-100 rounded-full p-2 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-800">Knowledge Test</h2>
+                </div>
+                
+                <p className="text-sm text-gray-600 mb-4">Test your understanding of current AI trends</p>
+                
+                <button 
+                  onClick={handleTakeTest}
+                  className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded text-center transition-colors w-full"
+                >
+                  Take Quick Test
+                </button>
+              </div>
+            </div>
             
             {/* Articles */}
             <div className="space-y-6">
