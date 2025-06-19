@@ -79,8 +79,8 @@ const DailyFeedPage: React.FC = () => {
             {/* Quick Learning Tools - 10-Min Catch-up and Knowledge Test */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {/* 10-Minute AI Catch-up */}
-              <div style={{backgroundColor: '#E0EDFF'}} className="rounded-lg shadow-sm p-6 flex flex-col">
-                <div className="flex items-center justify-between">
+              <div style={{backgroundColor: '#E0EDFF'}} className="bg-blue-50 rounded-lg p-3 flex flex-col">
+                <div className="flex items-center mb-2 justify-between">
                   <div className="flex items-center">
                     <div className="bg-blue-100 rounded-full p-2 mr-3">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,7 +108,7 @@ const DailyFeedPage: React.FC = () => {
                   </button>
                 </div>
                 
-                <div className="mt-4 text-xs text-right" style={{color: '#6B7280'}}>
+                <div className="mt-2 text-xs text-right" style={{color: '#6B7280'}}>
                   <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
                 </div>
                 
@@ -123,8 +123,8 @@ const DailyFeedPage: React.FC = () => {
               </div>
               
               {/* Test What You've Missed */}
-              <div style={{backgroundColor: '#F3E8FF'}} className="rounded-lg shadow-sm p-6 flex flex-col">
-                <div className="flex items-center justify-between">
+              <div style={{backgroundColor: '#F3E8FF'}} className="bg-purple-50 rounded-lg p-3 flex flex-col">
+                <div className="flex items-center mb-2 justify-between">
                   <div className="flex items-center">
                     <div className="bg-purple-100 rounded-full p-2 mr-3">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,16 +133,16 @@ const DailyFeedPage: React.FC = () => {
                     </div>
                     <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Test What You've Missed</h2>
                   </div>
-                  <button 
-                    onClick={handleTakeTest}
-                    className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors text-sm font-medium"
-                  >
-                    Take Test
-                  </button>
+                  <div className="flex justify-end mb-2">
+                    <button 
+                      onClick={handleTakeTest}
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
+                      Test
+                    </button>
+                  </div>
                 </div>
-                <p className="mt-4 text-sm" style={{color: '#2D2D38'}}>
-                  A quick knowledge check on the latest AI concepts and their business applications.
-                </p>
+
               </div>
             </div>
             
@@ -161,7 +161,7 @@ const DailyFeedPage: React.FC = () => {
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#2D2D38'}}>What Today's AI Trends Mean for You</h2>
             </div>
-            <div className="space-y-8 bg-[#EAEAEF] p-6 rounded-lg">
+            <div className="space-y-8 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}} >
               {/* Concept 1 */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
                 <div className="p-6 space-y-4">
@@ -180,14 +180,14 @@ const DailyFeedPage: React.FC = () => {
                   <div className="flex justify-between items-center mt-5">
                     <button 
                       onClick={() => handleLaunchLearning("Responsible Use of Generative AI in Customer Services")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Learn
+                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("Responsible Use of Generative AI in Customer Services")}
-                      style={{backgroundColor: '#7B61FF', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Test
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Test
                     </button>
                   </div>
                 </div>
@@ -212,14 +212,14 @@ const DailyFeedPage: React.FC = () => {
                   <div className="flex justify-between items-center mt-5">
                     <button 
                       onClick={() => handleLaunchLearning("Data Mesh Architecture for Enterprise Scale")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Learn
+                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("Data Mesh Architecture")}
-                      style={{backgroundColor: '#7B61FF', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Test
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Test
                     </button>
                   </div>
                 </div>
@@ -244,14 +244,14 @@ const DailyFeedPage: React.FC = () => {
                   <div className="flex justify-between items-center mt-5">
                     <button 
                       onClick={() => handleLaunchLearning("Zero Trust Security for AI Systems")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Learn
+                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("Zero Trust Security Models for AI Systems")}
-                      style={{backgroundColor: '#7B61FF', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Test
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Test
                     </button>
                   </div>
                 </div>
@@ -276,14 +276,14 @@ const DailyFeedPage: React.FC = () => {
                   <div className="flex justify-between items-center mt-5">
                     <button 
                       onClick={() => handleLaunchLearning("AI-Powered Decision Intelligence Frameworks")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Learn
+                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("AI-Powered Decision Intelligence")}
-                      style={{backgroundColor: '#7B61FF', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded text-sm font-medium transition-colors">
-                      Launch Test
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      Test
                     </button>
                   </div>
                 </div>
