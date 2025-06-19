@@ -36,7 +36,7 @@ const LearningRoad: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Head>
         <title>Learning Road | Interactive Learning Hub</title>
         <meta name="description" content="Your personalized learning journey" />
@@ -46,54 +46,111 @@ const LearningRoad: React.FC = () => {
       <Header activeTab={activeTab} />
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center py-8 px-4">
-        <div className="w-full max-w-6xl">
-          {/* Dashboard Layout */}
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Left Column - Skill Progress */}
-            <div className="w-full md:w-7/12 space-y-6">
-              {/* Current/Target Role Row */}
-              <div className="flex flex-row gap-4 mb-4">
-                {/* Current Role Box */}
-                <div className="w-1/2 bg-blue-50 border border-blue-100 rounded-lg shadow p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                      <h3 className="text-lg font-semibold text-blue-900">Current Role</h3>
-                    </div>
-                    <div className="mb-2">
-                      <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium">
-                        {selectedRole || 'Full Stack Developer'}
-                      </span>
-                    </div>
-                    <p className="text-blue-800 text-sm">
-                      Your role determines the AI leadership insights and tools available to you.
+      <div className="flex-1 flex flex-col items-center justify-center py-8 px-4">
+        <div className="w-full max-w-3xl mx-auto">
+          {/* Centered Content */}
+          <div className="space-y-6">
+            {/* Current/Target Role Row */}
+            <div className="flex flex-col md:flex-row gap-3 mb-6">
+              {/* Current Role Card */}
+              <div className="w-full md:w-1/2 bg-white rounded-[12px] flex flex-col justify-between p-6" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <h3 className="font-semibold text-[16px] text-blue-900">Current Experience</h3>
+                    <span className="bg-[#E0F2FF] text-[#2563EB] px-3 py-1 rounded-full text-[14px] font-medium">
+                      Bottom 10%
+                    </span>
+                  </div>
+                  <div className="mt-auto">
+                    <p className="text-gray-600 text-[14px] mb-4">
+                      We tailor the content and questions you see based on your experience
                     </p>
+                    <div className="flex justify-start">
+                      <button
+                        onClick={handleAssessCapability}
+                        className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 px-4 py-2 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Assess
+                      </button>
+                    </div>
                   </div>
                 </div>
-                {/* Target Role Box */}
-                <div className="w-1/2 bg-blue-50 border border-blue-100 rounded-lg shadow p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      <h3 className="text-lg font-semibold text-blue-900">Target Role</h3>
-                    </div>
-                    <div className="mb-2">
-                      <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium">
-                        Target Role Placeholder
-                      </span>
-                    </div>
-                    <p className="text-blue-800 text-sm">
-                      Set your target role to personalize your learning journey.
-                    </p>
+              </div>
+              {/* Target Role Card */}
+              <div className="w-full md:w-1/2 bg-white rounded-[12px] flex flex-col justify-between p-6" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                <div>
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="font-semibold text-[16px] text-blue-900">Target Capability</h3>
+                    <span className="bg-[#E0F2FF] text-[#2563EB] px-3 py-1 rounded-full text-[14px] font-medium">
+                      Top 10%
+                    </span>
+                  </div>
+                  <p className="text-gray-600 text-[14px] mb-4">
+                    Set your target role or capability to personalise your learning journey
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Card */}
+            <div className="w-full bg-white rounded-[12px] p-6 mb-6" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+              <h3 className="font-semibold text-lg text-gray-900">Your progress!</h3>
+               
+              {/* Progress Bar Graph */}
+              <div className="-mt-1 mb-6">
+                <div className="flex justify-end text-sm text-gray-600 mb-2">
+                  <span>Top 10% target</span>
+                </div>
+                <div className="relative h-6 bg-gray-100 rounded-md overflow-hidden">
+                  {/* Background track */}
+                  <div className="absolute inset-0 bg-gray-200 rounded-md"></div>
+                  {/* Current progress */}
+                  <div 
+                    className="absolute inset-y-0 left-0 bg-blue-500 transition-all duration-500 ease-out rounded-l-md"
+                    style={{ width: '10%' }}
+                  >
+                    <div className="absolute right-0 top-1/2 -mr-1.5 -mt-2 w-0.5 h-5 bg-white rounded-full"></div>
+                  </div>
+                  {/* Target indicator */}
+                  <div 
+                    className="absolute top-0 bottom-0 w-0.5 bg-red-500"
+                    style={{ left: '90%' }}
+                  >
+                    <div className="absolute -top-2 -left-1.5 w-4 h-4 bg-red-500 rounded-full"></div>
+                    <div className="absolute -bottom-6 -left-6 w-16 text-xs text-red-600 font-medium">Target</div>
+                  </div>
+                  {/* Label */}
+                  <div className="absolute inset-y-0 left-[10%] flex items-center pl-2">
+                    <span className="text-xs font-medium text-gray-700">10%</span>
                   </div>
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Learning Streak</p>
+                  <p className="font-medium text-gray-900">5 active days this week</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Capability Rank</p>
+                  <p className="font-medium text-gray-900">You're ahead 76% of peers</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Most Improved</p>
+                  <p className="font-medium text-gray-900">Frontend Development</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Focus Next</p>
+                  <p className="font-medium text-gray-900">Backend Development</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Capability Bars */}
+            <div className="w-full">
               {/* Frontend Development */}
               <CapabilityBar
                 skill={{ category: 'Frontend Development', percentage: 85 }}
@@ -117,66 +174,6 @@ const LearningRoad: React.FC = () => {
                 skill={{ category: 'Emerging Technologies', percentage: 63 }}
                 targetLevel={{ targetPercentage: 45, targetLevel: 'Intermediate' }}
               />
-            </div>
-            
-            {/* Right Column - Insights and Actions */}
-            <div className="w-full md:w-5/12 space-y-6">
-              {/* Growth Insights */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Growth Insights</h3>
-                
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <span className="text-yellow-500 text-lg">⭐</span>
-                    <span className="text-gray-700">Strongest area: Cloud Transformation</span>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <span className="text-blue-500 text-lg">🔵</span>
-                    <span className="text-gray-700">Focus area: Emerging Technologies</span>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <span className="text-green-500 text-lg">📈</span>
-                    <span className="text-gray-700">Fastest growth: Emerging Technologies (+18%)</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Recommended Actions */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-medium text-gray-800 mb-4">Recommended Actions</h3>
-                
-                <div className="space-y-3">
-                  <div className="p-3 bg-gray-50 rounded border border-gray-100 flex items-center gap-3">
-                    <span className="text-blue-500 text-lg">📝</span>
-                    <span className="text-gray-700">Take AI Strategy Assessment</span>
-                  </div>
-                  
-                  <div className="p-3 bg-gray-50 rounded border border-gray-100 flex items-center gap-3">
-                    <span className="text-blue-500 text-lg">👥</span>
-                    <span className="text-gray-700">Join Peer Learning Group</span>
-                  </div>
-                  
-                  <div className="p-3 bg-gray-50 rounded border border-gray-100 flex items-center gap-3">
-                    <span className="text-blue-500 text-lg">🎯</span>
-                    <span className="text-gray-700">Set Quarterly Goals</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Reassess Capability Button */}
-              <div className="mt-8 flex">
-                <button 
-                  onClick={handleAssessCapability}
-                  className="w-1/2 py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg flex items-center justify-center gap-3 transition-all duration-300 border border-blue-400 transform hover:-translate-y-0.5"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span className="font-semibold">Reassess Your Capability Level</span>
-                </button>
-              </div>
             </div>
           </div>
         </div>
