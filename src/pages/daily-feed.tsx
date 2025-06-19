@@ -136,7 +136,7 @@ const DailyFeedPage: React.FC = () => {
                   <div className="flex justify-end mb-2">
                     <button 
                       onClick={handleTakeTest}
-                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
                     >
                       Test
                     </button>
@@ -164,29 +164,31 @@ const DailyFeedPage: React.FC = () => {
             <div className="space-y-8 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}} >
               {/* Concept 1 */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6 space-y-4">
+                <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Responsible Use of Generative AI in Customer Services</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>2h ago</span>
                   </div>
                   <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Implementing ethical guardrails for AI systems can reduce risks while maximizing customer experience benefits.</p>
                   
-                  <div className="flex flex-wrap gap-3 mb-5">
+                  <div className="flex flex-wrap gap-2 mb-3">
                     <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#AI Readiness</span>
                     <span style={{backgroundColor: '#FFF4E5', color: '#D97706'}} className="text-xs px-3 py-1 rounded-full font-medium">#Risk Awareness</span>
                     <span style={{backgroundColor: '#E9FCE9', color: '#15803D'}} className="text-xs px-3 py-1 rounded-full font-medium">#Decision-Making</span>
                   </div>
                   
-                  <div className="flex justify-between items-center mt-5">
+                  <div className="flex justify-end items-center gap-3 mt-2">
                     <button 
                       onClick={() => handleLaunchLearning("Responsible Use of Generative AI in Customer Services")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("Responsible Use of Generative AI in Customer Services")}
-                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Test
                     </button>
                   </div>
@@ -197,28 +199,30 @@ const DailyFeedPage: React.FC = () => {
 
               {/* Concept 2 */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6 space-y-4">
+                <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Data Mesh Architecture for Enterprise Scale</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>4h ago</span>
                   </div>
                   <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Domain-oriented decentralized data ownership enables organizations to scale their data architecture while improving quality and access.</p>
                   
-                  <div className="flex flex-wrap gap-3 mb-5">
+                  <div className="flex flex-wrap gap-2 mb-3">
                     <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#Data Strategy</span>
                     <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#Enterprise Architecture</span>
                   </div>
                   
-                  <div className="flex justify-between items-center mt-5">
+                  <div className="flex justify-end items-center gap-3 mt-2">
                     <button 
                       onClick={() => handleLaunchLearning("Data Mesh Architecture for Enterprise Scale")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("Data Mesh Architecture")}
-                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Test
                     </button>
                   </div>
@@ -229,28 +233,30 @@ const DailyFeedPage: React.FC = () => {
 
               {/* Concept 3 */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6 space-y-4">
+                <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Zero Trust Security Models for AI Systems</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>6h ago</span>
                   </div>
                   <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Applying zero trust principles to AI deployments reduces vulnerability surface area while enabling secure innovation.</p>
                   
-                  <div className="flex flex-wrap gap-3 mb-5">
+                  <div className="flex flex-wrap gap-2 mb-3">
                     <span style={{backgroundColor: '#FFF4E5', color: '#D97706'}} className="text-xs px-3 py-1 rounded-full font-medium">#Security</span>
                     <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#AI Governance</span>
                   </div>
                   
-                  <div className="flex justify-between items-center mt-5">
+                  <div className="flex justify-end items-center gap-3 mt-2">
                     <button 
                       onClick={() => handleLaunchLearning("Zero Trust Security for AI Systems")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("Zero Trust Security Models for AI Systems")}
-                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Test
                     </button>
                   </div>
@@ -261,28 +267,30 @@ const DailyFeedPage: React.FC = () => {
 
               {/* Concept 4 */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6 space-y-4">
+                <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>AI-Powered Decision Intelligence Frameworks</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>8h ago</span>
                   </div>
                   <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Combining AI with decision science creates robust frameworks for augmenting human decision-making in complex scenarios.</p>
                   
-                  <div className="flex flex-wrap gap-3 mb-5">
+                  <div className="flex flex-wrap gap-2 mb-3">
                     <span style={{backgroundColor: '#E9FCE9', color: '#15803D'}} className="text-xs px-3 py-1 rounded-full font-medium">#Decision-Making</span>
                     <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#AI Strategy</span>
                   </div>
                   
-                  <div className="flex justify-between items-center mt-5">
+                  <div className="flex justify-end items-center gap-3 mt-2">
                     <button 
                       onClick={() => handleLaunchLearning("AI-Powered Decision Intelligence Frameworks")}
-                      style={{backgroundColor: '#2563EB', color: 'white'}} className="hover:opacity-90 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Learn
                     </button>
                     
                     <button 
                       onClick={() => handleLaunchTest("AI-Powered Decision Intelligence")}
-                      className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
                       Test
                     </button>
                   </div>
