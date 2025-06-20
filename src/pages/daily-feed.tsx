@@ -77,7 +77,7 @@ const DailyFeedPage: React.FC = () => {
             </div>
             
             {/* Quick Learning Tools - 10-Min Catch-up and Knowledge Test */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
               {/* 10-Minute AI Catch-up */}
               <div style={{backgroundColor: '#E0EDFF'}} className="bg-blue-50 rounded-lg p-3 flex flex-col">
                 <div className="flex items-center mb-2 justify-between">
@@ -106,10 +106,6 @@ const DailyFeedPage: React.FC = () => {
                       </svg>
                     )}
                   </button>
-                </div>
-                
-                <div className="mt-2 text-xs text-right" style={{color: '#6B7280'}}>
-                  <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
                 </div>
                 
                 {/* Hidden audio element */}
@@ -147,7 +143,7 @@ const DailyFeedPage: React.FC = () => {
             </div>
             
             {/* Today's Trending Topics */}
-            <div style={{backgroundColor: '#F0F0F4'}} className="mb-10 w-full p-6 rounded-lg">
+            <div style={{backgroundColor: '#F0F0F4'}} className="mb-10 w-full p-4 rounded-lg">
               <h2 className="font-semibold text-lg mb-4" style={{color: '#2D2D38'}}>Today's Trending Topics</h2>
               <div className="flex flex-wrap gap-3 mt-3">
                 <button style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="hover:opacity-80 px-4 py-2 rounded-full text-sm font-medium transition-colors">#GenerativeAI</button>
