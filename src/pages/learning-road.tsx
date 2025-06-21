@@ -50,89 +50,93 @@ const LearningRoad: React.FC = () => {
         <div className="w-full max-w-3xl mx-auto">
           {/* Centered Content */}
           <div className="space-y-6">
-            {/* Current/Target Role Row */}
-            <div className="flex flex-col md:flex-row gap-3 mb-6">
-              {/* Current Role Card */}
-              <div className="w-full md:w-1/2 bg-white rounded-xl p-7 flex flex-col" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
-                <div>
-                  <div className="flex justify-between items-center mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-purple-100 rounded-full p-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
+            {/* Combined Experience & Target Card */}
+            <div className="w-full bg-gradient-to-br from-violet-50 to-violet-100 rounded-xl p-5 mb-6 relative overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-violet-200 rounded-full opacity-20 -mr-8 -mt-8"></div>
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-violet-200 rounded-full opacity-10 -ml-16 -mb-8"></div>
+              
+              <div className="relative z-10">
+                <div className="mb-4">
+                  <h3 className="font-semibold text-base text-violet-900 mb-2">Capability Progress</h3>
+                  <p className="text-violet-800 text-xs font-medium mb-3 leading-tight">
+                    <span className="font-semibold">Your current capability is in the bottom 10%,</span> aiming for the top 10%.
+                  </p>
+                  
+                  {/* Progress Section */}
+                  <div className="mt-4">
+                    <div className="flex flex-col space-y-1">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-medium text-violet-900">Progress</span>
                       </div>
-                      <h3 className="font-semibold text-lg text-gray-900">Current Experience</h3>
-                    </div>
-                    <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">
-                      Below 10%
-                    </span>
-                  </div>
-                  <p className="text-gray-600 text-sm mb-4">
-                    We tailor the content and questions you see based on your experience
-                  </p>
-                  <div className="flex justify-end">
-                    <button
-                      onClick={handleAssessCapability}
-                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-1"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                      <span>Assess</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              {/* Target Role Card */}
-              <div className="w-full md:w-1/2 bg-white rounded-xl flex flex-col p-7" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
-                <div className="flex-1">
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="font-semibold text-[16px] text-blue-900">Target Capability</h3>
-                    <span className="bg-[#E0F2FF] text-[#2563EB] px-3 py-1 rounded-full text-[14px] font-medium">
-                      Top 10%
-                    </span>
-                  </div>
-                  <p className="text-gray-600 text-[14px] mb-6">
-                    Set your target role or capability to personalise your learning journey
-                  </p>
-                </div>
-                
-                {/* Progress Section */}
-                <div className="mt-auto">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Progress</h4>
-                  <div className="relative h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="absolute inset-0 bg-gray-100 rounded-full"></div>
-                    <div 
-                      className="absolute inset-y-0 left-0 transition-all duration-700 ease-out rounded-l-full"
-                      style={{ 
-                        width: '10%',
-                        background: 'linear-gradient(90deg, #3B82F6 0%, #2563EB 100%)'
-                      }}
-                    >
-                      <div className="absolute right-0 top-1/2 -mr-1.5 -mt-1.5 w-1 h-3 bg-white/90 rounded-full shadow-sm"></div>
-                    </div>
-                    
-                    {/* Target Indicator */}
-                    <div 
-                      className="absolute top-1/2 -translate-y-1/2 w-0 h-0"
-                      style={{ left: '90%' }}
-                    >
-                      <div className="relative group">
-                        <svg 
-                          className="w-2.5 h-2.5 text-blue-600 -ml-1.5" 
-                          viewBox="0 0 10 10"
-                          fill="currentColor"
-                        >
-                          <path d="M5 0L10 5L5 10L0 5L5 0Z" />
-                        </svg>
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="absolute top-full left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gray-800 rotate-45 -mt-0.5"></div>
-                          Target: Top 10%
+                      <div className="relative w-full mb-1">
+                        <div className="relative h-6 bg-gray-100 rounded-xl overflow-visible border border-gray-200">
+                          {/* Background grid lines */}
+                          <div className="absolute inset-0 flex justify-between pointer-events-none">
+                            <div className="w-px h-full bg-gray-200"></div>
+                            <div className="w-px h-full bg-gray-200"></div>
+                            <div className="w-px h-full bg-gray-200"></div>
+                          </div>
+                          
+                          {/* Purple progress bar */}
+                          <div 
+                            className="absolute top-0.5 left-0.5 h-5 bg-violet-600 rounded-xl transition-all duration-300 flex items-center" 
+                            style={{ width: '14%' }}
+                          >
+                            <span className="ml-auto mr-2 text-white text-xs font-medium">14%</span>
+                          </div>
+                          
+                          {/* Target indicator with pill and connecting line */}
+                          <div className="absolute -top-7" style={{ left: '80%', zIndex: 20 }}>
+                            <div className="flex flex-col items-center">
+                              <span className="bg-violet-100 border border-violet-300 text-violet-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
+                                Target
+                              </span>
+                              {/* Connecting line with solid circle */}
+                              <div className="relative z-10">
+                                <div className="w-0.5 h-3 bg-violet-400 mx-auto"></div>
+                                <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-violet-400 rounded-full z-20"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Level labels */}
+                        <div className="flex justify-between mt-1 text-xs text-gray-600">
+                          <span>Beginner</span>
+                          <span>Intermediate</span>
+                          <span>Advanced</span>
+                          <span>Expert</span>
                         </div>
                       </div>
+
                     </div>
+                    <p className="text-violet-600/80 text-[11px] italic mt-2 leading-tight">
+                      You're on your way from novice to expert — keep learning to reach your target.
+                    </p>
                   </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex justify-end space-x-2 mt-4 pt-3 border-t border-violet-100">
+                  <button
+                    onClick={handleAssessCapability}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Reassess</span>
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <span>Change Target</span>
+                  </button>
                 </div>
               </div>
             </div>
