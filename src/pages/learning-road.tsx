@@ -85,17 +85,54 @@ const LearningRoad: React.FC = () => {
                 </div>
               </div>
               {/* Target Role Card */}
-              <div className="w-full md:w-1/2 bg-white rounded-xl flex flex-col justify-between p-7" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
-                <div>
+              <div className="w-full md:w-1/2 bg-white rounded-xl flex flex-col p-7" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
+                <div className="flex-1">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="font-semibold text-[16px] text-blue-900">Target Capability</h3>
                     <span className="bg-[#E0F2FF] text-[#2563EB] px-3 py-1 rounded-full text-[14px] font-medium">
                       Top 10%
                     </span>
                   </div>
-                  <p className="text-gray-600 text-[14px] mb-4">
+                  <p className="text-gray-600 text-[14px] mb-6">
                     Set your target role or capability to personalise your learning journey
                   </p>
+                </div>
+                
+                {/* Progress Section */}
+                <div className="mt-auto">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Progress</h4>
+                  <div className="relative h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="absolute inset-0 bg-gray-100 rounded-full"></div>
+                    <div 
+                      className="absolute inset-y-0 left-0 transition-all duration-700 ease-out rounded-l-full"
+                      style={{ 
+                        width: '10%',
+                        background: 'linear-gradient(90deg, #3B82F6 0%, #2563EB 100%)'
+                      }}
+                    >
+                      <div className="absolute right-0 top-1/2 -mr-1.5 -mt-1.5 w-1 h-3 bg-white/90 rounded-full shadow-sm"></div>
+                    </div>
+                    
+                    {/* Target Indicator */}
+                    <div 
+                      className="absolute top-1/2 -translate-y-1/2 w-0 h-0"
+                      style={{ left: '90%' }}
+                    >
+                      <div className="relative group">
+                        <svg 
+                          className="w-2.5 h-2.5 text-blue-600 -ml-1.5" 
+                          viewBox="0 0 10 10"
+                          fill="currentColor"
+                        >
+                          <path d="M5 0L10 5L5 10L0 5L5 0Z" />
+                        </svg>
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gray-800 rotate-45 -mt-0.5"></div>
+                          Target: Top 10%
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -103,133 +140,98 @@ const LearningRoad: React.FC = () => {
             {/* Stats Card */}
             <div className="w-full bg-white rounded-xl p-7 mb-6" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
               <h3 className="font-semibold text-lg text-gray-900">Your progress!</h3>
-               
-              {/* Progress Bar Graph */}
-              <div className="mt-6 mb-10">
-                <div className="flex justify-between items-center mb-3">
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-medium text-gray-700">Learning Progress</h4>
-                    <p className="text-xs text-gray-500">Track your journey to expertise</p>
-                  </div>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                    Target: Top 10%
-                  </span>
-                </div>
-                
-                <div className="relative h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="absolute inset-0 bg-gray-100 rounded-full"></div>
-                  <div 
-                    className="absolute inset-y-0 left-0 transition-all duration-700 ease-out rounded-l-full"
-                    style={{ 
-                      width: '10%',
-                      background: 'linear-gradient(90deg, #3B82F6 0%, #2563EB 100%)'
-                    }}
-                  >
-                    <div className="absolute right-0 top-1/2 -mr-1.5 -mt-1.5 w-1 h-3 bg-white/90 rounded-full shadow-sm"></div>
-                  </div>
-                  <div 
-                    className="absolute top-1/2 -translate-y-1/2 w-0 h-0"
-                    style={{ left: '90%' }}
-                  >
-                    <div className="relative group">
-                      <svg 
-                        className="w-2.5 h-2.5 text-blue-600" 
-                        viewBox="0 0 10 10"
-                        fill="currentColor"
-                      >
-                        <path d="M5 0L10 5L5 10L0 5L5 0Z" />
-                      </svg>
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gray-800 rotate-45 -mt-0.5"></div>
-                        Target: Top 10%
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between mt-2">
-                  <span className="text-xs text-gray-500">0%</span>
-                  <span className="text-xs font-medium text-blue-600">10%</span>
-                  <span className="text-xs text-gray-500">100%</span>
-                </div>
-              </div>
 
               <div className="mt-8 p-6 bg-blue-50 rounded-xl">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {/* Learning Streak */}
                   <div className="relative">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 p-2.5 rounded-lg bg-blue-50 text-blue-600">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex-shrink-0 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M13 7h2m0 0v2m0-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0v2m0-2h2m7 2h2m0 0v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2h2m0 0h2m0 0h2m0 6h2m0 0v2m0 0h-2m2 0v-2m0 0h2"/>
                         </svg>
                       </div>
-                      <div className="ml-4">
+                      <div className="ml-3">
                         <h4 className="text-sm font-medium text-gray-500">Learning Streak</h4>
                         <p className="text-lg font-semibold text-gray-900">5 days</p>
-                        <p className="mt-1 text-xs text-gray-500">Active this week</p>
                       </div>
                     </div>
                   </div>
+
+                  {/* Divider */}
+                  <div className="hidden md:block absolute left-1/4 top-1/2 transform -translate-y-1/2 h-10 w-px bg-gray-200"></div>
 
                   {/* Capability Rank */}
                   <div className="relative">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 p-2.5 rounded-lg bg-indigo-50 text-indigo-600">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex-shrink-0 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
                       </div>
-                      <div className="ml-4">
-                        <h4 className="text-sm font-medium text-gray-500">Capability Rank</h4>
-                        <div className="flex items-baseline">
-                          <p className="text-lg font-semibold text-gray-900">Top 24%</p>
-                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                            <svg className="-ml-0.5 mr-1 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 12 12">
+                      <div className="ml-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium text-gray-500">Rank</h4>
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
+                            <svg className="mr-0.5 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 12 12">
                               <path d="M5.293 3.707a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L7 7.414V11a1 1 0 11-2 0V7.414L2.707 9.707a1 1 0 01-1.414-1.414l4-4z" clipRule="evenodd"/>
                             </svg>
-                            2% from last week
+                            2%
                           </span>
                         </div>
+                        <p className="text-lg font-semibold text-gray-900">Top 24%</p>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="h-px bg-gray-100"></div>
+                  {/* Divider */}
+                  <div className="hidden md:block absolute left-1/2 top-1/2 transform -translate-y-1/2 h-10 w-px bg-gray-200"></div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Most Improved */}
                   <div className="relative">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 p-2.5 rounded-lg bg-emerald-50 text-emerald-600">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex-shrink-0 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"/>
                         </svg>
                       </div>
-                      <div className="ml-4">
-                        <h4 className="text-sm font-medium text-gray-500">Most Improved</h4>
+                      <div className="ml-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium text-gray-500">Improved</h4>
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
+                            <svg className="mr-0.5 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 12 12">
+                              <path d="M5.293 3.707a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L7 7.414V11a1 1 0 11-2 0V7.414L2.707 9.707a1 1 0 01-1.414-1.414l4-4z" clipRule="evenodd"/>
+                            </svg>
+                            15%
+                          </span>
+                        </div>
                         <p className="text-lg font-semibold text-gray-900">Frontend</p>
-                        <p className="mt-1 text-xs text-gray-500">
-                          <span className="text-emerald-600 font-medium">+15%</span> growth this month
-                        </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Focus Next */}
+                  {/* Divider */}
+                  <div className="hidden md:block absolute left-3/4 top-1/2 transform -translate-y-1/2 h-10 w-px bg-gray-200"></div>
+
+                  {/* Needs Improvement */}
                   <div className="relative">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 p-2.5 rounded-lg bg-amber-50 text-amber-600">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex-shrink-0 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                         </svg>
                       </div>
-                      <div className="ml-4">
-                        <h4 className="text-sm font-medium text-gray-500">Focus Area</h4>
+                      <div className="ml-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium text-gray-500">Focus</h4>
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">
+                            <svg className="mr-0.5 h-3 w-3 text-red-500 transform rotate-180" fill="currentColor" viewBox="0 0 12 12">
+                              <path d="M5.293 3.707a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L7 7.414V11a1 1 0 11-2 0V7.414L2.707 9.707a1 1 0 01-1.414-1.414l4-4z" clipRule="evenodd"/>
+                            </svg>
+                            5%
+                          </span>
+                        </div>
                         <p className="text-lg font-semibold text-gray-900">Backend</p>
-                        <p className="mt-1 text-xs text-gray-500">
-                          <span className="text-amber-600 font-medium">Priority:</span> High
-                        </p>
                       </div>
                     </div>
                   </div>
