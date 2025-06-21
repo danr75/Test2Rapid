@@ -59,7 +59,7 @@ const LearningRoad: React.FC = () => {
               <div className="relative z-10">
                 <div className="mb-4">
                   <h3 className="font-semibold text-base text-violet-900 mb-2">Capability Progress</h3>
-                  <p className="text-violet-800 text-xs font-medium mb-3 leading-tight">
+                  <p className="text-violet-800 text-sm font-medium mb-3 leading-tight">
                     <span className="font-semibold">Your current capability is in the bottom 10%,</span> aiming for the top 10%.
                   </p>
                   
@@ -67,7 +67,7 @@ const LearningRoad: React.FC = () => {
                   <div className="mt-4">
                     <div className="flex flex-col space-y-1">
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-medium text-violet-900">Progress</span>
+                        <span className="text-xs font-medium text-violet-900">Your progress</span>
                       </div>
                       <div className="relative w-full mb-1">
                         <div className="relative h-6 bg-gray-100 rounded-xl overflow-visible border border-gray-200">
@@ -89,13 +89,13 @@ const LearningRoad: React.FC = () => {
                           {/* Target indicator with pill and connecting line */}
                           <div className="absolute -top-7" style={{ left: '80%', zIndex: 20 }}>
                             <div className="flex flex-col items-center">
-                              <span className="bg-violet-100 border border-violet-300 text-violet-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
+                              <span className="bg-violet-200 border border-violet-300 text-violet-900 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
                                 Target
                               </span>
-                              {/* Connecting line with solid circle */}
+                              {/* Connecting line with solid circle - darker purple */}
                               <div className="relative z-10">
-                                <div className="w-0.5 h-3 bg-violet-400 mx-auto"></div>
-                                <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-violet-400 rounded-full z-20"></div>
+                                <div className="w-0.5 h-3 bg-violet-600 mx-auto"></div>
+                                <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-violet-600 rounded-full z-20"></div>
                               </div>
                             </div>
                           </div>
@@ -103,17 +103,14 @@ const LearningRoad: React.FC = () => {
                         
                         {/* Level labels */}
                         <div className="flex justify-between mt-1 text-xs text-gray-600">
-                          <span>Beginner</span>
-                          <span>Intermediate</span>
-                          <span>Advanced</span>
+                          <span>Aware</span>
+                          <span>Participate</span>
+                          <span>Lead</span>
                           <span>Expert</span>
                         </div>
                       </div>
 
                     </div>
-                    <p className="text-violet-600/80 text-[11px] italic mt-2 leading-tight">
-                      You're on your way from novice to expert — keep learning to reach your target.
-                    </p>
                   </div>
                 </div>
                 
@@ -121,7 +118,7 @@ const LearningRoad: React.FC = () => {
                 <div className="flex justify-end space-x-2 mt-4 pt-3 border-t border-violet-100">
                   <button
                     onClick={handleAssessCapability}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -130,7 +127,7 @@ const LearningRoad: React.FC = () => {
                   </button>
                   <button
                     onClick={() => {}}
-                    className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
+                    className="bg-violet-500 hover:bg-violet-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -142,7 +139,7 @@ const LearningRoad: React.FC = () => {
             </div>
 
             {/* Stats Section */}
-            <div className="w-full mb-6 bg-white p-6 rounded-lg">
+            <div className="w-full mb-6 bg-[#E0EDFF] p-6 rounded-lg">
               <div className="mb-4">
                 <h3 className="font-semibold text-lg text-gray-900">Your progress</h3>
               </div>
