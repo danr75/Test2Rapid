@@ -137,11 +137,12 @@ const LearningRoad: React.FC = () => {
               </div>
             </div>
 
-            {/* Stats Card */}
-            <div className="w-full bg-white rounded-xl p-7 mb-6" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
-              <h3 className="font-semibold text-lg text-gray-900">Your progress!</h3>
-
-              <div className="mt-8 p-6 bg-blue-50 rounded-xl">
+            {/* Stats Section */}
+            <div className="w-full mb-6 bg-white p-6 rounded-lg">
+              <div className="mb-4">
+                <h3 className="font-semibold text-lg text-gray-900">Your progress</h3>
+              </div>
+              <div className="relative">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {/* Learning Streak */}
                   <div className="relative">
@@ -157,9 +158,6 @@ const LearningRoad: React.FC = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* Divider */}
-                  <div className="hidden md:block absolute left-1/4 top-1/2 transform -translate-y-1/2 h-10 w-px bg-gray-200"></div>
 
                   {/* Capability Rank */}
                   <div className="relative">
@@ -184,10 +182,7 @@ const LearningRoad: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Divider */}
-                  <div className="hidden md:block absolute left-1/2 top-1/2 transform -translate-y-1/2 h-10 w-px bg-gray-200"></div>
-
-                  {/* Most Improved */}
+                  {/* Improved */}
                   <div className="relative">
                     <div className="flex items-start">
                       <div className="flex-shrink-0 flex items-center justify-center">
@@ -210,10 +205,7 @@ const LearningRoad: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Divider */}
-                  <div className="hidden md:block absolute left-3/4 top-1/2 transform -translate-y-1/2 h-10 w-px bg-gray-200"></div>
-
-                  {/* Needs Improvement */}
+                  {/* Focus */}
                   <div className="relative">
                     <div className="flex items-start">
                       <div className="flex-shrink-0 flex items-center justify-center">
