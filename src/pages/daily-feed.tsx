@@ -145,10 +145,10 @@ const DailyFeedPage: React.FC = () => {
             <div style={{backgroundColor: '#F0F0F4'}} className="mb-10 w-full p-4 rounded-lg">
               <h2 className="font-semibold text-lg mb-4" style={{color: '#2D2D38'}}>Today's Trending Topics</h2>
               <div className="flex flex-wrap gap-3 mt-3">
-                <button style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="hover:opacity-80 px-4 py-2 rounded-full text-sm font-medium transition-colors">#GenerativeAI</button>
-                <button style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="hover:opacity-80 px-4 py-2 rounded-full text-sm font-medium transition-colors">#DataMesh</button>
-                <button style={{backgroundColor: '#FFF4E5', color: '#D97706'}} className="hover:opacity-80 px-4 py-2 rounded-full text-sm font-medium transition-colors">#ZeroTrust</button>
-                <button style={{backgroundColor: '#E9FCE9', color: '#15803D'}} className="hover:opacity-80 px-4 py-2 rounded-full text-sm font-medium transition-colors">#DecisionIntelligence</button>
+                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#GenerativeAI</button>
+                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#DataMesh</button>
+                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#ZeroTrust</button>
+                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#DecisionIntelligence</button>
               </div>
             </div>
             
@@ -167,9 +167,9 @@ const DailyFeedPage: React.FC = () => {
                   <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Implementing ethical guardrails for AI systems can reduce risks while maximizing customer experience benefits.</p>
                   
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#AI Readiness</span>
-                    <span style={{backgroundColor: '#FFF4E5', color: '#D97706'}} className="text-xs px-3 py-1 rounded-full font-medium">#Risk Awareness</span>
-                    <span style={{backgroundColor: '#E9FCE9', color: '#15803D'}} className="text-xs px-3 py-1 rounded-full font-medium">#Decision-Making</span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#AI Readiness</span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Risk Awareness</span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Decision-Making</span>
                   </div>
                   
                   <div className="flex justify-end items-center gap-3 mt-2">
@@ -236,8 +236,8 @@ const DailyFeedPage: React.FC = () => {
                   <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Applying zero trust principles to AI deployments reduces vulnerability surface area while enabling secure innovation.</p>
                   
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span style={{backgroundColor: '#FFF4E5', color: '#D97706'}} className="text-xs px-3 py-1 rounded-full font-medium">#Security</span>
-                    <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#AI Governance</span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Security</span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#AI Governance</span>
                   </div>
                   
                   <div className="flex justify-end items-center gap-3 mt-2">
@@ -270,8 +270,8 @@ const DailyFeedPage: React.FC = () => {
                   <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Combining AI with decision science creates robust frameworks for augmenting human decision-making in complex scenarios.</p>
                   
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span style={{backgroundColor: '#E9FCE9', color: '#15803D'}} className="text-xs px-3 py-1 rounded-full font-medium">#Decision-Making</span>
-                    <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#AI Strategy</span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Decision-Making</span>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#AI Strategy</span>
                   </div>
                   
                   <div className="flex justify-end items-center gap-3 mt-2">
