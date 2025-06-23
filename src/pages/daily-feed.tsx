@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useLearning } from '@/store/LearningContext';
 import Header from '@/components/Layout/Header';
+import Tag from '@/components/common/Tag';
+import TagGroup from '@/components/common/TagGroup';
 
 const DailyFeedPage: React.FC = () => {
   const router = useRouter();
@@ -145,10 +147,10 @@ const DailyFeedPage: React.FC = () => {
             <div style={{backgroundColor: '#F0F0F4'}} className="mb-10 w-full p-4 rounded-lg">
               <h2 className="font-semibold text-lg mb-4" style={{color: '#2D2D38'}}>Today's Trending Topics</h2>
               <div className="flex flex-wrap gap-3 mt-3">
-                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#GenerativeAI</button>
-                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#DataMesh</button>
-                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#ZeroTrust</button>
-                <button className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">#DecisionIntelligence</button>
+                <Tag tag="ai-foundations" onClick={() => {}} />
+                <Tag tag="ai-strategy" onClick={() => {}} />
+                <Tag tag="ai-ethics" onClick={() => {}} />
+                <Tag tag="change-management" onClick={() => {}} />
               </div>
             </div>
             
@@ -157,19 +159,19 @@ const DailyFeedPage: React.FC = () => {
               <h2 className="text-2xl font-bold mb-4" style={{color: '#2D2D38'}}>What Today's AI Trends Mean for You</h2>
             </div>
             <div className="space-y-8 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}} >
-              {/* Concept 1 */}
+              {/* Article 1: Leadership & Strategy */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Responsible Use of Generative AI in Customer Services</h2>
+                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Strategic AI Leadership in the Digital Age</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>2h ago</span>
                   </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Implementing ethical guardrails for AI systems can reduce risks while maximizing customer experience benefits.</p>
+                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn how to develop and communicate a compelling AI vision that aligns with your organization's strategic objectives and drives digital transformation.</p>
                   
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#AI Readiness</span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Risk Awareness</span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Decision-Making</span>
+                    <Tag tag="ai-strategy" onClick={() => {}} className="text-xs" />
+                    <Tag tag="digital-transformation" onClick={() => {}} className="text-xs" />
+                    <Tag tag="leadership" onClick={() => {}} className="text-xs" />
                   </div>
                   
                   <div className="flex justify-end items-center gap-3 mt-2">
@@ -192,18 +194,19 @@ const DailyFeedPage: React.FC = () => {
               
               <hr className="border-[#E5E7EB] border-t" />
 
-              {/* Concept 2 */}
+              {/* Article 2: Governance, Policy & Risk */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Data Mesh Architecture for Enterprise Scale</h2>
+                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>AI Governance Frameworks for Enterprise Risk Management</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>4h ago</span>
                   </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Domain-oriented decentralized data ownership enables organizations to scale their data architecture while improving quality and access.</p>
+                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Discover how to implement robust governance structures that ensure responsible AI deployment while managing risks and regulatory compliance.</p>
                   
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#Data Strategy</span>
-                    <span style={{backgroundColor: '#E0F2FF', color: '#007BCE'}} className="text-xs px-3 py-1 rounded-full font-medium">#Enterprise Architecture</span>
+                    <Tag tag="ai-governance" onClick={() => {}} className="text-xs" />
+                    <Tag tag="risk-management" onClick={() => {}} className="text-xs" />
+                    <Tag tag="compliance" onClick={() => {}} className="text-xs" />
                   </div>
                   
                   <div className="flex justify-end items-center gap-3 mt-2">
@@ -226,18 +229,19 @@ const DailyFeedPage: React.FC = () => {
               
               <hr className="border-[#E5E7EB] border-t" />
 
-              {/* Concept 3 */}
+              {/* Article 3: Foundations & Ecosystem */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Zero Trust Security Models for AI Systems</h2>
+                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Building a Future-Ready AI Infrastructure</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>6h ago</span>
                   </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Applying zero trust principles to AI deployments reduces vulnerability surface area while enabling secure innovation.</p>
+                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Explore the essential components of a scalable AI infrastructure that supports innovation while ensuring security and compliance.</p>
                   
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Security</span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#AI Governance</span>
+                    <Tag tag="ai-foundations" onClick={() => {}} className="text-xs" />
+                    <Tag tag="infrastructure" onClick={() => {}} className="text-xs" />
+                    <Tag tag="scalability" onClick={() => {}} className="text-xs" />
                   </div>
                   
                   <div className="flex justify-end items-center gap-3 mt-2">
@@ -260,18 +264,19 @@ const DailyFeedPage: React.FC = () => {
               
               <hr className="border-[#E5E7EB] border-t" />
 
-              {/* Concept 4 */}
+              {/* Article 4: Workforce Enablement */}
               <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 space-y-3">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>AI-Powered Decision Intelligence Frameworks</h2>
+                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Upskilling Teams for the AI Revolution</h2>
                     <span className="text-xs" style={{color: '#6B7280'}}>8h ago</span>
                   </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Combining AI with decision science creates robust frameworks for augmenting human decision-making in complex scenarios.</p>
+                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn strategies for developing AI literacy across your organization and building the skills needed for successful AI adoption.</p>
                   
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#Decision-Making</span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">#AI Strategy</span>
+                    <Tag tag="workforce-development" onClick={() => {}} className="text-xs" />
+                    <Tag tag="skills-training" onClick={() => {}} className="text-xs" />
+                    <Tag tag="change-management" onClick={() => {}} className="text-xs" />
                   </div>
                   
                   <div className="flex justify-end items-center gap-3 mt-2">
