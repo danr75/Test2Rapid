@@ -80,7 +80,7 @@ const LearningRoad: React.FC = () => {
                           
                           {/* Purple progress bar */}
                           <div 
-                            className="absolute top-0.5 left-0.5 h-5 bg-violet-600 rounded-xl transition-all duration-300 flex items-center" 
+                            className="absolute top-0 left-0 h-6 bg-violet-600 transition-all duration-300 flex items-center" 
                             style={{ width: '14%' }}
                           >
                             <span className="ml-auto mr-2 text-white text-xs font-medium">14%</span>
@@ -235,10 +235,49 @@ const LearningRoad: React.FC = () => {
             {/* Capability Bars */}
             <div className="w-full">
               {/* Frontend Development */}
-              <CapabilityBar
-                skill={{ category: 'Frontend Development', percentage: 85 }}
-                targetLevel={{ targetPercentage: 50, targetLevel: 'Advanced' }}
-              />
+              <div className="relative mb-6">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-sm font-medium text-gray-700">Frontend Development</span>
+                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">+35%</span>
+                </div>
+                <div className="relative h-6 bg-gray-100 overflow-visible border border-gray-200">
+                  {/* Background grid lines */}
+                  <div className="absolute inset-0 flex justify-between pointer-events-none">
+                    <div className="w-px h-full bg-gray-200"></div>
+                    <div className="w-px h-full bg-gray-200"></div>
+                    <div className="w-px h-full bg-gray-200"></div>
+                  </div>
+                  
+                  {/* Blue progress bar */}
+                  <div 
+                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    style={{ width: '85%' }}
+                  >
+                    <span className="ml-auto mr-2 text-white text-xs font-medium">85%</span>
+                  </div>
+                  
+                  {/* Target indicator with pill and connecting line */}
+                  <div className="absolute -top-7" style={{ left: '50%', zIndex: 20 }}>
+                    <div className="flex flex-col items-center">
+                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
+                        Target
+                      </span>
+                      {/* Connecting line with solid circle - blue */}
+                      <div className="relative z-10">
+                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
+                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* Level labels */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Beginner</span>
+                  <span className="text-xs text-gray-500">Intermediate</span>
+                  <span className="text-xs text-gray-500">Advanced</span>
+                  <span className="text-xs text-gray-500">Expert</span>
+                </div>
+              </div>
               
               {/* Backend Development */}
               <CapabilityBar

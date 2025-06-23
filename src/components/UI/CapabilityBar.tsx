@@ -41,7 +41,40 @@ const CapabilityBar: React.FC<CapabilityBarProps> = ({ skill, targetLevel }) => 
           <span className="ml-auto mr-2 text-white text-xs font-medium">{skill.percentage}%</span>
         </div>
         
-        {/* Target indicator with gap/over pill */}
+        {/* Target level indicator */}
+        {hasTarget && (
+          <div 
+            className="absolute left-0 flex flex-col items-center z-10" 
+            style={{ 
+              left: `${targetLevel.targetPercentage}%`,
+              top: '-24px',
+              transform: 'translateX(-50%)'  // Center the indicator horizontally
+            }}
+          >
+            <span className="text-xs text-purple-700 font-medium mb-1">Target</span>
+            <div className="relative w-4" style={{ height: 'calc(100% + 24px)' }}>
+              <div 
+                className="absolute w-px bg-purple-500" 
+                style={{
+                  top: '16px',  // Start below the label
+                  bottom: 'calc(50% - 4px)',  // End at the middle of the progress bar
+                  left: '50%',
+                  transform: 'translateX(-50%)'
+                }}
+              ></div>
+              <div 
+                className="absolute w-4 h-4 rounded-full border-2 border-purple-500 bg-white"
+                style={{
+                  bottom: 'calc(50% - 4px)',  // Center in the progress bar
+                  left: '50%',
+                  transform: 'translate(-50%, 50%)'
+                }}
+              ></div>
+            </div>
+          </div>
+        )}
+        
+        {/* Gap/Over indicator */}
         {hasTarget && (
           <div className="absolute -top-5" style={{ left: `${targetLevel.targetPercentage}%`, zIndex: 20 }}>
             <div className="flex flex-col items-center">
