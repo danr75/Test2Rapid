@@ -11,8 +11,88 @@ import {
   UsersIcon, 
   BoltIcon,
   UserCircleIcon,
-  AcademicCapIcon
+  AcademicCapIcon,
+  ExclamationTriangleIcon,
+  ExclamationCircleIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline';
+import tagsModule, { TagGroup } from '@/types/tags';
+
+interface SkillData {
+  category: string;
+  percentage: number;
+  targetPercentage: number;
+  currentLevel: string;
+  targetLevel: string;
+}
+
+const getPriorityForCapability = (capabilityName: string): 'high' | 'medium' | 'low' => {
+  const lowerName = capabilityName.toLowerCase();
+  
+  // Always return high priority for Foundations & Ecosystem
+  if (lowerName.includes('foundation') || lowerName.includes('ecosystem')) {
+    return 'high';
+  }
+  
+  // Always return low priority for Workforce Enablement and Leadership & Strategy
+  if (lowerName.includes('workforce') || lowerName.includes('leadership') || lowerName.includes('strategy')) {
+    return 'low';
+  }
+  
+  if (typeof window === 'undefined') return 'medium';
+  
+  try {
+    const targetRoles = JSON.parse(localStorage.getItem('targetRoles') || '[]');
+    if (!targetRoles.length) return 'medium';
+    
+    // Get the first target role (most recent)
+    const targetRole = targetRoles[0];
+    const capability = targetRole.targetLevels.find((level: any) => 
+      level.category.toLowerCase() === lowerName
+    );
+    
+    if (!capability) return 'medium';
+    
+    const gap = capability.targetPercentage - capability.currentPercentage;
+    
+    if (gap > 30) return 'high';
+    if (gap > 10) return 'medium';
+    return 'low';
+  } catch (error) {
+    console.error('Error getting priority for capability:', error);
+    return 'medium';
+  }
+};
+
+const PriorityBadge = ({ priority }: { priority: 'high' | 'medium' | 'low' }) => {
+  const config = {
+    high: {
+      icon: ExclamationTriangleIcon,
+      color: 'bg-red-100 text-red-700',
+      label: 'High'
+    },
+    medium: {
+      icon: ExclamationCircleIcon,
+      color: 'bg-yellow-100 text-yellow-700',
+      label: 'Medium'
+    },
+    low: {
+      icon: CheckCircleIcon,
+      color: 'bg-green-100 text-green-700',
+      label: 'Low'
+    }
+  };
+  
+  const { icon: Icon, color, label } = config[priority];
+  
+  return (
+    <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${color}`}>
+      {label}
+    </div>
+  );
+};
+
+const tagGroups = tagsModule.tagGroups as TagGroup[];
 
 const learningModes: { id: LearningMode; label: string; path: string; icon: React.ElementType }[] = [
   { id: 'Q&A', label: 'Q&A Mode', path: '/qa-learn', icon: ChatBubbleOvalLeftEllipsisIcon },
@@ -29,38 +109,117 @@ interface StrategicFocusCardData {
   learningPath: string;
 }
 
+interface StrategicFocusCardData {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  topicToSet: string;
+  learningPath: string;
+  tags: string[];
+  duration: string;
+}
+
 const strategicFocusTopics: StrategicFocusCardData[] = [
   {
-    id: 'legacy-modern',
-    title: 'Legacy vs. Modern',
-    description: 'Compare traditional IT governance with modern AI-first approaches',
+    id: 'ai-strategy-101',
+    title: 'AI Strategy in 15 Minutes',
+    description: 'Quick guide to identifying high-impact AI use cases for your business',
     icon: BookOpenIcon,
-    topicToSet: 'Legacy vs. Modern IT Governance',
-    learningPath: 'AI Governance',
+    topicToSet: 'AI Strategy Essentials',
+    learningPath: 'Leadership & Strategy',
+    tags: ['ai-strategy', 'commercial-decisions'],
+    duration: '15 min',
   },
   {
-    id: 'team-impact',
-    title: 'Team Impact',
-    description: 'How to lead technical teams through AI transformation',
+    id: 'ai-risk-assessment',
+    title: 'AI Risk Assessment',
+    description: 'Quick framework for identifying and mitigating AI risks in projects',
     icon: UsersIcon,
-    topicToSet: 'Leading Teams in AI Transformation',
-    learningPath: 'Leadership',
+    topicToSet: 'AI Risk Management Basics',
+    learningPath: 'Governance, Policy & Risk',
+    tags: ['risk-management', 'ai-ethics', 'governance-assurance'],
+    duration: '12 min',
   },
   {
-    id: 'data-practices',
-    title: 'Ethical Data Collection',
-    description: 'Best practices for collecting and handling data ethically',
+    id: 'ai-ecosystem-overview',
+    title: 'AI Ecosystem Overview',
+    description: 'Key components of the AI ecosystem and how they work together',
     icon: AcademicCapIcon,
-    topicToSet: 'Ethical Data Collection Practices',
-    learningPath: 'Data Ethics',
+    topicToSet: 'AI Ecosystem Fundamentals',
+    learningPath: 'Foundations & Ecosystem',
+    tags: ['ai-ecosystem', 'ai-foundations'],
+    duration: '10 min',
   },
   {
-    id: 'ai-apps',
-    title: 'Generative AI Tools',
-    description: 'Understanding and implementing generative AI applications',
+    id: 'team-ai-readiness',
+    title: 'Team AI Readiness',
+    description: 'Assess and improve your team\'s readiness for AI adoption',
     icon: UserCircleIcon,
-    topicToSet: 'Generative AI Applications',
-    learningPath: 'Build AI Apps',
+    topicToSet: 'Building AI-Ready Teams',
+    learningPath: 'Workforce Enablement',
+    tags: ['workforce-planning', 'change-management'],
+    duration: '15 min',
+  },
+  {
+    id: 'data-quality-ai',
+    title: 'Data Quality for AI',
+    description: 'Essential data requirements for successful AI implementation',
+    icon: BoltIcon,
+    topicToSet: 'AI Data Readiness',
+    learningPath: 'Data and Tech Capable',
+    tags: ['data-readiness', 'ai-lifecycle'],
+    duration: '12 min',
+  },
+  {
+    id: 'ai-ethics-101',
+    title: 'AI Ethics in Practice',
+    description: 'Practical approaches to ethical AI implementation',
+    icon: AcademicCapIcon,
+    topicToSet: 'Applied AI Ethics',
+    learningPath: 'Governance, Policy & Risk',
+    tags: ['ai-ethics', 'human-oversight'],
+    duration: '10 min',
+  },
+  {
+    id: 'ai-use-cases',
+    title: 'Identifying AI Use Cases',
+    description: 'How to spot and prioritize valuable AI opportunities',
+    icon: BookOpenIcon,
+    topicToSet: 'AI Opportunity Identification',
+    learningPath: 'Leadership & Strategy',
+    tags: ['ai-strategy', 'commercial-decisions'],
+    duration: '12 min',
+  },
+  {
+    id: 'ai-procurement',
+    title: 'Responsible AI Procurement',
+    description: 'Key considerations when acquiring AI solutions',
+    icon: UsersIcon,
+    topicToSet: 'AI Solution Procurement',
+    learningPath: 'Governance, Policy & Risk',
+    tags: ['responsible-procurement', 'ai-policy'],
+    duration: '10 min',
+  },
+  {
+    id: 'ai-collaboration',
+    title: 'Cross-functional AI Teams',
+    description: 'Best practices for effective AI collaboration',
+    icon: UserCircleIcon,
+    topicToSet: 'AI Team Collaboration',
+    learningPath: 'Workforce Enablement',
+    tags: ['collaboration', 'partnerships'],
+    duration: '10 min',
+  },
+  {
+    id: 'ai-metrics',
+    title: 'Measuring AI Success',
+    description: 'Key metrics for evaluating AI implementation impact',
+    icon: BoltIcon,
+    topicToSet: 'AI Performance Metrics',
+    learningPath: 'Data and Tech Capable',
+    tags: ['measurement', 'ai-lifecycle'],
+    duration: '12 min',
   }
 ];
 
@@ -81,18 +240,35 @@ const LearningCoachPage: React.FC = () => {
 
   const handleModeChange = (newMode: LearningMode) => {
     console.log('handleModeChange called with:', newMode);
-    console.log('Previous learning mode was:', state.learningMode);
     
     // Set the learning mode in the context
     dispatch({ type: 'SET_LEARNING_MODE', payload: newMode });
     
-    // Log after dispatching
-    console.log('Learning mode dispatched to context with payload:', newMode);
+    // Get the default topic for this mode if no topic is set
+    const defaultTopics = {
+      'Q&A': 'AI Fundamentals',
+      'Scenario': 'AI Business Case',
+      'Speed': 'AI Quick Facts'
+    };
     
-    // After a short delay, check if mode has updated
-    setTimeout(() => {
-      console.log('Current learning mode after change:', state.learningMode);
-    }, 100);
+    const topic = state.topic || defaultTopics[newMode] || 'AI Learning';
+    
+    // Set the topic for learning
+    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic });
+    
+    // Navigate to the appropriate learning page
+    if (newMode === 'Scenario') {
+      console.log('Launching Scenario mode with topic:', topic);
+      router.push('/scenario-learn');
+    } 
+    else if (newMode === 'Speed') {
+      console.log('Launching Speed mode with topic:', topic);
+      router.push('/speed-learn');
+    }
+    else {
+      console.log('Launching Q&A mode with topic:', topic);
+      router.push('/qa-learn');
+    }
   };
 
   const handleTopicSubmit = (topic: string) => {
@@ -153,54 +329,61 @@ const LearningCoachPage: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Learning mode tabs */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-8">
-            <div className="flex space-x-4 justify-center">
-              {learningModes.map((mode) => (
-                <button
-                  key={mode.id}
-                  className={`flex items-center px-6 py-3 rounded-full ${currentLearningMode === mode.id
-                    ? 'bg-white shadow-md text-gray-700'
-                    : 'bg-transparent text-gray-500 hover:bg-gray-100'
-                    }`}
-                  onClick={() => handleModeChange(mode.id)}
-                >
-                  <mode.icon className="h-5 w-5 mr-2" aria-hidden="true" />
-                  <span>{mode.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* Personalised micro-lessons Section */}
           <div className="mb-8">
             <h2 className="text-3xl font-semibold mb-2 text-left text-gray-700">
-              Personalised micro-lessons
+              Build Real-World AI Capabilities
             </h2>
             <p className="text-gray-600 mb-6 text-left">
               These micro-courses cover different paths and are prioritized to advance your skills
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {strategicFocusTopics.map((card) => (
-                <button
-                  key={card.id}
-                  onClick={() => handleStrategicFocusClick(card)}
-                  className="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <card.icon className="h-6 w-6 text-primary mr-2 flex-shrink-0" />
-                        <h3 className="text-xl font-semibold text-gray-800">{card.title}</h3>
-                      </div>
-                      <span className="bg-indigo-50 text-indigo-700 text-xs px-2 py-1 rounded font-medium">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {strategicFocusTopics.map((card) => {
+                const group = tagGroups.find((g: TagGroup) => g.name === card.learningPath);
+                const groupColor: string = group?.color || 'gray';
+                const bgColor = {
+                  blue: 'bg-blue-50',
+                  green: 'bg-green-50',
+                  purple: 'bg-purple-50',
+                  indigo: 'bg-indigo-50',
+                  teal: 'bg-teal-50',
+                  gray: 'bg-gray-50'
+                }[groupColor] || 'bg-gray-50';
+                
+                const textColor = {
+                  blue: 'text-blue-700',
+                  green: 'text-green-700',
+                  purple: 'text-purple-700',
+                  indigo: 'text-indigo-700',
+                  teal: 'text-teal-700',
+                  gray: 'text-gray-700'
+                }[groupColor] || 'text-gray-700';
+                
+                // Get priority based on capability gap
+                const priority = getPriorityForCapability(card.learningPath);
+                
+                return (
+                  <button
+                    key={card.id}
+                    onClick={() => handleStrategicFocusClick(card)}
+                    className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 flex flex-col h-full"
+                  >
+                    <div className="flex justify-between items-center mb-3">
+                      <PriorityBadge priority={priority} />
+                      <span className={`text-xs font-medium px-2 py-1 rounded ${bgColor} ${textColor}`}>
                         {card.learningPath}
                       </span>
                     </div>
-                    <p className="text-gray-600 text-sm">{card.description}</p>
-                  </div>
-                </button>
-              ))}
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                      {card.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 line-clamp-3">
+                      {card.description}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -210,7 +393,7 @@ const LearningCoachPage: React.FC = () => {
               <input
                 type="text"
                 className="flex-grow p-4 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                placeholder="Ask about technology strategy, architecture decisions, or emerging trends..."
+                placeholder="Ask about any real world capability and I'll build a rapid learning lesson for you..."
                 onKeyPress={(e) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
               />
               <button
@@ -223,13 +406,39 @@ const LearningCoachPage: React.FC = () => {
               </button>
             </div>
           </div>
+          {/* Daily Drill */}
+          <div className="mb-10">
+            <h2 className="text-3xl font-semibold text-gray-700">Daily Drill</h2>
+            <p className="text-gray-600 mb-6">10-minute challenges tailored to your capability level and what you need to focus on next.</p>
+            
+            {/* Learning mode tabs */}
+            <div style={{backgroundColor: '#E0EDFF'}} className="rounded-lg p-5 mt-4">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Choose Your Learning Mode</h3>
+              </div>
+              <div className="flex justify-between px-4">
+                {learningModes.map((mode) => (
+                  <button
+                    key={mode.id}
+                    className={`flex items-center justify-center px-4 py-2.5 rounded-lg w-1/4 ${currentLearningMode === mode.id
+                      ? 'bg-white shadow text-gray-800 border border-gray-100'
+                      : 'bg-white bg-opacity-70 text-gray-600 hover:bg-white hover:bg-opacity-100'
+                    }`}
+                    onClick={() => handleModeChange(mode.id)}
+                  >
+                    <mode.icon className="h-5 w-5 mr-2" aria-hidden="true" />
+                    <span>{mode.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Learning pathway progress */}
           <div className="mb-10">
-            <div className="text-left mb-6">
-              <h2 className="text-3xl font-semibold text-gray-700">Learning pathway progress</h2>
-            </div>
+            <h2 className="text-3xl font-semibold text-gray-700">Learning pathway progress</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
               {/* AI Governance */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
                 <div className="p-6">
