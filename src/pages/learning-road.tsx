@@ -139,7 +139,7 @@ const LearningRoad: React.FC = () => {
             </div>
 
             {/* Stats Section */}
-            <div className="w-full mb-6 bg-[#E0EDFF] p-6 rounded-lg">
+            <div className="w-full mb-6 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}}>
               <div className="mb-4">
                 <h3 className="font-semibold text-lg text-gray-900">Your progress</h3>
               </div>
