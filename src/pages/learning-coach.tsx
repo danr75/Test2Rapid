@@ -439,9 +439,9 @@ const LearningCoachPage: React.FC = () => {
             <h2 className="text-3xl font-semibold text-gray-700">Learning pathway progress</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-              {/* AI Governance */}
+              {/* Governance, Policy & Risk */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-6">
+                <div className="p-6 flex flex-col h-full">
                   <div className="flex-shrink-0 mb-5">
                     <div className="h-12 w-12 bg-blue-100 flex items-center justify-center text-blue-600 rounded-lg">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -449,11 +449,11 @@ const LearningCoachPage: React.FC = () => {
                       </svg>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-xl mb-2">AI Governance</h3>
-                  <p className="text-gray-600 text-sm mb-4">Learn the fundamentals of AI governance, compliance, and risk management</p>
+                  <h3 className="font-semibold text-xl mb-2">Governance, Policy & Risk</h3>
+                  <p className="text-gray-600 text-sm mb-4 flex-grow">Master AI governance frameworks, compliance requirements, and risk management strategies</p>
                   
                   {/* Progress indicator */}
-                  <div className="mb-4">
+                  <div className="mb-4 mt-auto">
                     <div className="flex justify-between text-xs text-gray-500 mb-1">
                       <span>Progress</span>
                       <span>2/6 modules</span>
@@ -469,9 +469,9 @@ const LearningCoachPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Data Ethics */}
+              {/* Foundations & Ecosystem */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-6">
+                <div className="p-6 flex flex-col h-full">
                   <div className="flex-shrink-0 mb-5">
                     <div className="h-12 w-12 bg-green-100 flex items-center justify-center text-green-600 rounded-lg">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -479,11 +479,11 @@ const LearningCoachPage: React.FC = () => {
                       </svg>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-xl mb-2">Data Ethics</h3>
-                  <p className="text-gray-600 text-sm mb-4">Understand ethical considerations in data collection, usage, and AI decision-making</p>
+                  <h3 className="font-semibold text-xl mb-2">Foundations & Ecosystem</h3>
+                  <p className="text-gray-600 text-sm mb-4 flex-grow">Build essential knowledge of AI technologies, platforms, and their integration into business systems</p>
                   
                   {/* Progress indicator */}
-                  <div className="mb-4">
+                  <div className="mb-4 mt-auto">
                     <div className="flex justify-between text-xs text-gray-500 mb-1">
                       <span>Progress</span>
                       <span>1/5 modules</span>
@@ -499,9 +499,9 @@ const LearningCoachPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Build AI Apps */}
+              {/* Data & Tech Capable */}
               <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-6">
+                <div className="p-6 flex flex-col h-full">
                   <div className="flex-shrink-0 mb-5">
                     <div className="h-12 w-12 bg-purple-100 flex items-center justify-center text-purple-600 rounded-lg">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -509,11 +509,11 @@ const LearningCoachPage: React.FC = () => {
                       </svg>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-xl mb-2">Build AI Apps</h3>
-                  <p className="text-gray-600 text-sm mb-4">Create intelligent applications using AI agents and automation frameworks</p>
+                  <h3 className="font-semibold text-xl mb-2">Data & Tech Capable</h3>
+                  <p className="text-gray-600 text-sm mb-4 flex-grow">Develop skills to work with data, AI tools, and emerging technologies for business innovation</p>
                   
                   {/* Progress indicator */}
-                  <div className="mb-4">
+                  <div className="mb-4 mt-auto">
                     <div className="flex justify-between text-xs text-gray-500 mb-1">
                       <span>Progress</span>
                       <span>3/7 modules</span>
