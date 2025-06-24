@@ -226,6 +226,80 @@ const strategicFocusTopics: StrategicFocusCardData[] = [
 const LearningCoachPage: React.FC = () => {
   const { state, dispatch } = useLearning();
   const router = useRouter();
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  // Learning pathway data for all five capability groups
+  const learningPathways = [
+    {
+      id: 'governance-policy-risk',
+      title: 'Governance, Policy & Risk',
+      description: 'Master AI governance frameworks, compliance requirements, and risk management strategies',
+      progress: { completed: 2, total: 6, percentage: 33 },
+      color: 'blue',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      )
+    },
+    {
+      id: 'foundations-ecosystem',
+      title: 'Foundations & Ecosystem',
+      description: 'Build essential knowledge of AI technologies, platforms, and their integration into business systems',
+      progress: { completed: 1, total: 5, percentage: 20 },
+      color: 'green',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      )
+    },
+    {
+      id: 'data-tech-capable',
+      title: 'Data & Tech Capable',
+      description: 'Develop skills to work with data, AI tools, and emerging technologies for business innovation',
+      progress: { completed: 3, total: 7, percentage: 43 },
+      color: 'purple',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      )
+    },
+    {
+      id: 'leadership-strategy',
+      title: 'Leadership & Strategy',
+      description: 'Develop strategic leadership skills for guiding AI initiatives and digital transformation',
+      progress: { completed: 4, total: 8, percentage: 50 },
+      color: 'indigo',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      )
+    },
+    {
+      id: 'workforce-enablement',
+      title: 'Workforce Enablement',
+      description: 'Equip teams with AI skills and create organizational structures for effective AI adoption',
+      progress: { completed: 2, total: 6, percentage: 33 },
+      color: 'teal',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      )
+    }
+  ];
+  
+  // Handle carousel navigation
+  const handlePrevious = () => {
+    setCarouselIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : learningPathways.length - 3));
+  };
+  
+  const handleNext = () => {
+    setCarouselIndex((prevIndex) => (prevIndex < learningPathways.length - 3 ? prevIndex + 1 : 0));
+  };
 
   // Derive current mode from context, default to 'Q&A'
   const currentLearningMode = state.learningMode || 'Q&A';
@@ -329,72 +403,13 @@ const LearningCoachPage: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-
-          {/* Personalised micro-lessons Section */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-semibold mb-2 text-left text-gray-700">
-              Build Real-World AI Capabilities
-            </h2>
-            <p className="text-gray-600 mb-6 text-left">
-              These micro-courses cover different paths and are prioritized to advance your skills
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {strategicFocusTopics.map((card) => {
-                const group = tagGroups.find((g: TagGroup) => g.name === card.learningPath);
-                const groupColor: string = group?.color || 'gray';
-                const bgColor = {
-                  blue: 'bg-blue-50',
-                  green: 'bg-green-50',
-                  purple: 'bg-purple-50',
-                  indigo: 'bg-indigo-50',
-                  teal: 'bg-teal-50',
-                  gray: 'bg-gray-50'
-                }[groupColor] || 'bg-gray-50';
-                
-                const textColor = {
-                  blue: 'text-blue-700',
-                  green: 'text-green-700',
-                  purple: 'text-purple-700',
-                  indigo: 'text-indigo-700',
-                  teal: 'text-teal-700',
-                  gray: 'text-gray-700'
-                }[groupColor] || 'text-gray-700';
-                
-                // Get priority based on capability gap
-                const priority = getPriorityForCapability(card.learningPath);
-                
-                return (
-                  <button
-                    key={card.id}
-                    onClick={() => handleStrategicFocusClick(card)}
-                    className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 flex flex-col h-full"
-                  >
-                    <div className="flex justify-between items-center mb-3">
-                      <PriorityBadge priority={priority} />
-                      <span className={`text-xs font-medium px-2 py-1 rounded ${bgColor} ${textColor}`}>
-                        {card.learningPath}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
-                      {card.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {card.description}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Topic input as search bar */}
           <div className="mb-10">
             <div className="flex">
               <input
                 type="text"
                 className="flex-grow p-4 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
                 placeholder="Ask about any real world capability and I'll build a rapid learning lesson for you..."
-                onKeyPress={(e) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
+                onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
               />
               <button
                 onClick={() => {
@@ -437,6 +452,7 @@ const LearningCoachPage: React.FC = () => {
           {/* Learning pathway progress */}
           <div className="mb-10">
             <h2 className="text-3xl font-semibold text-gray-700">Learning pathway progress</h2>
+            <p className="text-gray-600 mb-6">Proceed with a structured approach to your learning</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
               {/* Governance, Policy & Risk */}
@@ -528,6 +544,63 @@ const LearningCoachPage: React.FC = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+          
+          {/* Personalised micro-lessons Section */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-semibold mb-2 text-left text-gray-700">
+              Build Real-World AI Capabilities
+            </h2>
+            <p className="text-gray-600 mb-6 text-left">
+              Jump to lessons of interest that support your learning pathway and capability growth.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {strategicFocusTopics.map((card) => {
+                const group = tagGroups.find((g: TagGroup) => g.name === card.learningPath);
+                const groupColor: string = group?.color || 'gray';
+                const bgColor = {
+                  blue: 'bg-blue-50',
+                  green: 'bg-green-50',
+                  purple: 'bg-purple-50',
+                  indigo: 'bg-indigo-50',
+                  teal: 'bg-teal-50',
+                  gray: 'bg-gray-50'
+                }[groupColor] || 'bg-gray-50';
+                
+                const textColor = {
+                  blue: 'text-blue-700',
+                  green: 'text-green-700',
+                  purple: 'text-purple-700',
+                  indigo: 'text-indigo-700',
+                  teal: 'text-teal-700',
+                  gray: 'text-gray-700'
+                }[groupColor] || 'text-gray-700';
+                
+                // Get priority based on capability gap
+                const priority = getPriorityForCapability(card.learningPath);
+                
+                return (
+                  <button
+                    key={card.id}
+                    onClick={() => handleStrategicFocusClick(card)}
+                    className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 flex flex-col h-full"
+                  >
+                    <div className="flex justify-between items-center mb-3">
+                      <PriorityBadge priority={priority} />
+                      <span className={`text-xs font-medium px-2 py-1 rounded ${bgColor} ${textColor}`}>
+                        {card.learningPath}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                      {card.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 line-clamp-3">
+                      {card.description}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
