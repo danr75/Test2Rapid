@@ -228,7 +228,7 @@ const LearningCoachPage: React.FC = () => {
   const router = useRouter();
   const [carouselIndex, setCarouselIndex] = useState(0);
 
-  // Learning pathway data for all five capability groups
+  // Learning pathway data for all capability groups
   const learningPathways = [
     {
       id: 'governance-policy-risk',
@@ -287,6 +287,18 @@ const LearningCoachPage: React.FC = () => {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      )
+    },
+    {
+      id: 'ai-ethics-responsibility',
+      title: 'AI Ethics & Responsibility',
+      description: 'Understand ethical considerations and responsible AI practices for sustainable development',
+      progress: { completed: 1, total: 5, percentage: 20 },
+      color: 'pink',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
       )
     }
@@ -449,101 +461,85 @@ const LearningCoachPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Learning pathway progress */}
+          {/* Learning Pathway */}
           <div className="mb-10">
-            <h2 className="text-3xl font-semibold text-gray-700">Learning pathway progress</h2>
+            <h2 className="text-3xl font-semibold text-gray-700">Learning Pathway</h2>
             <p className="text-gray-600 mb-6">Proceed with a structured approach to your learning</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-              {/* Governance, Policy & Risk */}
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-6 flex flex-col h-full">
-                  <div className="flex-shrink-0 mb-5">
-                    <div className="h-12 w-12 bg-blue-100 flex items-center justify-center text-blue-600 rounded-lg">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <h3 className="font-semibold text-xl mb-2">Governance, Policy & Risk</h3>
-                  <p className="text-gray-600 text-sm mb-4 flex-grow">Master AI governance frameworks, compliance requirements, and risk management strategies</p>
-                  
-                  {/* Progress indicator */}
-                  <div className="mb-4 mt-auto">
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span>Progress</span>
-                      <span>2/6 modules</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '33%' }}></div>
-                    </div>
-                  </div>
-                  
-                  <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full font-medium">
-                    Learn
-                  </button>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+              {learningPathways.map((pathway) => {
+                const bgColor = {
+                  blue: 'bg-blue-100 text-blue-600',
+                  green: 'bg-green-100 text-green-600',
+                  purple: 'bg-purple-100 text-purple-600',
+                  indigo: 'bg-indigo-100 text-indigo-600',
+                  teal: 'bg-teal-100 text-teal-600',
+                  pink: 'bg-pink-100 text-pink-600'
+                }[pathway.color] || 'bg-gray-100 text-gray-600';
 
-              {/* Foundations & Ecosystem */}
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-6 flex flex-col h-full">
-                  <div className="flex-shrink-0 mb-5">
-                    <div className="h-12 w-12 bg-green-100 flex items-center justify-center text-green-600 rounded-lg">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    </div>
-                  </div>
-                  <h3 className="font-semibold text-xl mb-2">Foundations & Ecosystem</h3>
-                  <p className="text-gray-600 text-sm mb-4 flex-grow">Build essential knowledge of AI technologies, platforms, and their integration into business systems</p>
-                  
-                  {/* Progress indicator */}
-                  <div className="mb-4 mt-auto">
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span>Progress</span>
-                      <span>1/5 modules</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div className="bg-green-600 h-2.5 rounded-full" style={{ width: '20%' }}></div>
-                    </div>
-                  </div>
-                  
-                  <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full font-medium">
-                    Learn
-                  </button>
-                </div>
-              </div>
+                const progressBarColor = {
+                  blue: 'bg-blue-600',
+                  green: 'bg-green-600',
+                  purple: 'bg-purple-600',
+                  indigo: 'bg-indigo-600',
+                  teal: 'bg-teal-600',
+                  pink: 'bg-pink-600'
+                }[pathway.color] || 'bg-gray-600';
 
-              {/* Data & Tech Capable */}
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-6 flex flex-col h-full">
-                  <div className="flex-shrink-0 mb-5">
-                    <div className="h-12 w-12 bg-purple-100 flex items-center justify-center text-purple-600 rounded-lg">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                      </svg>
+                const isGovernance = pathway.id === 'governance-policy-risk';
+                const router = useRouter();
+
+                const handleCardClick = () => {
+                  if (isGovernance) {
+                    router.push('/governance-pathway');
+                  }
+                };
+
+                return (
+                  <div 
+                    key={pathway.id} 
+                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${isGovernance ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    onClick={isGovernance ? handleCardClick : undefined}
+                  >
+                    <div className="p-6 flex flex-col h-full">
+                      <div className="flex-shrink-0 mb-5">
+                        <div className={`h-12 w-12 ${bgColor} flex items-center justify-center rounded-lg`}>
+                          {pathway.icon}
+                        </div>
+                      </div>
+                      <h3 className="font-semibold text-xl mb-2">
+                        {pathway.title}
+                        {isGovernance && (
+                          <span className="ml-2 text-sm text-gray-400">Click to explore</span>
+                        )}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4 flex-grow">{pathway.description}</p>
+                      
+                      {!isGovernance && (
+                        <>
+                          {/* Progress indicator */}
+                          <div className="mb-4 mt-auto">
+                            <div className="flex justify-between text-xs text-gray-500 mb-1">
+                              <span>Progress</span>
+                              <span>{pathway.progress.completed}/{pathway.progress.total} modules</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                              <div 
+                                className={`h-2.5 rounded-full ${progressBarColor}`} 
+                                style={{ width: `${pathway.progress.percentage}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                          
+                          <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full font-medium">
+                            {pathway.progress.completed > 0 ? 'Continue' : 'Start Learning'}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
-                  <h3 className="font-semibold text-xl mb-2">Data & Tech Capable</h3>
-                  <p className="text-gray-600 text-sm mb-4 flex-grow">Develop skills to work with data, AI tools, and emerging technologies for business innovation</p>
-                  
-                  {/* Progress indicator */}
-                  <div className="mb-4 mt-auto">
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span>Progress</span>
-                      <span>3/7 modules</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div className="bg-purple-600 h-2.5 rounded-full" style={{ width: '43%' }}></div>
-                    </div>
-                  </div>
-                  
-                  <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full font-medium">
-                    Learn
-                  </button>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
           
