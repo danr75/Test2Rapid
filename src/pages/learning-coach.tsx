@@ -466,7 +466,8 @@ const LearningCoachPage: React.FC = () => {
             <h2 className="text-3xl font-semibold text-gray-700">Learning Pathway</h2>
             <p className="text-gray-600 mb-6">Proceed with a structured approach to your learning</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div className="bg-gray-100 p-6 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {learningPathways.map((pathway) => {
                 const bgColor = {
                   blue: 'bg-blue-100 text-blue-600',
@@ -540,6 +541,7 @@ const LearningCoachPage: React.FC = () => {
                   </div>
                 );
               })}
+              </div>
             </div>
           </div>
           
