@@ -415,35 +415,17 @@ const LearningCoachPage: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-10">
-            <div className="flex">
-              <input
-                type="text"
-                className="flex-grow p-4 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                placeholder="Ask about any real world capability and I'll build a rapid learning lesson for you..."
-                onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
-              />
-              <button
-                onClick={() => {
-                  const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
-                  if (inputEl && inputEl.value) handleTopicSubmit(inputEl.value);
-                }}
-                className="bg-gray-900 text-white px-8 py-4 rounded-r-lg hover:bg-black transition-colors">
-                Ask
-              </button>
-            </div>
-          </div>
           {/* Daily Drill */}
           <div className="mb-10">
             <h2 className="text-3xl font-semibold text-gray-700">Daily Drill</h2>
             <p className="text-gray-600 mb-6">10-minute challenges tailored to your capability level and what you need to focus on next.</p>
             
-            {/* Learning mode tabs */}
+            {/* Learning mode tabs with ask bar */}
             <div style={{backgroundColor: '#E0EDFF'}} className="rounded-lg p-5 mt-4">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Choose Your Learning Mode</h3>
               </div>
-              <div className="flex justify-between px-4">
+              <div className="flex justify-between px-4 mb-6">
                 {learningModes.map((mode) => (
                   <button
                     key={mode.id}
@@ -458,6 +440,26 @@ const LearningCoachPage: React.FC = () => {
                   </button>
                 ))}
               </div>
+              
+              {/* Ask Bar */}
+              <div className="px-4">
+                <div className="flex">
+                  <input
+                    type="text"
+                    className="flex-grow p-3 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                    placeholder="Ask about any real world capability and I'll build a rapid learning lesson for you..."
+                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
+                  />
+                  <button
+                    onClick={() => {
+                      const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
+                      if (inputEl && inputEl.value) handleTopicSubmit(inputEl.value);
+                    }}
+                    className="bg-primary text-white px-6 py-3 rounded-r-lg hover:bg-indigo-700 transition-colors">
+                    Ask
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -466,8 +468,7 @@ const LearningCoachPage: React.FC = () => {
             <h2 className="text-3xl font-semibold text-gray-700">Learning Pathway</h2>
             <p className="text-gray-600 mb-6">Proceed with a structured approach to your learning</p>
             
-            <div className="bg-gray-100 p-6 rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               {learningPathways.map((pathway) => {
                 const bgColor = {
                   blue: 'bg-blue-100 text-blue-600',
@@ -541,7 +542,6 @@ const LearningCoachPage: React.FC = () => {
                   </div>
                 );
               })}
-              </div>
             </div>
           </div>
           
