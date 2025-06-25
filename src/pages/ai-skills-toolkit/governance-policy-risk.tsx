@@ -219,72 +219,58 @@ const GovernancePolicyRisk = () => {
       </Head>
 
       <Header activeTab="learning-coach" />
-
-      <main className="container mx-auto px-4 py-6 sm:py-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Back button with improved styling */}
-          <button
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <button 
             onClick={() => router.back()}
-            className="group flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors duration-200"
-            aria-label="Return to AI Skills Toolkit"
+            className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
           >
-            <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full group-hover:bg-blue-100 transition-colors duration-200 mr-2">
-              <ArrowLeftIcon className="h-4 w-4" />
-            </div>
-            <span className="font-medium">Toolkit</span>
+            <ArrowLeftIcon className="h-5 w-5 mr-1" />
+            Back to Learning Coach
           </button>
-
-          {/* Enhanced Header Section */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 p-6 mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center">
-              <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div className="mt-4 sm:mt-0 sm:ml-6">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">Governance, Policy & Risk</h1>
-                <p className="mt-2 text-gray-600 max-w-2xl">
-                  Comprehensive resources and tools to establish robust AI governance frameworks, ensure regulatory compliance, and effectively manage risks in AI implementation.
-                </p>
-              </div>
+          
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Governance, Policy & Risk</h1>
+              <p className="text-gray-600 mt-1">Resources and tools for AI governance and compliance</p>
             </div>
           </div>
+        </div>
 
-          {/* Tabs */}
-          <div className="mb-6 border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
-              {[
-                { id: 'cheatsheets', name: 'Cheat Sheets', icon: DocumentTextIcon },
-                { id: 'templates', name: 'Templates', icon: ClipboardDocumentListIcon },
-                { id: 'essentials', name: 'Essentials', icon: LightBulbIcon },
-                { id: 'mynotes', name: 'My Notes', icon: BookmarkIcon },
-                { id: 'chat', name: 'Chat', icon: ChatBubbleLeftRightIcon },
-              ].map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as TabType)}
-                    className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center ${
-                      isActive
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <Icon className={`h-5 w-5 mr-2 ${isActive ? 'text-blue-500' : 'text-gray-400'}`} />
-                    {tab.name}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
+        {/* Tabs */}
+        <div className="mb-6 border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+            {[
+              { id: 'cheatsheets', name: 'Cheat Sheets', icon: DocumentTextIcon },
+              { id: 'templates', name: 'Templates', icon: ClipboardDocumentListIcon },
+              { id: 'essentials', name: 'Essentials', icon: LightBulbIcon },
+              { id: 'mynotes', name: 'My Notes', icon: BookmarkIcon },
+              { id: 'chat', name: 'Chat', icon: ChatBubbleLeftRightIcon },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as TabType)}
+                  className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center ${
+                    isActive
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <Icon className={`h-5 w-5 mr-2 ${isActive ? 'text-blue-500' : 'text-gray-400'}`} />
+                  {tab.name}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
 
-          {/* Tab Content */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            {renderTabContent()}
-          </div>
+        {/* Tab Content */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          {renderTabContent()}
         </div>
       </main>
     </div>
