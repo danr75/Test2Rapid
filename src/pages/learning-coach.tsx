@@ -14,7 +14,8 @@ import {
   AcademicCapIcon,
   ExclamationTriangleIcon,
   ExclamationCircleIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import tagsModule, { TagGroup } from '@/types/tags';
 
@@ -227,6 +228,42 @@ const LearningCoachPage: React.FC = () => {
   const { state, dispatch } = useLearning();
   const router = useRouter();
   const [carouselIndex, setCarouselIndex] = useState(0);
+  
+  // Function to get a random learning mode
+  const getRandomLearningMode = (): LearningMode => {
+    const modes: LearningMode[] = ['Q&A', 'Scenario', 'Speed'];
+    const randomIndex = Math.floor(Math.random() * modes.length);
+    return modes[randomIndex];
+  };
+  
+  // Function to handle 'Pick for me' click
+  const handlePickForMe = () => {
+    // Use the currently selected mode instead of a random one
+    const mode = currentLearningMode;
+    
+    // Define some default topics for each mode
+    const defaultTopics = {
+      'Q&A': 'AI Fundamentals',
+      'Scenario': 'AI Business Case',
+      'Speed': 'AI Quick Facts'
+    };
+    
+    // Set the topic based on the selected mode
+    const topic = defaultTopics[mode];
+    dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic });
+    
+    // Navigate to the appropriate learning page
+    if (mode === 'Scenario') {
+      console.log('Navigating to Scenario mode with topic:', topic);
+      router.push('/scenario-learn');
+    } else if (mode === 'Speed') {
+      console.log('Navigating to Speed mode with topic:', topic);
+      router.push('/speed-learn');
+    } else {
+      console.log('Navigating to Q&A mode with topic:', topic);
+      router.push('/qa-learn');
+    }
+  };
 
   // Learning pathway data for all capability groups
   const learningPathways = [
@@ -327,8 +364,11 @@ const LearningCoachPage: React.FC = () => {
   const handleModeChange = (newMode: LearningMode) => {
     console.log('handleModeChange called with:', newMode);
     
+    // Toggle the learning mode - if clicking the same mode, keep it selected
+    const modeToSet = currentLearningMode === newMode ? currentLearningMode : newMode;
+    
     // Set the learning mode in the context
-    dispatch({ type: 'SET_LEARNING_MODE', payload: newMode });
+    dispatch({ type: 'SET_LEARNING_MODE', payload: modeToSet });
     
     // Get the default topic for this mode if no topic is set
     const defaultTopics = {
@@ -337,36 +377,22 @@ const LearningCoachPage: React.FC = () => {
       'Speed': 'AI Quick Facts'
     };
     
-    const topic = state.topic || defaultTopics[newMode] || 'AI Learning';
+    const topic = state.topic || defaultTopics[modeToSet] || 'AI Learning';
     
-    // Set the topic for learning
+    // Set the topic in the context
     dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic });
-    
-    // Navigate to the appropriate learning page
-    if (newMode === 'Scenario') {
-      console.log('Launching Scenario mode with topic:', topic);
-      router.push('/scenario-learn');
-    } 
-    else if (newMode === 'Speed') {
-      console.log('Launching Speed mode with topic:', topic);
-      router.push('/speed-learn');
-    }
-    else {
-      console.log('Launching Q&A mode with topic:', topic);
-      router.push('/qa-learn');
-    }
   };
 
   const handleTopicSubmit = (topic: string) => {
-    // Debug output to track the current flow
+    if (!topic.trim()) return; // Don't submit empty topics
+    
     console.log('Topic submitted:', topic);
     console.log('Current learning mode is:', currentLearningMode);
     
-    // Setting both the topic and mode before navigation
+    // Set the topic in the context
     dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic });
-    dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
     
-    // Using a more direct navigation approach to each mode
+    // Navigate based on the currently selected mode
     if (currentLearningMode === 'Scenario') {
       console.log('Navigating to Scenario mode');
       router.push('/scenario-learn');
@@ -382,14 +408,12 @@ const LearningCoachPage: React.FC = () => {
   };
 
   const handleStrategicFocusClick = (card: StrategicFocusCardData) => {
-    // Use the currently selected learning mode instead of forcing Q&A mode
     console.log('Strategic focus clicked with mode:', currentLearningMode);
     
-    // Setting both the topic and mode before navigation
+    // Set the topic for learning
     dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: card.topicToSet });
-    dispatch({ type: 'SET_LEARNING_MODE', payload: currentLearningMode });
     
-    // Using the same direct navigation approach as handleTopicSubmit
+    // Navigate based on the currently selected mode
     if (currentLearningMode === 'Scenario') {
       console.log('Navigating strategic focus to Scenario mode');
       router.push('/scenario-learn');
@@ -422,42 +446,60 @@ const LearningCoachPage: React.FC = () => {
             
             {/* Learning mode tabs with ask bar */}
             <div style={{backgroundColor: '#E0EDFF'}} className="rounded-lg p-5 mt-4">
-              <div className="mb-4">
+              <div className="px-4 mb-4">
                 <h3 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Choose Your Learning Mode</h3>
               </div>
               <div className="flex justify-between px-4 mb-6">
                 {learningModes.map((mode) => (
                   <button
                     key={mode.id}
-                    className={`flex items-center justify-center px-4 py-2.5 rounded-lg w-1/4 ${currentLearningMode === mode.id
-                      ? 'bg-white shadow text-gray-800 border border-gray-100'
-                      : 'bg-white bg-opacity-70 text-gray-600 hover:bg-white hover:bg-opacity-100'
+                    className={`flex items-center justify-center px-4 py-2.5 rounded-lg w-1/4 transition-colors ${
+                      currentLearningMode === mode.id
+                        ? 'bg-white shadow text-gray-800 border border-gray-100 ring-2 ring-primary ring-opacity-50'
+                        : 'bg-white bg-opacity-70 text-gray-600 hover:bg-white hover:bg-opacity-100'
                     }`}
                     onClick={() => handleModeChange(mode.id)}
                   >
-                    <mode.icon className="h-5 w-5 mr-2" aria-hidden="true" />
+                    <mode.icon 
+                      className={`h-5 w-5 mr-2 ${
+                        currentLearningMode === mode.id ? 'text-primary' : 'text-gray-500'
+                      }`} 
+                      aria-hidden="true" 
+                    />
                     <span>{mode.label}</span>
                   </button>
                 ))}
               </div>
               
               {/* Ask Bar */}
-              <div className="px-4">
-                <div className="flex">
-                  <input
-                    type="text"
-                    className="flex-grow p-3 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                    placeholder="Ask about any real world capability and I'll build a rapid learning lesson for you..."
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
-                  />
+              <div className="px-4 mt-6">
+                <h3 className="text-lg font-semibold mb-3" style={{color: '#2D2D38'}}>
+                  Ask for a specific skill or let us pick what's next
+                </h3>
+                <div className="flex gap-2">
                   <button
-                    onClick={() => {
-                      const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
-                      if (inputEl && inputEl.value) handleTopicSubmit(inputEl.value);
-                    }}
-                    className="bg-primary text-white px-6 py-3 rounded-r-lg hover:bg-indigo-700 transition-colors">
-                    Ask
+                    onClick={handlePickForMe}
+                    className="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center hover:shadow-sm"
+                  >
+                    <SparklesIcon className="h-5 w-5 mr-2 text-yellow-500" />
+                    Pick for me
                   </button>
+                  <div className="flex flex-grow">
+                    <input
+                      type="text"
+                      className="flex-grow p-3 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                      placeholder="Ask about any real world capability and I'll build a rapid learning lesson for you..."
+                      onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
+                    />
+                    <button
+                      onClick={() => {
+                        const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
+                        if (inputEl && inputEl.value) handleTopicSubmit(inputEl.value);
+                      }}
+                      className="bg-primary text-white px-6 py-3 rounded-r-lg hover:bg-indigo-700 transition-colors">
+                      Ask
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
