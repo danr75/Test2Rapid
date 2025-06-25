@@ -595,6 +595,43 @@ const LearningCoachPage: React.FC = () => {
             </div>
           </div>
           
+          {/* AI Skills Toolkit Section */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-semibold mb-6 text-left text-gray-800">
+              AI Skills Toolkit
+            </h2>
+            <p className="text-gray-600 mb-6 text-left">
+              Essential learning paths to build your AI capabilities
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {learningPathways.map((pathway) => {
+                const bgColor = {
+                  blue: 'bg-blue-100 text-blue-600',
+                  green: 'bg-green-100 text-green-600',
+                  purple: 'bg-purple-100 text-purple-600',
+                  indigo: 'bg-indigo-100 text-indigo-600',
+                  teal: 'bg-teal-100 text-teal-600',
+                  pink: 'bg-pink-100 text-pink-600'
+                }[pathway.color] || 'bg-gray-100 text-gray-600';
+
+                return (
+                  <div 
+                    key={pathway.id}
+                    className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex items-center mb-4">
+                      <div className={`h-12 w-12 ${bgColor} flex items-center justify-center rounded-lg`}>
+                        {pathway.icon}
+                      </div>
+                      <h3 className="ml-4 text-lg font-medium text-gray-900">{pathway.title}</h3>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          
           {/* Personalised micro-lessons Section */}
           <div className="mb-8">
             <h2 className="text-3xl font-semibold mb-2 text-left text-gray-700">
