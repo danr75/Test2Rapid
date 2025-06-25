@@ -215,34 +215,37 @@ const GovernancePolicyRisk = () => {
     <div className="min-h-screen bg-gray-50">
       <Head>
         <title>Governance, Policy & Risk | AI Skills Toolkit</title>
-        <meta name="description" content="Master AI governance frameworks, compliance requirements, and risk management strategies" />
+        <meta name="description" content="Access essential resources for AI governance, policy development, and risk management. Explore cheat sheets, templates, and expert guidance to implement effective AI governance frameworks." />
       </Head>
 
       <Header activeTab="learning-coach" />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          {/* Back button */}
+          {/* Back button with improved styling */}
           <button
             onClick={() => router.back()}
-            className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+            className="group flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors duration-200"
+            aria-label="Return to AI Skills Toolkit"
           >
-            <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            Back to AI Skills Toolkit
+            <div className="flex items-center justify-center w-8 h-8 bg-blue-50 rounded-full group-hover:bg-blue-100 transition-colors duration-200 mr-2">
+              <ArrowLeftIcon className="h-4 w-4" />
+            </div>
+            <span className="font-medium">Toolkit</span>
           </button>
 
-          {/* Header */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="flex items-start">
-              <div className="h-14 w-14 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+          {/* Enhanced Header Section */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 p-6 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center">
+              <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <div className="ml-6">
-                <h1 className="text-2xl font-bold text-gray-900">Governance, Policy & Risk</h1>
-                <p className="mt-2 text-gray-600">
-                  Master AI governance frameworks, compliance requirements, and risk management strategies
+              <div className="mt-4 sm:mt-0 sm:ml-6">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">Governance, Policy & Risk</h1>
+                <p className="mt-2 text-gray-600 max-w-2xl">
+                  Comprehensive resources and tools to establish robust AI governance frameworks, ensure regulatory compliance, and effectively manage risks in AI implementation.
                 </p>
               </div>
             </div>

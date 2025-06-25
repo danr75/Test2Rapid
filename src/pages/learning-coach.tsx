@@ -595,10 +595,10 @@ const LearningCoachPage: React.FC = () => {
           {/* AI Skills Toolkit Section */}
           <div className="mb-12">
             <h2 className="text-3xl font-semibold mb-6 text-left text-gray-800">
-              AI Skills Toolkit
+              My Toolkit
             </h2>
             <p className="text-gray-600 mb-6 text-left">
-              Essential learning paths to build your AI capabilities
+              Quick-access resources to support your daily work.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -612,12 +612,21 @@ const LearningCoachPage: React.FC = () => {
                   pink: 'bg-pink-100 text-pink-600'
                 }[pathway.color] || 'bg-gray-100 text-gray-600';
 
-                const isGovernance = pathway.id === 'governance-policy-risk';
+                const toolkitTiles = [
+                  'governance-policy-risk',
+                  'foundations-ecosystem',
+                  'data-tech-capable',
+                  'leadership-strategy',
+                  'workforce-enablement',
+                  'ai-ethics-responsibility'
+                ];
+                
+                const isToolkitTile = toolkitTiles.includes(pathway.id);
                 const router = useRouter();
 
                 const handleCardClick = () => {
-                  if (isGovernance) {
-                    router.push('/ai-skills-toolkit/governance-policy-risk');
+                  if (isToolkitTile) {
+                    router.push(`/ai-skills-toolkit/${pathway.id}`);
                   } else if (pathway.path) {
                     router.push(pathway.path);
                   }
@@ -626,8 +635,8 @@ const LearningCoachPage: React.FC = () => {
                 return (
                   <div 
                     key={pathway.id}
-                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${pathway.path || isGovernance ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
-                    onClick={(pathway.path || isGovernance) ? handleCardClick : undefined}
+                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    onClick={(pathway.path || isToolkitTile) ? handleCardClick : undefined}
                   >
                     <div className="p-6 flex items-center">
                       <div className={`h-12 w-12 ${bgColor} flex items-center justify-center rounded-lg`}>
