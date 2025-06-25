@@ -265,6 +265,11 @@ const LearningCoachPage: React.FC = () => {
     }
   };
 
+  // Handle learning pathway click
+  const handlePathwayClick = (path: string) => {
+    router.push(path);
+  };
+
   // Learning pathway data for all capability groups
   const learningPathways = [
     {
@@ -277,7 +282,8 @@ const LearningCoachPage: React.FC = () => {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-      )
+      ),
+      path: '/learning-pathways/governance-policy-risk'
     },
     {
       id: 'foundations-ecosystem',
@@ -289,7 +295,8 @@ const LearningCoachPage: React.FC = () => {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
-      )
+      ),
+      path: '/learning-pathways/foundations-ecosystem'
     },
     {
       id: 'data-tech-capable',
@@ -531,55 +538,56 @@ const LearningCoachPage: React.FC = () => {
                 }[pathway.color] || 'bg-gray-600';
 
                 const isGovernance = pathway.id === 'governance-policy-risk';
+                const isFoundations = pathway.id === 'foundations-ecosystem';
                 const router = useRouter();
 
                 const handleCardClick = () => {
                   if (isGovernance) {
                     router.push('/governance-pathway');
+                  } else if (isFoundations && pathway.path) {
+                    router.push(pathway.path);
                   }
                 };
 
                 return (
                   <div 
                     key={pathway.id} 
-                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${isGovernance ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
-                    onClick={isGovernance ? handleCardClick : undefined}
+                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${(isGovernance || isFoundations) ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    onClick={(isGovernance || isFoundations) ? handleCardClick : undefined}
                   >
                     <div className="p-6 flex flex-col h-full">
-                      <div className="flex-shrink-0 mb-5">
+                      <div className="flex items-center mb-4">
                         <div className={`h-12 w-12 ${bgColor} flex items-center justify-center rounded-lg`}>
                           {pathway.icon}
                         </div>
+                        <h3 className="ml-4 text-lg font-medium text-gray-900">{pathway.title}</h3>
                       </div>
-                      <h3 className="font-semibold text-xl mb-2">
-                        {pathway.title}
-                        {isGovernance && (
-                          <span className="ml-2 text-sm text-gray-400">Click to explore</span>
-                        )}
-                      </h3>
-                      <p className="text-gray-600 text-sm mb-4 flex-grow">{pathway.description}</p>
-                      
-                      {!isGovernance && (
-                        <>
-                          {/* Progress indicator */}
-                          <div className="mb-4 mt-auto">
-                            <div className="flex justify-between text-xs text-gray-500 mb-1">
-                              <span>Progress</span>
-                              <span>{pathway.progress.completed}/{pathway.progress.total} modules</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                              <div 
-                                className={`h-2.5 rounded-full ${progressBarColor}`} 
-                                style={{ width: `${pathway.progress.percentage}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                          
-                          <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full font-medium">
-                            {pathway.progress.completed > 0 ? 'Continue' : 'Start Learning'}
-                          </button>
-                        </>
-                      )}
+                      <p className="text-sm text-gray-500 mb-4">{pathway.description}</p>
+                      <div className="mt-auto">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {pathway.progress.completed} of {pathway.progress.total} modules
+                          </span>
+                          <span className="text-xs text-gray-500">{pathway.progress.percentage}% Complete</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                          <div 
+                            className={`h-2 rounded-full bg-${pathway.color}-500`} 
+                            style={{ width: `${pathway.progress.percentage}%` }}
+                          />
+                        </div>
+                        <button 
+                          className="w-full text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (pathway.path) {
+                              router.push(pathway.path);
+                            }
+                          }}
+                        >
+                          {pathway.progress.completed > 0 ? 'Continue' : 'Start Learning'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
