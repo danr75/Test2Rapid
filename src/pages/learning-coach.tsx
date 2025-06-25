@@ -593,7 +593,7 @@ const LearningCoachPage: React.FC = () => {
           </div>
           
           {/* AI Skills Toolkit Section */}
-          <div className="mb-12">
+          <div id="my-toolkit" className="mb-12">
             <h2 className="text-3xl font-semibold mb-6 text-left text-gray-800">
               My Toolkit
             </h2>

@@ -212,7 +212,7 @@ const LeadershipStrategy = () => {
         <meta name="description" content="Explore leadership and strategy resources" />
       </Head>
       
-      <Header />
+      <Header activeTab="learning-coach" />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
@@ -221,7 +221,7 @@ const LeadershipStrategy = () => {
             className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeftIcon className="h-5 w-5 mr-1" />
-            Back to Learning Coach
+            Back to Toolkit
           </button>
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">

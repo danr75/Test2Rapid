@@ -222,13 +222,13 @@ const GovernancePolicyRisk = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <button 
-            onClick={() => router.back()}
+          <a 
+            href="/learning-coach#my-toolkit"
             className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeftIcon className="h-5 w-5 mr-1" />
-            Back to Learning Coach
-          </button>
+            Back to Toolkit
+          </a>
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
