@@ -537,14 +537,11 @@ const LearningCoachPage: React.FC = () => {
                   pink: 'bg-pink-600'
                 }[pathway.color] || 'bg-gray-600';
 
-                const isGovernance = pathway.id === 'governance-policy-risk';
                 const isFoundations = pathway.id === 'foundations-ecosystem';
                 const router = useRouter();
 
                 const handleCardClick = () => {
-                  if (isGovernance) {
-                    router.push('/governance-pathway');
-                  } else if (isFoundations && pathway.path) {
+                  if (isFoundations && pathway.path) {
                     router.push(pathway.path);
                   }
                 };
@@ -552,8 +549,8 @@ const LearningCoachPage: React.FC = () => {
                 return (
                   <div 
                     key={pathway.id} 
-                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${(isGovernance || isFoundations) ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
-                    onClick={(isGovernance || isFoundations) ? handleCardClick : undefined}
+                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${isFoundations ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    onClick={isFoundations ? handleCardClick : undefined}
                   >
                     <div className="p-6 flex flex-col h-full">
                       <div className="flex items-center mb-4">
@@ -615,12 +612,24 @@ const LearningCoachPage: React.FC = () => {
                   pink: 'bg-pink-100 text-pink-600'
                 }[pathway.color] || 'bg-gray-100 text-gray-600';
 
+                const isGovernance = pathway.id === 'governance-policy-risk';
+                const router = useRouter();
+
+                const handleCardClick = () => {
+                  if (isGovernance) {
+                    router.push('/ai-skills-toolkit/governance-policy-risk');
+                  } else if (pathway.path) {
+                    router.push(pathway.path);
+                  }
+                };
+
                 return (
                   <div 
                     key={pathway.id}
-                    className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow"
+                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${pathway.path || isGovernance ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    onClick={(pathway.path || isGovernance) ? handleCardClick : undefined}
                   >
-                    <div className="flex items-center mb-4">
+                    <div className="p-6 flex items-center">
                       <div className={`h-12 w-12 ${bgColor} flex items-center justify-center rounded-lg`}>
                         {pathway.icon}
                       </div>
