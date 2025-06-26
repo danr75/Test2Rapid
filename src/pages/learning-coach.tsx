@@ -447,12 +447,9 @@ const LearningCoachPage: React.FC = () => {
             </div>
             
             <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 mb-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-700 mb-1">Learning Mode</h3>
-                  <p className="text-xs text-gray-500">Currently in {currentLearningMode} mode</p>
-                </div>
-                <div className="flex items-center space-x-1 bg-white p-0.5 rounded-lg border border-gray-200">
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">Learning Mode</h3>
+                <div className="flex items-center space-x-1 bg-white p-0.5 rounded-lg border border-gray-200 w-fit">
                   {learningModes.map((mode) => (
                     <button
                       key={mode.id}
@@ -481,13 +478,15 @@ const LearningCoachPage: React.FC = () => {
                 <h3 className="text-lg font-medium text-gray-900">What would you like to learn about today?</h3>
                 
                 <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-                  <button
-                    onClick={handlePickForMe}
-                    className="flex-1 flex items-center justify-center px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
-                  >
-                    <SparklesIcon className="h-5 w-5 mr-2" />
-                    Pick for me
-                  </button>
+                  <div className="w-3/4 sm:w-auto">
+                    <button
+                      onClick={handlePickForMe}
+                      className="w-full flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+                    >
+                      <SparklesIcon className="h-5 w-5 mr-2" />
+                      Pick for me
+                    </button>
+                  </div>
                   
                   <div className="relative flex-grow">
                     <input
