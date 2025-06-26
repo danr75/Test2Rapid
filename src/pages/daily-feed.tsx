@@ -61,247 +61,300 @@ const DailyFeedPage: React.FC = () => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Head>
-        <title>Daily Feed | Digital Executive Advisor</title>
-        <meta name="description" content="Strategic Learning Platform" />
+        <title>Daily Feed | Interactive Learning Hub</title>
+        <meta name="description" content="Your daily learning feed" />
       </Head>
 
       <Header activeTab="daily-feed" />
 
-      {/* Page content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Today's Curated Feed */}
-          <div className="mb-10">
-            <div className="flex items-baseline mb-8">
-              <h1 className="text-2xl font-bold" style={{color: '#2D2D38'}}>Essential news and trends to know</h1>
-            </div>
-            
-            {/* Quick Learning Tools - 10-Min Catch-up and Knowledge Test */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-              {/* 10-Minute AI Catch-up */}
-              <div style={{backgroundColor: '#E0EDFF'}} className="bg-blue-50 rounded-lg p-3 flex flex-col">
-                <div className="flex items-center mb-2 justify-between">
-                  <div className="flex items-center">
-                    <div className="bg-blue-100 rounded-full p-2 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>10-Minute AI Catch-up</h2>
-                  </div>
-                  
-                  <button 
-                    onClick={togglePlayPause}
-                    className="bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-800 transition-colors"
-                    aria-label={isPlaying ? "Pause audio" : "Play audio"}
+      <main className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Daily Feed</h1>
+                <p className="mt-1 text-gray-600">Your personalized learning content for today</p>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search feed..."
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full md:w-64"
+                  />
+                  <svg
+                    className="w-5 h-5 text-gray-400 absolute left-3 top-2.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    {isPlaying ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    )}
-                  </button>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                  <span>New Post</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="space-y-6">
+              {/* Today's Curated Feed */}
+              <div className="mb-10">
+                <div className="flex items-baseline mb-8">
+                  <h1 className="text-2xl font-bold" style={{color: '#2D2D38'}}>Essential news and trends to know</h1>
                 </div>
                 
-                {/* Hidden audio element */}
-                <audio 
-                  ref={audioRef} 
-                  src="/audio/ai-catchup.mp3" 
-                  onTimeUpdate={updateTime} 
-                  onEnded={() => setIsPlaying(false)}
-                  onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-                />
-              </div>
-              
-              {/* Test What You've Missed */}
-              <div style={{backgroundColor: '#F3E8FF'}} className="bg-purple-50 rounded-lg p-3 flex flex-col">
-                <div className="flex items-center mb-2 justify-between">
-                  <div className="flex items-center">
-                    <div className="bg-purple-100 rounded-full p-2 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                {/* Quick Learning Tools - 10-Min Catch-up and Knowledge Test */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                  {/* 10-Minute AI Catch-up */}
+                  <div style={{backgroundColor: '#E0EDFF'}} className="bg-blue-50 rounded-lg p-3 flex flex-col">
+                    <div className="flex items-center mb-2 justify-between">
+                      <div className="flex items-center">
+                        <div className="bg-blue-100 rounded-full p-2 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>10-Minute AI Catch-up</h2>
+                      </div>
+                      
+                      <button 
+                        onClick={togglePlayPause}
+                        className="bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-800 transition-colors"
+                        aria-label={isPlaying ? "Pause audio" : "Play audio"}
+                      >
+                        {isPlaying ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                      </button>
                     </div>
-                    <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Test What You've Missed</h2>
-                  </div>
-                  <div className="flex justify-end mb-2">
-                    <button 
-                      onClick={handleTakeTest}
-                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Test
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Today's Trending Topics */}
-            <div style={{backgroundColor: '#F0F0F4'}} className="mb-10 w-full p-4 rounded-lg">
-              <h2 className="font-semibold text-lg mb-4" style={{color: '#2D2D38'}}>Today's Trending Topics</h2>
-              <div className="flex flex-wrap gap-3 mt-3">
-                <Tag tag="ai-foundations" onClick={() => {}} />
-                <Tag tag="ai-strategy" onClick={() => {}} />
-                <Tag tag="ai-ethics" onClick={() => {}} />
-                <Tag tag="change-management" onClick={() => {}} />
-              </div>
-            </div>
-            
-            {/* Trending AI Concepts */}
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#2D2D38'}}>What Today's AI Trends Mean for You</h2>
-            </div>
-            <div className="space-y-8 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}} >
-              {/* Article 1: Leadership & Strategy */}
-              <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Strategic AI Leadership in the Digital Age</h2>
-                    <span className="text-xs" style={{color: '#6B7280'}}>2h ago</span>
-                  </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn how to develop and communicate a compelling AI vision that aligns with your organization's strategic objectives and drives digital transformation.</p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <Tag tag="ai-strategy" onClick={() => {}} className="text-xs" />
-                    <Tag tag="digital-transformation" onClick={() => {}} className="text-xs" />
-                    <Tag tag="leadership" onClick={() => {}} className="text-xs" />
-                  </div>
-                  
-                  <div className="flex justify-end items-center gap-3 mt-2">
-                    <button 
-                      onClick={() => handleLaunchLearning("Responsible Use of Generative AI in Customer Services")}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Learn
-                    </button>
                     
-                    <button 
-                      onClick={() => handleLaunchTest("Responsible Use of Generative AI in Customer Services")}
-                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Test
-                    </button>
+                    {/* Hidden audio element */}
+                    <audio 
+                      ref={audioRef} 
+                      src="/audio/ai-catchup.mp3" 
+                      onTimeUpdate={updateTime} 
+                      onEnded={() => setIsPlaying(false)}
+                      onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+                    />
+                  </div>
+                  
+                  {/* Test What You've Missed */}
+                  <div style={{backgroundColor: '#F3E8FF'}} className="bg-purple-50 rounded-lg p-3 flex flex-col">
+                    <div className="flex items-center mb-2 justify-between">
+                      <div className="flex items-center">
+                        <div className="bg-purple-100 rounded-full p-2 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Test What You've Missed</h2>
+                      </div>
+                      <div className="flex justify-end mb-2">
+                        <button 
+                          onClick={handleTakeTest}
+                          className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Test
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <hr className="border-[#E5E7EB] border-t" />
+                
+                {/* Today's Trending Topics */}
+                <div style={{backgroundColor: '#F0F0F4'}} className="mb-10 w-full p-4 rounded-lg">
+                  <h2 className="font-semibold text-lg mb-4" style={{color: '#2D2D38'}}>Today's Trending Topics</h2>
+                  <div className="flex flex-wrap gap-3 mt-3">
+                    <Tag tag="ai-foundations" onClick={() => {}} />
+                    <Tag tag="ai-strategy" onClick={() => {}} />
+                    <Tag tag="ai-ethics" onClick={() => {}} />
+                    <Tag tag="change-management" onClick={() => {}} />
+                  </div>
+                </div>
+                
+                {/* Trending AI Concepts */}
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold mb-4" style={{color: '#2D2D38'}}>What Today's AI Trends Mean for You</h2>
+                </div>
+                <div className="space-y-8 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}} >
+                  {/* Article 1: Leadership & Strategy */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Strategic AI Leadership in the Digital Age</h2>
+                        <span className="text-xs" style={{color: '#6B7280'}}>2h ago</span>
+                      </div>
+                      <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn how to develop and communicate a compelling AI vision that aligns with your organization's strategic objectives and drives digital transformation.</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <Tag tag="ai-strategy" onClick={() => {}} className="text-xs" />
+                        <Tag tag="digital-transformation" onClick={() => {}} className="text-xs" />
+                        <Tag tag="leadership" onClick={() => {}} className="text-xs" />
+                      </div>
+                      
+                      <div className="flex justify-end items-center gap-3 mt-2">
+                        <button 
+                          onClick={() => handleLaunchLearning("Responsible Use of Generative AI in Customer Services")}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Learn
+                        </button>
+                        
+                        <button 
+                          onClick={() => handleLaunchTest("Responsible Use of Generative AI in Customer Services")}
+                          className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Test
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <hr className="border-[#E5E7EB] border-t" />
 
-              {/* Article 2: Governance, Policy & Risk */}
-              <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>AI Governance Frameworks for Enterprise Risk Management</h2>
-                    <span className="text-xs" style={{color: '#6B7280'}}>4h ago</span>
+                  {/* Article 2: Governance, Policy & Risk */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>AI Governance Frameworks for Enterprise Risk Management</h2>
+                        <span className="text-xs" style={{color: '#6B7280'}}>4h ago</span>
+                      </div>
+                      <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Discover how to implement robust governance structures that ensure responsible AI deployment while managing risks and regulatory compliance.</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <Tag tag="ai-governance" onClick={() => {}} className="text-xs" />
+                        <Tag tag="risk-management" onClick={() => {}} className="text-xs" />
+                        <Tag tag="compliance" onClick={() => {}} className="text-xs" />
+                      </div>
+                      
+                      <div className="flex justify-end items-center gap-3 mt-2">
+                        <button 
+                          onClick={() => handleLaunchLearning("Data Mesh Architecture for Enterprise Scale")}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Learn
+                        </button>
+                        
+                        <button 
+                          onClick={() => handleLaunchTest("Data Mesh Architecture")}
+                          className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Test
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Discover how to implement robust governance structures that ensure responsible AI deployment while managing risks and regulatory compliance.</p>
                   
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <Tag tag="ai-governance" onClick={() => {}} className="text-xs" />
-                    <Tag tag="risk-management" onClick={() => {}} className="text-xs" />
-                    <Tag tag="compliance" onClick={() => {}} className="text-xs" />
-                  </div>
-                  
-                  <div className="flex justify-end items-center gap-3 mt-2">
-                    <button 
-                      onClick={() => handleLaunchLearning("Data Mesh Architecture for Enterprise Scale")}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Learn
-                    </button>
-                    
-                    <button 
-                      onClick={() => handleLaunchTest("Data Mesh Architecture")}
-                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Test
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <hr className="border-[#E5E7EB] border-t" />
+                  <hr className="border-[#E5E7EB] border-t" />
 
-              {/* Article 3: Foundations & Ecosystem */}
-              <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Building a Future-Ready AI Infrastructure</h2>
-                    <span className="text-xs" style={{color: '#6B7280'}}>6h ago</span>
+                  {/* Article 3: Foundations & Ecosystem */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Building a Future-Ready AI Infrastructure</h2>
+                        <span className="text-xs" style={{color: '#6B7280'}}>6h ago</span>
+                      </div>
+                      <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Explore the essential components of a scalable AI infrastructure that supports innovation while ensuring security and compliance.</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <Tag tag="ai-foundations" onClick={() => {}} className="text-xs" />
+                        <Tag tag="infrastructure" onClick={() => {}} className="text-xs" />
+                        <Tag tag="scalability" onClick={() => {}} className="text-xs" />
+                      </div>
+                      
+                      <div className="flex justify-end items-center gap-3 mt-2">
+                        <button 
+                          onClick={() => handleLaunchLearning("Zero Trust Security for AI Systems")}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Learn
+                        </button>
+                        
+                        <button 
+                          onClick={() => handleLaunchTest("Zero Trust Security Models for AI Systems")}
+                          className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Test
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Explore the essential components of a scalable AI infrastructure that supports innovation while ensuring security and compliance.</p>
                   
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <Tag tag="ai-foundations" onClick={() => {}} className="text-xs" />
-                    <Tag tag="infrastructure" onClick={() => {}} className="text-xs" />
-                    <Tag tag="scalability" onClick={() => {}} className="text-xs" />
-                  </div>
-                  
-                  <div className="flex justify-end items-center gap-3 mt-2">
-                    <button 
-                      onClick={() => handleLaunchLearning("Zero Trust Security for AI Systems")}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Learn
-                    </button>
-                    
-                    <button 
-                      onClick={() => handleLaunchTest("Zero Trust Security Models for AI Systems")}
-                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Test
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <hr className="border-[#E5E7EB] border-t" />
+                  <hr className="border-[#E5E7EB] border-t" />
 
-              {/* Article 4: Workforce Enablement */}
-              <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Upskilling Teams for the AI Revolution</h2>
-                    <span className="text-xs" style={{color: '#6B7280'}}>8h ago</span>
-                  </div>
-                  <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn strategies for developing AI literacy across your organization and building the skills needed for successful AI adoption.</p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <Tag tag="workforce-development" onClick={() => {}} className="text-xs" />
-                    <Tag tag="skills-training" onClick={() => {}} className="text-xs" />
-                    <Tag tag="change-management" onClick={() => {}} className="text-xs" />
-                  </div>
-                  
-                  <div className="flex justify-end items-center gap-3 mt-2">
-                    <button 
-                      onClick={() => handleLaunchLearning("AI-Powered Decision Intelligence Frameworks")}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Learn
-                    </button>
-                    
-                    <button 
-                      onClick={() => handleLaunchTest("AI-Powered Decision Intelligence")}
-                      className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                    >
-                      Test
-                    </button>
+                  {/* Article 4: Workforce Enablement */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Upskilling Teams for the AI Revolution</h2>
+                        <span className="text-xs" style={{color: '#6B7280'}}>8h ago</span>
+                      </div>
+                      <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn strategies for developing AI literacy across your organization and building the skills needed for successful AI adoption.</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <Tag tag="workforce-development" onClick={() => {}} className="text-xs" />
+                        <Tag tag="skills-training" onClick={() => {}} className="text-xs" />
+                        <Tag tag="change-management" onClick={() => {}} className="text-xs" />
+                      </div>
+                      
+                      <div className="flex justify-end items-center gap-3 mt-2">
+                        <button 
+                          onClick={() => handleLaunchLearning("AI-Powered Decision Intelligence Frameworks")}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Learn
+                        </button>
+                        
+                        <button 
+                          onClick={() => handleLaunchTest("AI-Powered Decision Intelligence")}
+                          className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                        >
+                          Test
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              {/* End of content */}
             </div>
           </div>
-
-          {/* End of content */}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
