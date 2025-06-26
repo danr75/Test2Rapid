@@ -565,13 +565,20 @@ const LearningCoachPage: React.FC = () => {
                     aria-label={`${pathway.title} - ${pathway.progress.completed} of ${pathway.progress.total} modules completed`}
                   >
                     <div className="p-5 flex flex-col h-full">
-                      <div className="flex items-start mb-3">
-                        <div className={`h-10 w-10 ${bgColor} flex-shrink-0 flex items-center justify-center rounded-lg`}>
-                          {React.cloneElement(pathway.icon as React.ReactElement, { className: 'h-5 w-5' })}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start">
+                          <div className={`h-10 w-10 ${bgColor} flex-shrink-0 flex items-center justify-center rounded-lg`}>
+                            {React.cloneElement(pathway.icon as React.ReactElement, { className: 'h-5 w-5' })}
+                          </div>
+                          <h3 className="ml-3 text-base font-medium text-gray-900 group-hover:text-indigo-700 transition-colors">
+                            {pathway.title}
+                          </h3>
                         </div>
-                        <h3 className="ml-3 text-base font-medium text-gray-900 group-hover:text-indigo-700 transition-colors">
-                          {pathway.title}
-                        </h3>
+                        <span className="text-gray-300 group-hover:text-gray-400 transition-colors">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </span>
                       </div>
                       
                       <div className="mt-3">
@@ -588,13 +595,7 @@ const LearningCoachPage: React.FC = () => {
                             aria-hidden="true"
                           />
                         </div>
-                        <div className="mt-3 text-right">
-                          <span className="inline-flex items-center justify-end w-8 h-8 rounded-full bg-gray-100 text-gray-400 group-hover:bg-gray-200 transition-colors">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </span>
-                        </div>
+                        
                       </div>
                     </div>
                   </div>
@@ -644,14 +645,24 @@ const LearningCoachPage: React.FC = () => {
                 return (
                   <div 
                     key={pathway.id}
-                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    className={`group relative bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 flex flex-col ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
                     onClick={(pathway.path || isToolkitTile) ? handleCardClick : undefined}
                   >
-                    <div className="p-5 flex items-center">
+                    <div className="p-5 pb-2 flex-1 flex items-start">
                       <div className={`h-10 w-10 ${bgColor} flex-shrink-0 flex items-center justify-center rounded-lg`}>
                         {React.cloneElement(pathway.icon as React.ReactElement, { className: 'h-5 w-5' })}
                       </div>
-                      <h3 className="ml-3 text-base font-medium text-gray-900">{pathway.title}</h3>
+                      <h3 className="ml-3 text-base font-medium text-gray-900">
+                        {pathway.title}
+                      </h3>
+                      <span className="ml-auto text-gray-300 group-hover:text-gray-400 transition-colors">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </span>
+                    </div>
+                    <div className="px-5 pb-4 pt-1">
+                      <p className="text-xs text-gray-400">Cheat Sheets, Templates, Notes & More</p>
                     </div>
                   </div>
                 );
