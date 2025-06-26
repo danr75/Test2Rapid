@@ -439,78 +439,84 @@ const LearningCoachPage: React.FC = () => {
       <Header activeTab="learning-coach" />
 
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto space-y-12">
           {/* Daily Drill */}
-          <div className="mb-12">
+          <div>
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">Daily Drill</h2>
-              <p className="text-gray-600">10-minute challenges tailored to your capability level and what you need to focus on next.</p>
+              <h2 className="text-2xl font-semibold text-gray-900">10 Minute Daily Drill</h2>
             </div>
             
-            {/* Learning mode selector */}
-            <div className="bg-indigo-50 rounded-xl p-6 mb-6">
-              <h3 className="text-sm font-medium text-gray-700 mb-4 uppercase tracking-wider">Choose Your Learning Mode</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                {learningModes.map((mode) => (
-                  <button
-                    key={mode.id}
-                    onClick={() => handleModeChange(mode.id)}
-                    className={`
-                      flex items-center justify-center p-4 rounded-lg transition-all
-                      ${currentLearningMode === mode.id
-                        ? 'bg-white shadow-md border-2 border-indigo-500'
-                        : 'bg-white hover:bg-gray-50 border border-gray-200'
-                      }
-                    `}
-                  >
-                    <mode.icon 
-                      className={`h-5 w-5 mr-2 ${
-                        currentLearningMode === mode.id ? 'text-indigo-600' : 'text-gray-500'
-                      }`} 
-                      aria-hidden="true"
-                    />
-                    <span className="font-medium">{mode.label}</span>
-                  </button>
-                ))}
+            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 mb-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-1">Learning Mode</h3>
+                  <p className="text-xs text-gray-500">Currently in {currentLearningMode} mode</p>
+                </div>
+                <div className="flex items-center space-x-1 bg-white p-0.5 rounded-lg border border-gray-200">
+                  {learningModes.map((mode) => (
+                    <button
+                      key={mode.id}
+                      onClick={() => handleModeChange(mode.id)}
+                      className={`
+                        flex items-center justify-center px-3 py-1.5 rounded-md text-sm transition-all
+                        ${currentLearningMode === mode.id
+                          ? 'bg-indigo-50 text-indigo-700 font-medium'
+                          : 'text-gray-600 hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      <mode.icon 
+                        className={`h-4 w-4 mr-1.5 ${
+                          currentLearningMode === mode.id ? 'text-indigo-600' : 'text-gray-400'
+                        }`} 
+                        aria-hidden="true"
+                      />
+                      <span>{mode.label.replace(' Mode', '')}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 items-center">
-                <button
-                  onClick={handlePickForMe}
-                  className="flex-shrink-0 flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700 text-sm whitespace-nowrap"
-                >
-                  <SparklesIcon className="h-4 w-4 mr-1.5 text-yellow-500" />
-                  Pick for me
-                </button>
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-gray-900">What would you like to learn about today?</h3>
                 
-                <div className="text-sm text-gray-400 px-1">or</div>
-                
-                <div className="relative flex-grow">
-                  <input
-                    type="text"
-                    className="w-full p-2.5 pr-16 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Search for a skill..."
-                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
-                  />
+                <div className="flex flex-col sm:flex-row gap-3 items-stretch">
                   <button
-                    onClick={() => {
-                      const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
-                      if (inputEl?.value) handleTopicSubmit(inputEl.value);
-                    }}
-                    className="absolute right-1.5 top-1.5 px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition-colors"
+                    onClick={handlePickForMe}
+                    className="flex-1 flex items-center justify-center px-6 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
                   >
-                    Go
+                    <SparklesIcon className="h-5 w-5 mr-2" />
+                    Pick for me
                   </button>
+                  
+                  <div className="relative flex-grow">
+                    <input
+                      type="text"
+                      className="w-full h-full px-4 pr-16 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="Search for a skill..."
+                      onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
+                    />
+                    <button
+                      onClick={() => {
+                        const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
+                        if (inputEl?.value) handleTopicSubmit(inputEl.value);
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors"
+                    >
+                      Go
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Learning Pathway */}
-          <div className="mb-10">
-            <h2 className="text-3xl font-semibold text-gray-700">Learning Pathway</h2>
-            <p className="text-gray-600 mb-6">Proceed with a structured approach to your learning</p>
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Learning Pathway</h2>
+              <p className="text-gray-600 text-base">Proceed with a structured approach to your learning</p>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               {learningPathways.map((pathway) => {
@@ -599,15 +605,13 @@ const LearningCoachPage: React.FC = () => {
           </div>
           
           {/* AI Skills Toolkit Section */}
-          <div id="my-toolkit" className="mb-12">
-            <h2 className="text-3xl font-semibold mb-6 text-left text-gray-800">
-              My Toolkit
-            </h2>
-            <p className="text-gray-600 mb-6 text-left">
-              Quick-access resources to support your daily work.
-            </p>
+          <div id="my-toolkit">
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">My Toolkit</h2>
+              <p className="text-gray-600 text-base">Quick-access resources to support your daily work.</p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {learningPathways.map((pathway) => {
                 const bgColor = {
                   blue: 'bg-blue-100 text-blue-600',
@@ -644,11 +648,11 @@ const LearningCoachPage: React.FC = () => {
                     className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
                     onClick={(pathway.path || isToolkitTile) ? handleCardClick : undefined}
                   >
-                    <div className="p-6 flex items-center">
-                      <div className={`h-12 w-12 ${bgColor} flex items-center justify-center rounded-lg`}>
-                        {pathway.icon}
+                    <div className="p-5 flex items-center">
+                      <div className={`h-10 w-10 ${bgColor} flex-shrink-0 flex items-center justify-center rounded-lg`}>
+                        {React.cloneElement(pathway.icon as React.ReactElement, { className: 'h-5 w-5' })}
                       </div>
-                      <h3 className="ml-4 text-lg font-medium text-gray-900">{pathway.title}</h3>
+                      <h3 className="ml-3 text-base font-medium text-gray-900">{pathway.title}</h3>
                     </div>
                   </div>
                 );
@@ -657,13 +661,11 @@ const LearningCoachPage: React.FC = () => {
           </div>
           
           {/* Personalised micro-lessons Section */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-semibold mb-2 text-left text-gray-700">
-              Build Real-World AI Capabilities
-            </h2>
-            <p className="text-gray-600 mb-6 text-left">
-              Jump to lessons of interest that support your learning pathway and capability growth.
-            </p>
+          <div>
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Build Real-World AI Capabilities</h2>
+              <p className="text-gray-600 text-base">Jump to lessons of interest that support your learning pathway and capability growth.</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {strategicFocusTopics.map((card) => {
                 const group = tagGroups.find((g: TagGroup) => g.name === card.learningPath);
@@ -693,7 +695,7 @@ const LearningCoachPage: React.FC = () => {
                   <button
                     key={card.id}
                     onClick={() => handleStrategicFocusClick(card)}
-                    className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 flex flex-col h-full"
+                    className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-150 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 flex flex-col h-full"
                   >
                     <div className="flex justify-between items-center mb-3">
                       <PriorityBadge priority={priority} />
@@ -701,10 +703,10 @@ const LearningCoachPage: React.FC = () => {
                         {card.learningPath}
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                    <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2">
                       {card.title}
                     </h3>
-                    <p className="text-sm text-gray-600 line-clamp-3">
+                    <p className="text-sm text-gray-600 line-clamp-2">
                       {card.description}
                     </p>
                   </button>
