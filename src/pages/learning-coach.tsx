@@ -275,7 +275,6 @@ const LearningCoachPage: React.FC = () => {
     {
       id: 'governance-policy-risk',
       title: 'Governance, Policy & Risk',
-      description: 'Master AI governance frameworks, compliance requirements, and risk management strategies',
       progress: { completed: 2, total: 6, percentage: 33 },
       color: 'blue',
       icon: (
@@ -288,7 +287,6 @@ const LearningCoachPage: React.FC = () => {
     {
       id: 'foundations-ecosystem',
       title: 'Foundations & Ecosystem',
-      description: 'Build essential knowledge of AI technologies, platforms, and their integration into business systems',
       progress: { completed: 1, total: 5, percentage: 20 },
       color: 'green',
       icon: (
@@ -301,7 +299,6 @@ const LearningCoachPage: React.FC = () => {
     {
       id: 'data-tech-capable',
       title: 'Data & Tech Capable',
-      description: 'Develop skills to work with data, AI tools, and emerging technologies for business innovation',
       progress: { completed: 3, total: 7, percentage: 43 },
       color: 'purple',
       icon: (
@@ -313,7 +310,6 @@ const LearningCoachPage: React.FC = () => {
     {
       id: 'leadership-strategy',
       title: 'Leadership & Strategy',
-      description: 'Develop strategic leadership skills for guiding AI initiatives and digital transformation',
       progress: { completed: 4, total: 8, percentage: 50 },
       color: 'indigo',
       icon: (
@@ -325,7 +321,6 @@ const LearningCoachPage: React.FC = () => {
     {
       id: 'workforce-enablement',
       title: 'Workforce Enablement',
-      description: 'Equip teams with AI skills and create organizational structures for effective AI adoption',
       progress: { completed: 2, total: 6, percentage: 33 },
       color: 'teal',
       icon: (
@@ -337,7 +332,6 @@ const LearningCoachPage: React.FC = () => {
     {
       id: 'ai-ethics-responsibility',
       title: 'AI Ethics & Responsibility',
-      description: 'Understand ethical considerations and responsible AI practices for sustainable development',
       progress: { completed: 1, total: 5, percentage: 20 },
       color: 'pink',
       icon: (
@@ -447,66 +441,67 @@ const LearningCoachPage: React.FC = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Daily Drill */}
-          <div className="mb-10">
-            <h2 className="text-3xl font-semibold text-gray-700">Daily Drill</h2>
-            <p className="text-gray-600 mb-6">10-minute challenges tailored to your capability level and what you need to focus on next.</p>
+          <div className="mb-12">
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800">Daily Drill</h2>
+              <p className="text-gray-600">10-minute challenges tailored to your capability level and what you need to focus on next.</p>
+            </div>
             
-            {/* Learning mode tabs with ask bar */}
-            <div style={{backgroundColor: '#E0EDFF'}} className="rounded-lg p-5 mt-4">
-              <div className="px-4 mb-4">
-                <h3 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Choose Your Learning Mode</h3>
-              </div>
-              <div className="flex justify-between px-4 mb-6">
+            {/* Learning mode selector */}
+            <div className="bg-indigo-50 rounded-xl p-6 mb-6">
+              <h3 className="text-sm font-medium text-gray-700 mb-4 uppercase tracking-wider">Choose Your Learning Mode</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                 {learningModes.map((mode) => (
                   <button
                     key={mode.id}
-                    className={`flex items-center justify-center px-4 py-2.5 rounded-lg w-1/4 transition-colors ${
-                      currentLearningMode === mode.id
-                        ? 'bg-white shadow text-gray-800 border border-gray-100 ring-2 ring-primary ring-opacity-50'
-                        : 'bg-white bg-opacity-70 text-gray-600 hover:bg-white hover:bg-opacity-100'
-                    }`}
                     onClick={() => handleModeChange(mode.id)}
+                    className={`
+                      flex items-center justify-center p-4 rounded-lg transition-all
+                      ${currentLearningMode === mode.id
+                        ? 'bg-white shadow-md border-2 border-indigo-500'
+                        : 'bg-white hover:bg-gray-50 border border-gray-200'
+                      }
+                    `}
                   >
                     <mode.icon 
                       className={`h-5 w-5 mr-2 ${
-                        currentLearningMode === mode.id ? 'text-primary' : 'text-gray-500'
+                        currentLearningMode === mode.id ? 'text-indigo-600' : 'text-gray-500'
                       }`} 
-                      aria-hidden="true" 
+                      aria-hidden="true"
                     />
-                    <span>{mode.label}</span>
+                    <span className="font-medium">{mode.label}</span>
                   </button>
                 ))}
               </div>
-              
-              {/* Ask Bar */}
-              <div className="px-4 mt-6">
-                <h3 className="text-lg font-semibold mb-3" style={{color: '#2D2D38'}}>
-                  Ask for a specific skill or let us pick what's next
-                </h3>
-                <div className="flex gap-2">
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 items-center">
+                <button
+                  onClick={handlePickForMe}
+                  className="flex-shrink-0 flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700 text-sm whitespace-nowrap"
+                >
+                  <SparklesIcon className="h-4 w-4 mr-1.5 text-yellow-500" />
+                  Pick for me
+                </button>
+                
+                <div className="text-sm text-gray-400 px-1">or</div>
+                
+                <div className="relative flex-grow">
+                  <input
+                    type="text"
+                    className="w-full p-2.5 pr-16 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Search for a skill..."
+                    onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
+                  />
                   <button
-                    onClick={handlePickForMe}
-                    className="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors flex items-center hover:shadow-sm"
+                    onClick={() => {
+                      const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
+                      if (inputEl?.value) handleTopicSubmit(inputEl.value);
+                    }}
+                    className="absolute right-1.5 top-1.5 px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition-colors"
                   >
-                    <SparklesIcon className="h-5 w-5 mr-2 text-yellow-500" />
-                    Pick for me
+                    Go
                   </button>
-                  <div className="flex flex-grow">
-                    <input
-                      type="text"
-                      className="flex-grow p-3 border border-gray-200 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-                      placeholder="Ask about any real world capability and I'll build a rapid learning lesson for you..."
-                      onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
-                    />
-                    <button
-                      onClick={() => {
-                        const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
-                        if (inputEl && inputEl.value) handleTopicSubmit(inputEl.value);
-                      }}
-                      className="bg-primary text-white px-6 py-3 rounded-r-lg hover:bg-indigo-700 transition-colors">
-                      Ask
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -548,42 +543,53 @@ const LearningCoachPage: React.FC = () => {
 
                 return (
                   <div 
-                    key={pathway.id} 
-                    className={`bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 ${isFoundations ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
-                    onClick={isFoundations ? handleCardClick : undefined}
+                    key={pathway.id}
+                    className={`group relative bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 
+                               hover:shadow-md hover:border-indigo-100 hover:ring-1 hover:ring-indigo-200 
+                               transition-all duration-150 ease-in-out cursor-pointer h-full
+                               ${!pathway.path ? 'opacity-70 pointer-events-none' : ''}`}
+                    onClick={() => pathway.path && router.push(pathway.path)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if ((e.key === 'Enter' || e.key === ' ') && pathway.path) {
+                        e.preventDefault();
+                        router.push(pathway.path);
+                      }
+                    }}
+                    aria-label={`${pathway.title} - ${pathway.progress.completed} of ${pathway.progress.total} modules completed`}
                   >
-                    <div className="p-6 flex flex-col h-full">
-                      <div className="flex items-center mb-4">
-                        <div className={`h-12 w-12 ${bgColor} flex items-center justify-center rounded-lg`}>
-                          {pathway.icon}
+                    <div className="p-5 flex flex-col h-full">
+                      <div className="flex items-start mb-3">
+                        <div className={`h-10 w-10 ${bgColor} flex-shrink-0 flex items-center justify-center rounded-lg`}>
+                          {React.cloneElement(pathway.icon as React.ReactElement, { className: 'h-5 w-5' })}
                         </div>
-                        <h3 className="ml-4 text-lg font-medium text-gray-900">{pathway.title}</h3>
+                        <h3 className="ml-3 text-base font-medium text-gray-900 group-hover:text-indigo-700 transition-colors">
+                          {pathway.title}
+                        </h3>
                       </div>
-                      <p className="text-sm text-gray-500 mb-4">{pathway.description}</p>
-                      <div className="mt-auto">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      
+                      <div className="mt-3">
+                        <div className="flex justify-between items-center mb-1.5">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700">
                             {pathway.progress.completed} of {pathway.progress.total} modules
                           </span>
                           <span className="text-xs text-gray-500">{pathway.progress.percentage}% Complete</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                        <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                           <div 
-                            className={`h-2 rounded-full bg-${pathway.color}-500`} 
+                            className={`h-full rounded-full ${progressBarColor}`}
                             style={{ width: `${pathway.progress.percentage}%` }}
+                            aria-hidden="true"
                           />
                         </div>
-                        <button 
-                          className="w-full text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (pathway.path) {
-                              router.push(pathway.path);
-                            }
-                          }}
-                        >
-                          {pathway.progress.completed > 0 ? 'Continue' : 'Start Learning'}
-                        </button>
+                        <div className="mt-3 text-right">
+                          <span className="inline-flex items-center justify-end w-8 h-8 rounded-full bg-gray-100 text-gray-400 group-hover:bg-gray-200 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
