@@ -73,62 +73,19 @@ const DailyFeedPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto space-y-6">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div className="mb-8">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">Daily Feed</h1>
                 <p className="mt-1 text-gray-600">Your personalized learning content for today</p>
               </div>
-              
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search feed..."
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full md:w-64"
-                  />
-                  <svg
-                    className="w-5 h-5 text-gray-400 absolute left-3 top-2.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
-                  <span>New Post</span>
-                </button>
-              </div>
+
             </div>
 
             {/* Content */}
             <div className="space-y-6">
               {/* Today's Curated Feed */}
               <div className="mb-10">
-                <div className="flex items-baseline mb-8">
-                  <h1 className="text-2xl font-bold" style={{color: '#2D2D38'}}>Essential news and trends to know</h1>
-                </div>
-                
+
                 {/* Quick Learning Tools - 10-Min Catch-up and Knowledge Test */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                   {/* 10-Minute AI Catch-up */}
@@ -194,17 +151,7 @@ const DailyFeedPage: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Today's Trending Topics */}
-                <div style={{backgroundColor: '#F0F0F4'}} className="mb-10 w-full p-4 rounded-lg">
-                  <h2 className="font-semibold text-lg mb-4" style={{color: '#2D2D38'}}>Today's Trending Topics</h2>
-                  <div className="flex flex-wrap gap-3 mt-3">
-                    <Tag tag="ai-foundations" onClick={() => {}} />
-                    <Tag tag="ai-strategy" onClick={() => {}} />
-                    <Tag tag="ai-ethics" onClick={() => {}} />
-                    <Tag tag="change-management" onClick={() => {}} />
-                  </div>
-                </div>
-                
+
                 {/* Trending AI Concepts */}
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold mb-4" style={{color: '#2D2D38'}}>What Today's AI Trends Mean for You</h2>
