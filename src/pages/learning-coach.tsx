@@ -236,10 +236,15 @@ const LearningCoachPage: React.FC = () => {
         const id = window.location.hash.replace('#', '');
         const element = document.getElementById(id);
         if (element) {
+          // Calculate the position to scroll to, showing more space above the heading
+          const headerOffset = 160; // Increased to show more space above the heading
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          
           // Small delay to ensure the page has fully rendered
           setTimeout(() => {
             window.scrollTo({
-              top: element.offsetTop - 100, // Adjust offset as needed
+              top: offsetPosition,
               behavior: 'smooth'
             });
           }, 100);
@@ -251,11 +256,11 @@ const LearningCoachPage: React.FC = () => {
     handleHashChange();
 
     // Add event listener for hash changes
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handleHashChange, false);
 
     // Cleanup
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('hashchange', handleHashChange, false);
     };
   }, []);
   
