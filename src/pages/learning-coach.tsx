@@ -550,7 +550,7 @@ const LearningCoachPage: React.FC = () => {
           </div>
 
           {/* Learning Pathways Section */}
-          <div id="learning-pathways" className="mt-12">
+          <div id="learning-pathways" className="mt-12 bg-white rounded-xl p-6 -mx-6 sm:mx-0">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">Learning Pathways</h2>
               <p className="text-gray-600 text-base">Proceed with a structured approach to your learning</p>
@@ -637,7 +637,7 @@ const LearningCoachPage: React.FC = () => {
           </div>
           
           {/* AI Skills Toolkit Section */}
-          <div id="my-toolkit">
+          <div id="my-toolkit" className="bg-gray-150 rounded-xl p-6 -mx-6 sm:mx-0">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">My Toolkit</h2>
               <p className="text-gray-600 text-base">Quick-access resources to support your daily work.</p>

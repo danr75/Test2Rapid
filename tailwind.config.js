@@ -12,6 +12,9 @@ module.exports = {
         secondary: '#10B981',
         error: '#EF4444',
         background: '#F9FAFB',
+        gray: {
+          150: '#EBEEF0',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
