@@ -17,7 +17,9 @@ interface ModuleCardProps {
   locked: boolean;
   isFirst: boolean;
   isLast: boolean;
+  icon?: React.ReactNode;
   onClick: () => void;
+  onComplete?: () => void;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -29,6 +31,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   locked,
   isFirst,
   isLast,
+  icon,
   onClick
 }) => {
   return (

@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import Head from 'next/head';
 import Header from '@/components/Layout/Header';
 import { BookOpenIcon, CheckCircleIcon, LockClosedIcon, ArrowLeftIcon, AcademicCapIcon, LightBulbIcon, CodeBracketIcon } from '@heroicons/react/24/outline';
@@ -118,6 +121,21 @@ const FoundationsEcosystemPathway = () => {
     return icons[index % icons.length];
   };
 
+  // Handle scroll to section when the component mounts
+  useEffect(() => {
+    if (window.location.hash === '#learning-pathways') {
+      const element = document.getElementById('learning-pathways');
+      if (element) {
+        setTimeout(() => {
+          window.scrollTo({
+            top: element.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
@@ -128,13 +146,13 @@ const FoundationsEcosystemPathway = () => {
       <Header activeTab="learning-coach" />
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <button 
-          onClick={() => router.back()}
+        <Link 
+          href="/learning-coach#learning-pathways"
           className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
         >
           <ArrowLeftIcon className="h-5 w-5 mr-2" />
           Back to Learning Coach
-        </button>
+        </Link>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
@@ -178,9 +196,11 @@ const FoundationsEcosystemPathway = () => {
                   duration={module.duration}
                   completed={module.completed}
                   locked={module.locked}
+                  icon={getModuleIcon(index)}
                   isFirst={index === 0}
                   isLast={index === modules.length - 1}
                   onClick={() => handleModuleClick(module)}
+                  onComplete={() => handleCompleteModule(module.id)}
                 />
               ))}
             </div>

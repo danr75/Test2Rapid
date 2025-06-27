@@ -1,13 +1,28 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+'use client';
+
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Header from '@/components/Layout/Header';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 const GovernancePathway = () => {
   const router = useRouter();
 
-  const handleBack = () => {
-    router.push('/learning-coach');
-  };
+  // Handle scroll to section when the component mounts
+  useEffect(() => {
+    if (window.location.hash === '#learning-pathways') {
+      const element = document.getElementById('learning-pathways');
+      if (element) {
+        setTimeout(() => {
+          window.scrollTo({
+            top: element.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -15,26 +30,13 @@ const GovernancePathway = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm p-6">
-          <button 
-            onClick={handleBack}
-            className="flex items-center text-indigo-600 hover:text-indigo-800 mb-6"
+          <Link 
+            href="/learning-coach#learning-pathways"
+            className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
           >
-            <svg 
-              className="w-5 h-5 mr-2" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M10 19l-7-7m0 0l7-7m-7 7h18" 
-              />
-            </svg>
+            <ArrowLeftIcon className="h-5 w-5 mr-2" />
             Back to Learning Coach
-          </button>
+          </Link>
           
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-800">Governance, Policy & Risk</h1>

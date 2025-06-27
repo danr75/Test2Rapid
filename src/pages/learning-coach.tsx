@@ -229,6 +229,23 @@ const LearningCoachPage: React.FC = () => {
   const router = useRouter();
   const [carouselIndex, setCarouselIndex] = useState(0);
   
+  // Handle scroll to section when the page loads with a hash
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        // Small delay to ensure the page has fully rendered
+        setTimeout(() => {
+          window.scrollTo({
+            top: element.offsetTop - 100, // Adjust offset as needed
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    }
+  }, []);
+  
   // Function to get a random learning mode
   const getRandomLearningMode = (): LearningMode => {
     const modes: LearningMode[] = ['Q&A', 'Scenario', 'Speed'];
@@ -289,6 +306,7 @@ const LearningCoachPage: React.FC = () => {
       title: 'Foundations & Ecosystem',
       progress: { completed: 1, total: 5, percentage: 20 },
       color: 'green',
+      path: '/learning-pathways/foundations-ecosystem',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -513,14 +531,14 @@ const LearningCoachPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Learning Pathway */}
-          <div>
+          {/* Learning Pathways Section */}
+          <div id="learning-pathways" className="mt-12">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Learning Pathway</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Learning Pathways</h2>
               <p className="text-gray-600 text-base">Proceed with a structured approach to your learning</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {learningPathways.map((pathway) => {
                 const bgColor = {
                   blue: 'bg-blue-100 text-blue-600',
@@ -540,14 +558,7 @@ const LearningCoachPage: React.FC = () => {
                   pink: 'bg-pink-600'
                 }[pathway.color] || 'bg-gray-600';
 
-                const isFoundations = pathway.id === 'foundations-ecosystem';
                 const router = useRouter();
-
-                const handleCardClick = () => {
-                  if (isFoundations && pathway.path) {
-                    router.push(pathway.path);
-                  }
-                };
 
                 return (
                   <div 
@@ -555,7 +566,7 @@ const LearningCoachPage: React.FC = () => {
                     className={`group relative bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 
                                hover:shadow-md hover:border-indigo-100 hover:ring-1 hover:ring-indigo-200 
                                transition-all duration-150 ease-in-out cursor-pointer h-full
-                               ${!pathway.path ? 'opacity-70 pointer-events-none' : ''}`}
+                               ${!pathway.path ? 'opacity-70' : ''}`}
                     onClick={() => pathway.path && router.push(pathway.path)}
                     role="button"
                     tabIndex={0}
