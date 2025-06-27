@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import Head from 'next/head';
 import { ArrowLeftIcon, ChatBubbleLeftRightIcon, DocumentTextIcon, ClipboardDocumentListIcon, LightBulbIcon, BookmarkIcon } from '@heroicons/react/24/outline';
 import Header from '@/components/Layout/Header';
@@ -216,13 +217,13 @@ const DataTechCapable = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <button 
-            onClick={() => router.back()}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+          <Link 
+            href="/learning-coach#my-toolkit"
+            className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
           >
-            <ArrowLeftIcon className="h-5 w-5 mr-1" />
-            Back to Toolkit
-          </button>
+            <ArrowLeftIcon className="h-5 w-5 mr-2" />
+            Back to My Toolkit
+          </Link>
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>

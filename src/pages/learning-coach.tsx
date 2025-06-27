@@ -231,19 +231,32 @@ const LearningCoachPage: React.FC = () => {
   
   // Handle scroll to section when the page loads with a hash
   useEffect(() => {
-    if (window.location.hash) {
-      const id = window.location.hash.replace('#', '');
-      const element = document.getElementById(id);
-      if (element) {
-        // Small delay to ensure the page has fully rendered
-        setTimeout(() => {
-          window.scrollTo({
-            top: element.offsetTop - 100, // Adjust offset as needed
-            behavior: 'smooth'
-          });
-        }, 100);
+    const handleHashChange = () => {
+      if (window.location.hash) {
+        const id = window.location.hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          // Small delay to ensure the page has fully rendered
+          setTimeout(() => {
+            window.scrollTo({
+              top: element.offsetTop - 100, // Adjust offset as needed
+              behavior: 'smooth'
+            });
+          }, 100);
+        }
       }
-    }
+    };
+
+    // Handle initial load
+    handleHashChange();
+
+    // Add event listener for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
   
   // Function to get a random learning mode
@@ -650,8 +663,10 @@ const LearningCoachPage: React.FC = () => {
 
                 const handleCardClick = () => {
                   if (isToolkitTile) {
-                    router.push(`/ai-skills-toolkit/${pathway.id}`);
+                    // Navigate to the toolkit item and then scroll to the section
+                    router.push(`/ai-skills-toolkit/${pathway.id}#my-toolkit`);
                   } else if (pathway.path) {
+                    // For learning pathways, keep the existing behavior
                     router.push(pathway.path);
                   }
                 };

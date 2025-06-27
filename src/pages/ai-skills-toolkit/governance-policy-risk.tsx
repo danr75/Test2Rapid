@@ -226,11 +226,11 @@ const GovernancePolicyRisk = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link 
-            href="/learning-coach#learning-pathways"
+            href="/learning-coach#my-toolkit"
             className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
           >
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            Back to Learning Coach
+            Back to My Toolkit
           </Link>
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
