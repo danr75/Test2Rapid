@@ -139,7 +139,7 @@ const WorkforceEnablementPathway = () => {
           className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
         >
           <ArrowLeftIcon className="h-5 w-5 mr-2" />
-          Back to Learning Coach
+          Learning Pathway
         </button>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">

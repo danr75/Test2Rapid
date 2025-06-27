@@ -230,7 +230,7 @@ const GovernancePolicyRisk = () => {
             className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
           >
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            Back to My Toolkit
+            Learning Coach
           </Link>
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">

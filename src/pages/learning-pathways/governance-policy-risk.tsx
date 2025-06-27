@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
 import Header from '@/components/Layout/Header';
-import { BookOpenIcon, CheckCircleIcon, LockClosedIcon, ArrowLeftIcon, AcademicCapIcon, LightBulbIcon, CodeBracketIcon } from '@heroicons/react/24/outline';
+import { BookOpenIcon, CheckCircleIcon, LockClosedIcon, ArrowLeftIcon, ShieldCheckIcon, ScaleIcon, DocumentCheckIcon, ChartPieIcon } from '@heroicons/react/24/outline';
 import ProgressBar from '@/components/LearningPathway/ProgressBar';
 import ModuleCard from '@/components/LearningPathway/ModuleCard';
 
@@ -22,7 +22,7 @@ type Module = {
   }[];
 };
 
-const FoundationsEcosystemPathway = () => {
+const GovernancePolicyRiskPathway = () => {
   const router = useRouter();
   const [activeModule, setActiveModule] = useState<string | null>(null);
   
@@ -30,57 +30,72 @@ const FoundationsEcosystemPathway = () => {
   const [modules, setModules] = useState<Module[]>([
     {
       id: 'module-1',
-      title: 'AI Fundamentals',
-      description: 'Introduction to core AI concepts, terminology, and the AI landscape',
-      duration: '15 min',
+      title: 'AI Governance Fundamentals',
+      description: 'Introduction to AI governance frameworks and principles',
+      duration: '20 min',
       completed: true,
       locked: false,
       content: [
-        { type: 'text', content: 'Understanding AI, Machine Learning, and Deep Learning' },
-        { type: 'video', content: 'The Evolution of AI and Its Business Impact' },
-        { type: 'interactive', content: 'AI Use Cases in Different Industries' },
-        { type: 'quiz', content: 'Test your understanding of AI basics' }
+        { type: 'text', content: 'Understanding AI Governance and Its Importance' },
+        { type: 'video', content: 'Key Components of Effective AI Governance' },
+        { type: 'interactive', content: 'Assess Your Current Governance Maturity' },
+        { type: 'quiz', content: 'AI Governance Fundamentals Quiz' }
       ]
     },
     {
       id: 'module-2',
-      title: 'AI Ecosystem Overview',
-      description: 'Understanding the AI technology landscape and key players',
-      duration: '20 min',
+      title: 'Policy Development & Compliance',
+      description: 'Creating and implementing AI policies that ensure compliance',
+      duration: '25 min',
       completed: false,
       locked: false,
       content: [
-        { type: 'text', content: 'Key components of the AI ecosystem' },
-        { type: 'interactive', content: 'Explore the AI technology stack' },
-        { type: 'video', content: 'Leading AI Platforms and Tools' },
-        { type: 'quiz', content: 'AI Technology Landscape Quiz' }
+        { type: 'text', content: 'Essential Elements of AI Policy' },
+        { type: 'interactive', content: 'Policy Development Framework' },
+        { type: 'video', content: 'Navigating AI Regulations and Standards' },
+        { type: 'quiz', content: 'Policy Compliance Assessment' }
       ]
     },
     {
       id: 'module-3',
-      title: 'AI Integration Patterns',
-      description: 'How AI fits into existing business systems and workflows',
-      duration: '25 min',
+      title: 'Risk Assessment & Mitigation',
+      description: 'Identifying and managing risks associated with AI implementation',
+      duration: '30 min',
       completed: false,
       locked: true,
       content: [
-        { type: 'text', content: 'Common AI Integration Architectures' },
-        { type: 'video', content: 'Case Studies: Successful AI Integration' },
-        { type: 'interactive', content: 'Design an AI Integration Plan' }
+        { type: 'text', content: 'AI Risk Landscape and Categories' },
+        { type: 'video', content: 'Risk Assessment Methodologies' },
+        { type: 'interactive', content: 'Conduct an AI Risk Assessment' },
+        { type: 'quiz', content: 'Risk Management Knowledge Check' }
       ]
     },
     {
       id: 'module-4',
-      title: 'Emerging AI Technologies',
-      description: 'Latest developments in AI and their business implications',
+      title: 'Ethical AI & Responsible Practices',
+      description: 'Implementing ethical AI practices and responsible innovation',
+      duration: '25 min',
+      completed: false,
+      locked: true,
+      content: [
+        { type: 'text', content: 'Ethical Principles in AI' },
+        { type: 'video', content: 'Case Studies in Responsible AI' },
+        { type: 'interactive', content: 'Develop an AI Ethics Framework' },
+        { type: 'quiz', content: 'Ethical AI Practices Assessment' }
+      ]
+    },
+    {
+      id: 'module-5',
+      title: 'Monitoring & Continuous Improvement',
+      description: 'Establishing processes for ongoing governance and improvement',
       duration: '20 min',
       completed: false,
       locked: true,
       content: [
-        { type: 'text', content: 'Cutting-edge AI Research and Applications' },
-        { type: 'video', content: 'The Future of AI in Business' },
-        { type: 'interactive', content: 'Assess Emerging Tech for Your Business' },
-        { type: 'quiz', content: 'Emerging Technologies Assessment' }
+        { type: 'text', content: 'Key Performance Indicators for AI Governance' },
+        { type: 'video', content: 'Continuous Improvement Frameworks' },
+        { type: 'interactive', content: 'Create a Monitoring Plan' },
+        { type: 'quiz', content: 'Governance Maturity Assessment' }
       ]
     }
   ]);
@@ -93,7 +108,7 @@ const FoundationsEcosystemPathway = () => {
     if (!module.locked) {
       setActiveModule(module.id);
       // In a real app, you would navigate to the module content
-      // router.push(`/learning-pathways/foundations-ecosystem/${module.id}`);
+      // router.push(`/learning-pathways/governance-policy-risk/${module.id}`);
     }
   };
 
@@ -113,17 +128,18 @@ const FoundationsEcosystemPathway = () => {
 
   const getModuleIcon = (index: number) => {
     const icons = [
-      <AcademicCapIcon className="h-5 w-5" />,
-      <LightBulbIcon className="h-5 w-5" />,
-      <CodeBracketIcon className="h-5 w-5" />,
-      <BookOpenIcon className="h-5 w-5" />
+      <ShieldCheckIcon className="h-5 w-5" />,
+      <DocumentCheckIcon className="h-5 w-5" />,
+      <ScaleIcon className="h-5 w-5" />,
+      <BookOpenIcon className="h-5 w-5" />,
+      <ChartPieIcon className="h-5 w-5" />
     ];
     return icons[index % icons.length];
   };
 
   // Handle scroll to section when the component mounts
   useEffect(() => {
-    if (window.location.hash === '#learning-pathways') {
+    if (typeof window !== 'undefined' && window.location.hash === '#learning-pathways') {
       const element = document.getElementById('learning-pathways');
       if (element) {
         setTimeout(() => {
@@ -139,8 +155,8 @@ const FoundationsEcosystemPathway = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
-        <title>Foundations & Ecosystem Learning Path | Interactive Learning Hub</title>
-        <meta name="description" content="Master the foundations of AI and understand the ecosystem" />
+        <title>Governance, Policy & Risk Learning Path | Interactive Learning Hub</title>
+        <meta name="description" content="Master AI governance, policy development, and risk management" />
       </Head>
 
       <Header activeTab="learning-coach" />
@@ -155,18 +171,18 @@ const FoundationsEcosystemPathway = () => {
         </Link>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-6 text-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold">Foundations & Ecosystem</h1>
-                <p className="mt-2 text-blue-100 max-w-2xl">
-                  Build essential knowledge of AI technologies, platforms, and their integration into business systems
+                <h1 className="text-2xl md:text-3xl font-bold">Governance, Policy & Risk</h1>
+                <p className="mt-2 text-purple-100 max-w-2xl">
+                  Develop expertise in AI governance frameworks, policy development, and risk management strategies
                 </p>
               </div>
               <div className="mt-4 md:mt-0 bg-white/10 p-4 rounded-lg backdrop-blur-sm">
                 <div className="text-center">
                   <span className="block text-2xl font-bold">{progress}%</span>
-                  <span className="text-sm text-blue-100">Complete</span>
+                  <span className="text-sm text-purple-100">Complete</span>
                 </div>
               </div>
             </div>
@@ -177,9 +193,9 @@ const FoundationsEcosystemPathway = () => {
                 barClassName="bg-white"
                 showText={false}
               />
-              <div className="flex justify-between mt-2 text-sm text-blue-100">
-                <span>{completedModules} of {totalModules} modules completed</span>
-                <span>Estimated Time: 1h 20m</span>
+              <div className="flex flex-col sm:flex-row sm:justify-between mt-2 text-sm text-purple-100">
+                <span className="mb-1 sm:mb-0">{completedModules} of {totalModules} modules completed</span>
+                <span>Estimated Time: 2h 0m</span>
               </div>
             </div>
           </div>
@@ -242,7 +258,7 @@ const FoundationsEcosystemPathway = () => {
                   <div className="pt-4 mt-6 border-t border-gray-200">
                     <button
                       onClick={() => handleCompleteModule(activeModule)}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
                     >
                       Mark as Complete
                     </button>
@@ -257,4 +273,4 @@ const FoundationsEcosystemPathway = () => {
   );
 };
 
-export default FoundationsEcosystemPathway;
+export default GovernancePolicyRiskPathway;
