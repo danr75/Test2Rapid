@@ -127,75 +127,58 @@ const LearningRoad: React.FC = () => {
               </div>
             </div>
 
-            {/* Stats Section */}
-            <div className="w-full mb-6 p-6 rounded-lg bg-white shadow-sm">
-              <div className="mb-6">
-                <h3 className="text-2xl font-semibold text-gray-900">Your progress</h3>
+            {/* Stats Section - Modern Design */}
+            <div className="w-full mb-6 p-6 rounded-xl bg-white shadow-sm border border-gray-100">
+                <div className="col-span-1 md:col-span-2">
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-6">Your progress</h3>
               </div>
-              <div className="relative">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {/* Capability Score */}
-                  <div className="relative">
-                    <div className="flex flex-col h-full">
-                      <div className="flex items-center gap-1.5 mb-1 whitespace-nowrap">
-                        <h4 className="text-sm font-medium text-gray-500">Capability</h4>
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                          <svg className="mr-0.5 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 12 12">
-                            <path d="M5.293 3.707a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L7 7.414V11a1 1 0 11-2 0V7.414L2.707 9.707a1 1 0 01-1.414-1.414l4-4z" clipRule="evenodd"/>
-                          </svg>
-                          +3%
-                        </span>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900 mt-auto">Improving</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Overall Progress */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl flex flex-col h-full">
+                  <h4 className="text-sm font-medium text-gray-600 text-center mb-3">Overall Progress</h4>
+                  <div className="flex-1 flex items-center justify-center mb-2">
+                    <div className="flex items-center">
+                      <span className="text-3xl font-bold text-blue-600">65%</span>
+                      <svg className="w-8 h-8 ml-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      </svg>
                     </div>
                   </div>
+                  <div className="text-center mt-auto">
+                    <p className="text-sm font-semibold text-gray-900">On Track</p>
+                  </div>
+                </div>
 
-                  {/* Rank */}
-                  <div className="relative">
-                    <div className="flex flex-col h-full">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <h4 className="text-sm font-medium text-gray-500">Rank</h4>
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                          <svg className="mr-0.5 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 12 12">
-                            <path d="M5.293 3.707a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L7 7.414V11a1 1 0 11-2 0V7.414L2.707 9.707a1 1 0 01-1.414-1.414l4-4z" clipRule="evenodd"/>
-                          </svg>
-                          +2%
-                        </span>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900 mt-auto">Top 24%</p>
+                {/* Most Improved */}
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl flex flex-col h-full">
+                  <h4 className="text-sm font-medium text-gray-600 text-center mb-3">Most Improved</h4>
+                  <div className="flex-1 flex items-center justify-center mb-2">
+                    <div className="flex items-center">
+                      <span className="text-3xl font-bold text-green-600">+15%</span>
+                      <svg className="w-8 h-8 ml-1 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      </svg>
                     </div>
                   </div>
+                  <div className="text-center mt-auto">
+                    <p className="text-sm font-semibold text-gray-900">Workforce</p>
+                  </div>
+                </div>
 
-                  {/* Improved */}
-                  <div className="relative">
-                    <div className="flex flex-col h-full">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <h4 className="text-sm font-medium text-gray-500">Improved</h4>
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                          <svg className="mr-0.5 h-3 w-3 text-green-500" fill="currentColor" viewBox="0 0 12 12">
-                            <path d="M5.293 3.707a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L7 7.414V11a1 1 0 11-2 0V7.414L2.707 9.707a1 1 0 01-1.414-1.414l4-4z" clipRule="evenodd"/>
-                          </svg>
-                          15%
-                        </span>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900 mt-auto">Workforce</p>
+                {/* Needs Attention */}
+                <div className="bg-gradient-to-br from-rose-50 to-pink-50 p-5 rounded-xl flex flex-col h-full">
+                  <h4 className="text-sm font-medium text-gray-600 text-center mb-3">Needs Attention</h4>
+                  <div className="flex-1 flex items-center justify-center mb-2">
+                    <div className="flex items-center">
+                      <span className="text-3xl font-bold text-rose-600">-5%</span>
+                      <svg className="w-8 h-8 ml-1 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                      </svg>
                     </div>
                   </div>
-
-                  {/* Focus */}
-                  <div className="relative">
-                    <div className="flex flex-col h-full">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <h4 className="text-sm font-medium text-gray-500">Focus</h4>
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">
-                          <svg className="mr-0.5 h-3 w-3 text-red-500 transform rotate-180" fill="currentColor" viewBox="0 0 12 12">
-                            <path d="M5.293 3.707a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L7 7.414V11a1 1 0 11-2 0V7.414L2.707 9.707a1 1 0 01-1.414-1.414l4-4z" clipRule="evenodd"/>
-                          </svg>
-                          5%
-                        </span>
-                      </div>
-                      <p className="text-lg font-semibold text-gray-900 mt-auto">Foundations</p>
-                    </div>
+                  <div className="text-center mt-auto">
+                    <p className="text-sm font-semibold text-gray-900">Foundations</p>
                   </div>
                 </div>
               </div>
