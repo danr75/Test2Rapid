@@ -15,7 +15,43 @@ import {
   ExclamationTriangleIcon,
   ExclamationCircleIcon,
   CheckCircleIcon,
-  SparklesIcon
+  SparklesIcon,
+  ArrowLeftIcon, 
+  ArrowRightIcon, 
+  ArrowUpRightIcon,
+  BriefcaseIcon,
+  ChartBarIcon,
+  ChatBubbleLeftRightIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ClockIcon,
+  CpuChipIcon,
+  FaceFrownIcon,
+  FaceSmileIcon,
+  FireIcon,
+  FlagIcon,
+  FolderIcon,
+  GifIcon,
+  GlobeAltIcon,
+  HandRaisedIcon,
+  HashtagIcon,
+  LightBulbIcon,
+  LinkIcon,
+  ListBulletIcon,
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  MegaphoneIcon,
+  MicrophoneIcon,
+  PencilSquareIcon,
+  PhotoIcon,
+  PlayCircleIcon,
+  PlusIcon,
+  QuestionMarkCircleIcon,
+  RocketLaunchIcon,
+  ScaleIcon,
+  ShieldCheckIcon,
+  CheckBadgeIcon,
+  ArrowTrendingUpIcon
 } from '@heroicons/react/24/outline';
 import tagsModule, { TagGroup } from '@/types/tags';
 
@@ -223,6 +259,39 @@ const strategicFocusTopics: StrategicFocusCardData[] = [
     duration: '12 min',
   }
 ];
+
+// Determine progress status based on percentage
+const getProgressStatus = (percentage: number) => {
+  if (percentage < 33) return 'behind';
+  if (percentage < 66) return 'on track';
+  return 'excelling';
+};
+
+// Get status color and text based on status
+const getStatusConfig = (status: string) => {
+  switch (status) {
+    case 'behind':
+      return {
+        color: 'text-red-600',
+        label: 'Needs Attention'
+      };
+    case 'on track':
+      return {
+        color: 'text-blue-600',
+        label: 'On Track'
+      };
+    case 'excelling':
+      return {
+        color: 'text-green-600',
+        label: 'Ahead of Plan'
+      };
+    default:
+      return {
+        color: 'text-gray-600',
+        label: 'Unknown'
+      };
+  }
+};
 
 const LearningCoachPage: React.FC = () => {
   const { state, dispatch } = useLearning() || {};
@@ -565,8 +634,8 @@ const LearningCoachPage: React.FC = () => {
           {/* Learning Pathways Section */}
           <div id="learning-pathways" className="mt-12 bg-white rounded-xl p-6 -mx-6 sm:mx-0">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Skill Currency</h2>
-              <p className="text-gray-600 text-base">Track and develop your AI capabilities with structured learning pathways</p>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Ongoing skill development</h2>
+              <p className="text-gray-600 text-base">Continuously build, track, and sustain the AI skills your role demands.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -627,20 +696,17 @@ const LearningCoachPage: React.FC = () => {
                       </div>
                       
                       <div className="mt-3">
-                        <div className="flex justify-between items-center mb-1.5">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700">
-                            Lead
-                          </span>
-                          <span className="text-xs text-gray-500">{pathway.progress.percentage}% - up to date</span>
+                        <div className="flex justify-end items-center mb-1.5">
+                          {(() => {
+                            const status = getProgressStatus(pathway.progress.percentage);
+                            const { color, label } = getStatusConfig(status);
+                            return (
+                              <span className={`text-sm font-medium ${color}`}>
+                                {label}
+                              </span>
+                            );
+                          })()}
                         </div>
-                        <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                          <div 
-                            className={`h-full rounded-full ${progressBarColor}`}
-                            style={{ width: `${pathway.progress.percentage}%` }}
-                            aria-hidden="true"
-                          />
-                        </div>
-                        
                       </div>
                     </div>
                   </div>
