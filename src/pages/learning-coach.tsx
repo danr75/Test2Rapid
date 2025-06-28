@@ -225,12 +225,28 @@ const strategicFocusTopics: StrategicFocusCardData[] = [
 ];
 
 const LearningCoachPage: React.FC = () => {
-  const { state, dispatch } = useLearning();
+  const { state, dispatch } = useLearning() || {};
   const router = useRouter();
+  
+  // Provide default empty state if context is not available
+  const safeState = state || {
+    topic: '',
+    questions: [],
+    currentQuestionIndex: 0,
+    answeredQuestions: [],
+    nodes: [],
+    links: [],
+    isLoading: false,
+    error: null,
+    learnNextTopics: [],
+    learningMode: null
+  };
   const [carouselIndex, setCarouselIndex] = useState(0);
   
   // Handle scroll to section when the page loads with a hash
   useEffect(() => {
+    // Skip if window is not available (SSR)
+    if (typeof window === 'undefined') return;
     const handleHashChange = () => {
       if (window.location.hash) {
         const id = window.location.hash.replace('#', '');
@@ -480,12 +496,9 @@ const LearningCoachPage: React.FC = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Daily Drill */}
-          <div>
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">10 Minute Daily Drill</h2>
-            </div>
-            
-            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 mb-6">
+          <div className="mb-6">
+            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">10 Minute Daily Drill</h2>
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-700 mb-3">Learning Mode</h3>
                 <div className="flex items-center space-x-1 bg-white p-0.5 rounded-lg border border-gray-200 w-fit">
@@ -646,13 +659,13 @@ const LearningCoachPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {learningPathways.map((pathway) => {
                 const bgColor = {
-                  blue: 'bg-blue-100 text-blue-600',
-                  green: 'bg-green-100 text-green-600',
-                  purple: 'bg-purple-100 text-purple-600',
-                  indigo: 'bg-indigo-100 text-indigo-600',
-                  teal: 'bg-teal-100 text-teal-600',
-                  pink: 'bg-pink-100 text-pink-600'
-                }[pathway.color] || 'bg-gray-100 text-gray-600';
+                  blue: 'text-blue-600',
+                  green: 'text-green-600',
+                  purple: 'text-purple-600',
+                  indigo: 'text-indigo-600',
+                  teal: 'text-teal-600',
+                  pink: 'text-pink-600'
+                }[pathway.color] || 'text-gray-600';
 
                 const toolkitTiles = [
                   'governance-policy-risk',
@@ -665,6 +678,16 @@ const LearningCoachPage: React.FC = () => {
                 
                 const isToolkitTile = toolkitTiles.includes(pathway.id);
                 const router = useRouter();
+                
+                // Define text color based on pathway color
+                const textColor = {
+                  blue: 'text-blue-600',
+                  green: 'text-green-600',
+                  purple: 'text-purple-600',
+                  indigo: 'text-indigo-600',
+                  teal: 'text-teal-600',
+                  pink: 'text-pink-600'
+                }[pathway.color] || 'text-gray-600';
 
                 const handleCardClick = () => {
                   if (isToolkitTile) {
@@ -683,8 +706,8 @@ const LearningCoachPage: React.FC = () => {
                     onClick={(pathway.path || isToolkitTile) ? handleCardClick : undefined}
                   >
                     <div className="p-5 pb-2 flex-1 flex items-start">
-                      <div className={`h-10 w-10 ${bgColor} flex-shrink-0 flex items-center justify-center rounded-lg`}>
-                        {React.cloneElement(pathway.icon as React.ReactElement, { className: 'h-5 w-5' })}
+                      <div className={`flex-shrink-0 ${textColor}`}>
+                        {React.cloneElement(pathway.icon as React.ReactElement, { className: 'h-6 w-6' })}
                       </div>
                       <h3 className="ml-3 text-base font-medium text-gray-900">
                         {pathway.title}
@@ -703,61 +726,7 @@ const LearningCoachPage: React.FC = () => {
               })}
             </div>
           </div>
-          
-          {/* Personalised micro-lessons Section */}
-          <div>
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Build Real-World AI Capabilities</h2>
-              <p className="text-gray-600 text-base">Jump to lessons of interest that support your learning pathway and capability growth.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {strategicFocusTopics.map((card) => {
-                const group = tagGroups.find((g: TagGroup) => g.name === card.learningPath);
-                const groupColor: string = group?.color || 'gray';
-                const bgColor = {
-                  blue: 'bg-blue-50',
-                  green: 'bg-green-50',
-                  purple: 'bg-purple-50',
-                  indigo: 'bg-indigo-50',
-                  teal: 'bg-teal-50',
-                  gray: 'bg-gray-50'
-                }[groupColor] || 'bg-gray-50';
-                
-                const textColor = {
-                  blue: 'text-blue-700',
-                  green: 'text-green-700',
-                  purple: 'text-purple-700',
-                  indigo: 'text-indigo-700',
-                  teal: 'text-teal-700',
-                  gray: 'text-gray-700'
-                }[groupColor] || 'text-gray-700';
-                
-                // Get priority based on capability gap
-                const priority = getPriorityForCapability(card.learningPath);
-                
-                return (
-                  <button
-                    key={card.id}
-                    onClick={() => handleStrategicFocusClick(card)}
-                    className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-150 ease-in-out text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 flex flex-col h-full"
-                  >
-                    <div className="flex justify-between items-center mb-3">
-                      <PriorityBadge priority={priority} />
-                      <span className={`text-xs font-medium px-2 py-1 rounded ${bgColor} ${textColor}`}>
-                        {card.learningPath}
-                      </span>
-                    </div>
-                    <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {card.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 line-clamp-2">
-                      {card.description}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+
         </div>
       </main>
     </div>
