@@ -224,56 +224,55 @@ const GovernancePolicyRisk = () => {
       <Header activeTab="learning-coach" />
       
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <Link 
-            href="/learning-coach#my-toolkit"
-            className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
-          >
-            <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            Learning Coach
-          </Link>
-          
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div>
+            <Link 
+              href="/learning-coach#my-toolkit"
+              className="flex items-center text-blue-600 hover:text-blue-800"
+            >
+              <ArrowLeftIcon className="h-5 w-5 mr-2" />
+              Back to my Toolkit
+            </Link>
+            
+            <div className="mt-6">
               <h1 className="text-3xl font-bold text-gray-900">Governance, Policy & Risk</h1>
               <p className="text-gray-600 mt-1">Resources and tools for AI governance and compliance</p>
             </div>
           </div>
-        </div>
 
-        {/* Tabs */}
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
-            {[
-              { id: 'cheatsheets', name: 'Cheat Sheets', icon: DocumentTextIcon },
-              { id: 'templates', name: 'Templates', icon: ClipboardDocumentListIcon },
-              { id: 'essentials', name: 'Essentials', icon: LightBulbIcon },
-              { id: 'mynotes', name: 'My Notes', icon: BookmarkIcon },
-              { id: 'chat', name: 'Chat', icon: ChatBubbleLeftRightIcon },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
+          {/* Tabs */}
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
+              {[
+                { id: 'cheatsheets', name: 'Cheat Sheets', icon: DocumentTextIcon },
+                { id: 'templates', name: 'Templates', icon: ClipboardDocumentListIcon },
+                { id: 'essentials', name: 'Essentials', icon: LightBulbIcon },
+                { id: 'mynotes', name: 'My Notes', icon: BookmarkIcon },
+                { id: 'chat', name: 'AI Assistant', icon: ChatBubbleLeftRightIcon },
+              ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as TabType)}
-                  className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center ${
-                    isActive
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                  className={`
+                    whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
+                    ${
+                      activeTab === tab.id
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }
+                  `}
                 >
-                  <Icon className={`h-5 w-5 mr-2 ${isActive ? 'text-blue-500' : 'text-gray-400'}`} />
+                  <tab.icon className="h-5 w-5 inline-block mr-2 -mt-1" />
                   {tab.name}
                 </button>
-              );
-            })}
-          </nav>
-        </div>
+              ))}
+            </nav>
+          </div>
 
-        {/* Tab Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          {renderTabContent()}
+          {/* Tab Content */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            {renderTabContent()}
+          </div>
         </div>
       </main>
     </div>

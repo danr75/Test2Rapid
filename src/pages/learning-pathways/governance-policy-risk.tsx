@@ -161,17 +161,18 @@ const GovernancePolicyRiskPathway = () => {
 
       <Header activeTab="learning-coach" />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <Link 
-          href="/learning-coach#learning-pathways"
-          className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
-        >
-          <ArrowLeftIcon className="h-5 w-5 mr-2" />
-          Learning Pathway
-        </Link>
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto space-y-12">
+          <Link 
+            href="/learning-coach#learning-pathways"
+            className="flex items-center text-blue-600 hover:text-blue-800"
+          >
+            <ArrowLeftIcon className="h-5 w-5 mr-2" />
+            Back to Learning Coach
+          </Link>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-6 text-white">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-700 p-6 text-white">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold">Governance, Policy & Risk</h1>
@@ -268,6 +269,7 @@ const GovernancePolicyRiskPathway = () => {
             </div>
           </div>
         )}
+        </div>
       </main>
     </div>
   );
