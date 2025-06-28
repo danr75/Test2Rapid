@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useLearning } from '@/store/LearningContext';
+import StatusIndicator from '@/components/common/StatusIndicator';
 import Header from '@/components/Layout/Header';
 import Tag from '@/components/common/Tag';
 import TagGroup from '@/components/common/TagGroup';
@@ -61,7 +62,7 @@ const DailyFeedPage: React.FC = () => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 flex flex-col">
       <Head>
         <title>Daily Feed | Interactive Learning Hub</title>
         <meta name="description" content="Your daily learning feed" />
@@ -72,24 +73,20 @@ const DailyFeedPage: React.FC = () => {
       <main className="flex-1 overflow-y-auto">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="mb-8">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Daily Feed</h1>
-                <p className="mt-1 text-gray-600">Your personalized learning content for today</p>
-              </div>
-
-            </div>
-
             {/* Content */}
             <div className="space-y-6">
               {/* Today's Curated Feed */}
-              <div className="mb-10">
+              <div className="mb-10 bg-white rounded-lg p-6 shadow-sm">
+                {/* Header */}
+                <div className="mb-6">
+                  <h1 className="text-2xl font-semibold text-gray-900">Daily Feed</h1>
+                  <p className="mt-1 text-gray-600">Understand latest news</p>
+                </div>
 
                 {/* Quick Learning Tools - 10-Min Catch-up and Knowledge Test */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                  {/* 10-Minute AI Catch-up */}
-                  <div style={{backgroundColor: '#E0EDFF'}} className="bg-blue-50 rounded-lg p-3 flex flex-col">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* 10-Minute Catch-up */}
+                  <div className="bg-gray-50 rounded-lg p-3 flex flex-col shadow-sm">
                     <div className="flex items-center mb-2 justify-between">
                       <div className="flex items-center">
                         <div className="bg-blue-100 rounded-full p-2 mr-3">
@@ -97,7 +94,7 @@ const DailyFeedPage: React.FC = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
-                        <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>10-Minute AI Catch-up</h2>
+                        <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>10-Minute Catch-up</h2>
                       </div>
                       
                       <button 
@@ -128,35 +125,35 @@ const DailyFeedPage: React.FC = () => {
                     />
                   </div>
                   
-                  {/* Test What You've Missed */}
-                  <div style={{backgroundColor: '#F3E8FF'}} className="bg-purple-50 rounded-lg p-3 flex flex-col">
+                  {/* Test if you know it */}
+                  <div className="bg-gray-50 rounded-lg p-3 flex flex-col shadow-sm">
                     <div className="flex items-center mb-2 justify-between">
                       <div className="flex items-center">
-                        <div className="bg-purple-100 rounded-full p-2 mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="bg-blue-100 rounded-full p-2 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
-                        <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Test What You've Missed</h2>
+                        <h2 className="text-lg font-semibold" style={{color: '#2D2D38'}}>Test if you know it</h2>
                       </div>
-                      <div className="flex justify-end mb-2">
-                        <button 
-                          onClick={handleTakeTest}
-                          className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                        >
-                          Test
-                        </button>
-                      </div>
+                      <button 
+                        onClick={handleTakeTest}
+                        className="bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-blue-800 transition-colors"
+                        aria-label="Take test"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>
-                
-
-                {/* Trending AI Concepts */}
-                <div className="mb-6">
-                  <h2 className="text-2xl font-bold mb-4" style={{color: '#2D2D38'}}>What Today's AI Trends Mean for You</h2>
-                </div>
-                <div className="space-y-8 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}} >
+              </div>
+              
+              {/* Trending AI Concepts Section */}
+              <div className="mb-10">
+                <div className="space-y-8 p-6 pt-8 rounded-lg bg-white shadow-sm">
+                  <h2 className="text-2xl font-semibold text-gray-900">Ignore the hype, learn what news really means.</h2>
                   {/* Article 1: Leadership & Strategy */}
                   <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
                     <div className="p-4 space-y-3">
@@ -166,10 +163,9 @@ const DailyFeedPage: React.FC = () => {
                       </div>
                       <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn how to develop and communicate a compelling AI vision that aligns with your organization's strategic objectives and drives digital transformation.</p>
                       
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <Tag tag="ai-strategy" onClick={() => {}} className="text-xs" />
-                        <Tag tag="digital-transformation" onClick={() => {}} className="text-xs" />
-                        <Tag tag="leadership" onClick={() => {}} className="text-xs" />
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <Tag tag="leadership-strategy" onClick={() => {}} className="text-xs" />
+                        <StatusIndicator status="on-track" />
                       </div>
                       
                       <div className="flex justify-end items-center gap-3 mt-2">
@@ -201,10 +197,9 @@ const DailyFeedPage: React.FC = () => {
                       </div>
                       <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Discover how to implement robust governance structures that ensure responsible AI deployment while managing risks and regulatory compliance.</p>
                       
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <Tag tag="ai-governance" onClick={() => {}} className="text-xs" />
-                        <Tag tag="risk-management" onClick={() => {}} className="text-xs" />
-                        <Tag tag="compliance" onClick={() => {}} className="text-xs" />
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <Tag tag="governance-policy-risk" onClick={() => {}} className="text-xs" />
+                        <StatusIndicator status="needs-attention" />
                       </div>
                       
                       <div className="flex justify-end items-center gap-3 mt-2">
@@ -236,10 +231,9 @@ const DailyFeedPage: React.FC = () => {
                       </div>
                       <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Explore the essential components of a scalable AI infrastructure that supports innovation while ensuring security and compliance.</p>
                       
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <Tag tag="ai-foundations" onClick={() => {}} className="text-xs" />
-                        <Tag tag="infrastructure" onClick={() => {}} className="text-xs" />
-                        <Tag tag="scalability" onClick={() => {}} className="text-xs" />
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <Tag tag="foundations-ecosystem" onClick={() => {}} className="text-xs" />
+                        <StatusIndicator status="excelling" />
                       </div>
                       
                       <div className="flex justify-end items-center gap-3 mt-2">
@@ -271,10 +265,9 @@ const DailyFeedPage: React.FC = () => {
                       </div>
                       <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn strategies for developing AI literacy across your organization and building the skills needed for successful AI adoption.</p>
                       
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <Tag tag="workforce-development" onClick={() => {}} className="text-xs" />
-                        <Tag tag="skills-training" onClick={() => {}} className="text-xs" />
-                        <Tag tag="change-management" onClick={() => {}} className="text-xs" />
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <Tag tag="workforce-enablement" onClick={() => {}} className="text-xs" />
+                        <StatusIndicator status="on-track" />
                       </div>
                       
                       <div className="flex justify-end items-center gap-3 mt-2">

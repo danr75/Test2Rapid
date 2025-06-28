@@ -13,11 +13,11 @@ type TagProps = {
 type ColorKey = 'blue' | 'green' | 'purple' | 'indigo' | 'teal';
 
 const colorMap: Record<ColorKey, string> = {
-  blue: 'bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200',
-  green: 'bg-green-50 text-green-700 hover:bg-green-100 border-green-200',
-  purple: 'bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200',
-  indigo: 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200',
-  teal: 'bg-teal-50 text-teal-700 hover:bg-teal-100 border-teal-200',
+  blue: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200',
+  green: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200',
+  purple: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200',
+  indigo: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200',
+  teal: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200',
 };
 
 const Tag: React.FC<TagProps> = ({ 

@@ -12,6 +12,11 @@ type Tag = {
 
 const tagGroups: TagGroup[] = [
   {
+    id: 'focus-areas',
+    name: 'Focus Areas',
+    color: 'blue',
+  },
+  {
     id: 'foundations',
     name: 'Foundations & Ecosystem',
     color: 'blue',
@@ -19,32 +24,43 @@ const tagGroups: TagGroup[] = [
   {
     id: 'leadership',
     name: 'Leadership & Strategy',
-    color: 'green',
+    color: 'blue',
   },
   {
     id: 'governance',
     name: 'Governance, Policy & Risk',
-    color: 'purple',
+    color: 'blue',
   },
   {
     id: 'dataTech',
-    name: 'Data and Tech Capable',
-    color: 'indigo',
+    name: 'Data & Tech Capable',
+    color: 'blue',
   },
   {
     id: 'workforce',
     name: 'Workforce Enablement',
-    color: 'teal',
+    color: 'blue',
+  },
+  {
+    id: 'aiEthics',
+    name: 'AI Ethics & Responsibility',
+    color: 'blue',
   },
 ];
 
 const tags: Tag[] = [
-  // Foundations & Ecosystem
+  // Focus Areas
+  { id: 'data-tech-capable', name: 'Data & Tech Capable', groupId: 'focus-areas' },
+  { id: 'leadership-strategy', name: 'Leadership & Strategy', groupId: 'focus-areas' },
+  { id: 'governance-policy-risk', name: 'Governance, Policy & Risk', groupId: 'focus-areas' },
+  { id: 'foundations-ecosystem', name: 'Foundations & Ecosystem', groupId: 'focus-areas' },
+  { id: 'workforce-enablement', name: 'Workforce Enablement', groupId: 'focus-areas' },
+  { id: 'ai-ethics-responsibility', name: 'AI Ethics & Responsibility', groupId: 'focus-areas' },
+
+  // Additional tags for filtering (kept for backward compatibility)
   { id: 'ai-foundations', name: 'AI Foundations', groupId: 'foundations' },
   { id: 'ai-ecosystem', name: 'AI Ecosystem Awareness', groupId: 'foundations' },
   { id: 'collaboration', name: 'Cross-functional Collaboration', groupId: 'foundations' },
-  
-  // Leadership & Strategy
   { id: 'ai-strategy', name: 'AI Strategy & Use Cases', groupId: 'leadership' },
   { id: 'commercial-decisions', name: 'Commercial & Investment Decisions', groupId: 'leadership' },
   { id: 'stakeholder-alignment', name: 'Communication & Stakeholder Alignment', groupId: 'leadership' },
