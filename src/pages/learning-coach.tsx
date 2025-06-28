@@ -552,8 +552,8 @@ const LearningCoachPage: React.FC = () => {
           {/* Learning Pathways Section */}
           <div id="learning-pathways" className="mt-12 bg-white rounded-xl p-6 -mx-6 sm:mx-0">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Learning Pathways</h2>
-              <p className="text-gray-600 text-base">Proceed with a structured approach to your learning</p>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Skill Currency</h2>
+              <p className="text-gray-600 text-base">Track and develop your AI capabilities with structured learning pathways</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -616,9 +616,9 @@ const LearningCoachPage: React.FC = () => {
                       <div className="mt-3">
                         <div className="flex justify-between items-center mb-1.5">
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700">
-                            {pathway.progress.completed} of {pathway.progress.total} modules
+                            Lead
                           </span>
-                          <span className="text-xs text-gray-500">{pathway.progress.percentage}% Complete</span>
+                          <span className="text-xs text-gray-500">{pathway.progress.percentage}% - up to date</span>
                         </div>
                         <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                           <div 
