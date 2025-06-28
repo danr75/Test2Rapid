@@ -36,7 +36,7 @@ const LearningRoad: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col" style={{ backgroundColor: '#F9FAFB' }}>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-50 to-blue-50">
       <Head>
         <title>Learning Road | Interactive Learning Hub</title>
         <meta name="description" content="Your personalized learning journey" />
@@ -46,22 +46,20 @@ const LearningRoad: React.FC = () => {
       <Header activeTab={activeTab} />
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center py-8 px-4">
-        <div className="w-full max-w-3xl mx-auto">
-          {/* Centered Content */}
-          <div className="space-y-6">
+      <main className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Content */}
+            <div className="space-y-6">
             {/* Combined Experience & Target Card */}
-            <div className="w-full bg-gradient-to-br from-violet-50 to-violet-100 rounded-xl p-5 mb-6 relative overflow-hidden">
+            <div className="w-full bg-white rounded-xl p-6 shadow-sm">
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-24 h-24 bg-violet-200 rounded-full opacity-20 -mr-8 -mt-8"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-violet-200 rounded-full opacity-10 -ml-16 -mb-8"></div>
               
               <div className="relative z-10">
                 <div className="mb-4">
-                  <h3 className="font-semibold text-base text-violet-900 mb-2">Capability Progress</h3>
-                  <p className="text-violet-800 text-sm font-medium mb-3 leading-tight">
-                    <span className="font-semibold">Your current capability is in the bottom 10%,</span> aiming for the top 10%.
-                  </p>
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">Overall capability</h3>
                   
                   {/* Progress Section */}
                   <div className="mt-4">
@@ -117,15 +115,6 @@ const LearningRoad: React.FC = () => {
                 {/* Action Buttons */}
                 <div className="flex justify-end space-x-2 mt-4 pt-3 border-t border-violet-100">
                   <button
-                    onClick={handleAssessCapability}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    <span>Reassess</span>
-                  </button>
-                  <button
                     onClick={() => {}}
                     className="bg-violet-500 hover:bg-violet-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
                   >
@@ -139,9 +128,9 @@ const LearningRoad: React.FC = () => {
             </div>
 
             {/* Stats Section */}
-            <div className="w-full mb-6 p-6 rounded-lg" style={{backgroundColor: '#F0F0F4'}}>
-              <div className="mb-4">
-                <h3 className="font-semibold text-lg text-gray-900">Your progress</h3>
+            <div className="w-full mb-6 p-6 rounded-lg bg-white shadow-sm">
+              <div className="mb-6">
+                <h3 className="text-2xl font-semibold text-gray-900">Your progress</h3>
               </div>
               <div className="relative">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -213,12 +202,21 @@ const LearningRoad: React.FC = () => {
             </div>
 
             {/* Capability Bars */}
-            <div className="w-full">
+            <div className="w-full bg-white rounded-lg p-6 shadow-sm mb-6">
+              <div className="mb-6">
+                <h3 className="text-2xl font-semibold text-gray-900">Capability status</h3>
+              </div>
               {/* Frontend Development */}
               <div className="relative mb-6">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-gray-700">Leadership & Strategy</span>
-                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">+35%</span>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-gray-700">Leadership & Strategy</span>
+                    <span className="ml-2 inline-flex items-center text-xs font-medium text-blue-600">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 mr-1.5"></span>
+                      On Track
+                    </span>
+                  </div>
+
                 </div>
                 <div className="relative h-6 bg-gray-100 overflow-visible border border-gray-200">
                   {/* Background grid lines */}
@@ -252,9 +250,9 @@ const LearningRoad: React.FC = () => {
                 </div>
                 {/* Level labels */}
                 <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Beginner</span>
-                  <span className="text-xs text-gray-500">Intermediate</span>
-                  <span className="text-xs text-gray-500">Advanced</span>
+                  <span className="text-xs text-gray-500">Aware</span>
+                  <span className="text-xs text-gray-500">Participate</span>
+                  <span className="text-xs text-gray-500">Lead</span>
                   <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
@@ -262,8 +260,14 @@ const LearningRoad: React.FC = () => {
               {/* Backend Development */}
               <div className="relative mb-6">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-gray-700">Governance, Policy & Risk</span>
-                  <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">-30%</span>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-gray-700">Governance, Policy & Risk</span>
+                    <span className="ml-2 inline-flex items-center text-xs font-medium text-blue-600">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 mr-1.5"></span>
+                      On Track
+                    </span>
+                  </div>
+
                 </div>
                 <div className="relative h-6 bg-gray-100 overflow-visible border border-gray-200">
                   <div className="absolute inset-0 flex justify-between pointer-events-none">
@@ -290,9 +294,9 @@ const LearningRoad: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Beginner</span>
-                  <span className="text-xs text-gray-500">Intermediate</span>
-                  <span className="text-xs text-gray-500">Advanced</span>
+                  <span className="text-xs text-gray-500">Aware</span>
+                  <span className="text-xs text-gray-500">Participate</span>
+                  <span className="text-xs text-gray-500">Lead</span>
                   <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
@@ -300,8 +304,14 @@ const LearningRoad: React.FC = () => {
               {/* DevOps */}
               <div className="relative mb-6">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-gray-700">Foundations & Ecosystem</span>
-                  <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">-30%</span>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-gray-700">Foundations & Ecosystem</span>
+                    <span className="ml-2 inline-flex items-center text-xs font-medium text-red-600">
+                      <span className="w-2 h-2 rounded-full bg-red-500 mr-1.5"></span>
+                      Needs Attention
+                    </span>
+                  </div>
+
                 </div>
                 <div className="relative h-6 bg-gray-100 overflow-visible border border-gray-200">
                   <div className="absolute inset-0 flex justify-between pointer-events-none">
@@ -328,9 +338,9 @@ const LearningRoad: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Beginner</span>
-                  <span className="text-xs text-gray-500">Intermediate</span>
-                  <span className="text-xs text-gray-500">Advanced</span>
+                  <span className="text-xs text-gray-500">Aware</span>
+                  <span className="text-xs text-gray-500">Participate</span>
+                  <span className="text-xs text-gray-500">Lead</span>
                   <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
@@ -338,8 +348,14 @@ const LearningRoad: React.FC = () => {
               {/* Workforce Enablement */}
               <div className="relative mb-6">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-gray-700">Workforce Enablement</span>
-                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">+18%</span>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-gray-700">Workforce Enablement</span>
+                    <span className="ml-2 inline-flex items-center text-xs font-medium text-green-600">
+                      <span className="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span>
+                      Excelling
+                    </span>
+                  </div>
+
                 </div>
                 <div className="relative h-6 bg-gray-100 overflow-visible border border-gray-200">
                   <div className="absolute inset-0 flex justify-between pointer-events-none">
@@ -366,9 +382,9 @@ const LearningRoad: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Beginner</span>
-                  <span className="text-xs text-gray-500">Intermediate</span>
-                  <span className="text-xs text-gray-500">Advanced</span>
+                  <span className="text-xs text-gray-500">Aware</span>
+                  <span className="text-xs text-gray-500">Participate</span>
+                  <span className="text-xs text-gray-500">Lead</span>
                   <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
@@ -376,8 +392,14 @@ const LearningRoad: React.FC = () => {
               {/* Data & Tech Capable */}
               <div className="relative mb-6">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-gray-700">Data & Tech Capable</span>
-                  <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">-15%</span>
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-gray-700">Data & Tech Capable</span>
+                    <span className="ml-2 inline-flex items-center text-xs font-medium text-blue-600">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 mr-1.5"></span>
+                      On Track
+                    </span>
+                  </div>
+
                 </div>
                 <div className="relative h-6 bg-gray-100 overflow-visible border border-gray-200">
                   <div className="absolute inset-0 flex justify-between pointer-events-none">
@@ -404,16 +426,60 @@ const LearningRoad: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Beginner</span>
-                  <span className="text-xs text-gray-500">Intermediate</span>
-                  <span className="text-xs text-gray-500">Advanced</span>
+                  <span className="text-xs text-gray-500">Aware</span>
+                  <span className="text-xs text-gray-500">Participate</span>
+                  <span className="text-xs text-gray-500">Lead</span>
+                  <span className="text-xs text-gray-500">Expert</span>
+                </div>
+              </div>
+
+              {/* AI Ethics and Responsibility */}
+              <div className="relative mb-6">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex items-center">
+                    <span className="text-sm font-medium text-gray-700">AI Ethics and Responsibility</span>
+                    <span className="ml-2 inline-flex items-center text-xs font-medium text-blue-600">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 mr-1.5"></span>
+                      On Track
+                    </span>
+                  </div>
+                </div>
+                <div className="relative h-6 bg-gray-100 overflow-visible border border-gray-200">
+                  <div className="absolute inset-0 flex justify-between pointer-events-none">
+                    <div className="w-px h-full bg-gray-200"></div>
+                    <div className="w-px h-full bg-gray-200"></div>
+                    <div className="w-px h-full bg-gray-200"></div>
+                  </div>
+                  <div 
+                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    style={{ width: '45%' }}
+                  >
+                    <span className="ml-auto mr-2 text-white text-xs font-medium">45%</span>
+                  </div>
+                  <div className="absolute -top-7" style={{ left: '70%', zIndex: 20 }}>
+                    <div className="flex flex-col items-center">
+                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
+                        Target
+                      </span>
+                      <div className="relative z-10">
+                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
+                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Aware</span>
+                  <span className="text-xs text-gray-500">Participate</span>
+                  <span className="text-xs text-gray-500">Lead</span>
                   <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
             </div>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
