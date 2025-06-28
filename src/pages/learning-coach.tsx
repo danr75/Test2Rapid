@@ -554,7 +554,7 @@ const LearningCoachPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50">
       <Head>
         <title>Learning Coach | AI skills builder</title>
         <meta name="description" content="Personal learning hub" />
@@ -566,7 +566,7 @@ const LearningCoachPage: React.FC = () => {
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Daily Drill */}
           <div className="mb-6">
-            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm">
               <h2 className="text-2xl font-semibold text-gray-900 mb-6">10 Minute Daily Drill</h2>
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-700 mb-3">Learning Mode</h3>
@@ -596,8 +596,6 @@ const LearningCoachPage: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">What would you like to learn about today?</h3>
-                
                 <div className="flex flex-col sm:flex-row gap-3 items-stretch">
                   <div className="w-3/4 sm:w-auto">
                     <button
@@ -605,7 +603,7 @@ const LearningCoachPage: React.FC = () => {
                       className="w-full flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
                     >
                       <SparklesIcon className="h-5 w-5 mr-2" />
-                      Pick for me
+                      My Priorities
                     </button>
                   </div>
                   
@@ -613,7 +611,7 @@ const LearningCoachPage: React.FC = () => {
                     <input
                       type="text"
                       className="w-full h-full px-4 pr-16 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      placeholder="Search for a skill..."
+                      placeholder="State something specific to learn..."
                       onKeyPress={(e: React.KeyboardEvent) => e.key === 'Enter' && handleTopicSubmit((e.target as HTMLInputElement).value)}
                     />
                     <button
@@ -621,7 +619,7 @@ const LearningCoachPage: React.FC = () => {
                         const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
                         if (inputEl?.value) handleTopicSubmit(inputEl.value);
                       }}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
                     >
                       Go
                     </button>
@@ -663,7 +661,7 @@ const LearningCoachPage: React.FC = () => {
                 return (
                   <div 
                     key={pathway.id}
-                    className={`group relative bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 
+                    className={`group relative bg-gray-50 rounded-lg shadow-sm overflow-hidden border border-gray-100 
                                hover:shadow-md hover:border-indigo-100 hover:ring-1 hover:ring-indigo-200 
                                transition-all duration-150 ease-in-out cursor-pointer h-full
                                ${!pathway.path ? 'opacity-70' : ''}`}
@@ -716,7 +714,7 @@ const LearningCoachPage: React.FC = () => {
           </div>
           
           {/* AI Skills Toolkit Section */}
-          <div id="my-toolkit" className="bg-gray-150 rounded-xl p-6 -mx-6 sm:mx-0">
+          <div id="my-toolkit" className="bg-white rounded-xl p-6 -mx-6 sm:mx-0 shadow-sm">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">My Toolkit</h2>
               <p className="text-gray-600 text-base">Quick-access resources to support your daily work.</p>
@@ -768,7 +766,7 @@ const LearningCoachPage: React.FC = () => {
                 return (
                   <div 
                     key={pathway.id}
-                    className={`group relative bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 flex flex-col ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    className={`group relative bg-gray-50 rounded-lg shadow-sm overflow-hidden border border-gray-100 flex flex-col ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
                     onClick={(pathway.path || isToolkitTile) ? handleCardClick : undefined}
                   >
                     <div className="p-5 pb-2 flex-1 flex items-start">
