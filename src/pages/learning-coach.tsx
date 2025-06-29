@@ -600,7 +600,7 @@ const LearningCoachPage: React.FC = () => {
                   <div className="w-3/4 sm:w-auto">
                     <button
                       onClick={handlePickForMe}
-                      className="w-full flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+                      className="w-full flex items-center justify-center px-4 py-3 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
                     >
                       <SparklesIcon className="h-5 w-5 mr-2" />
                       My Priorities
@@ -619,7 +619,7 @@ const LearningCoachPage: React.FC = () => {
                         const inputEl = document.querySelector('input[type="text"]') as HTMLInputElement;
                         if (inputEl?.value) handleTopicSubmit(inputEl.value);
                       }}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
                     >
                       Go
                     </button>
@@ -661,10 +661,21 @@ const LearningCoachPage: React.FC = () => {
                 return (
                   <div 
                     key={pathway.id}
-                    className={`group relative bg-gray-50 rounded-lg shadow-sm overflow-hidden border border-gray-100 
+                    className={`group relative bg-gray-50 rounded-lg shadow-sm overflow-hidden border-l-4 border-gray-300 border-t border-r border-b border-gray-100 
                                hover:shadow-md hover:border-indigo-100 hover:ring-1 hover:ring-indigo-200 
                                transition-all duration-150 ease-in-out cursor-pointer h-full
-                               ${!pathway.path ? 'opacity-70' : ''}`}
+                               ${!pathway.path ? 'opacity-70' : ''}
+                               ${
+                                 (() => {
+                                   const status = getProgressStatus(pathway.progress.percentage);
+                                   switch(status) {
+                                     case 'behind': return 'border-l-red-600';
+                                     case 'on track': return 'border-l-blue-600';
+                                     case 'excelling': return 'border-l-green-600';
+                                     default: return 'border-l-gray-400';
+                                   }
+                                 })()
+                               }`}
                     onClick={() => pathway.path && router.push(pathway.path)}
                     role="button"
                     tabIndex={0}
@@ -766,7 +777,7 @@ const LearningCoachPage: React.FC = () => {
                 return (
                   <div 
                     key={pathway.id}
-                    className={`group relative bg-gray-50 rounded-lg shadow-sm overflow-hidden border border-gray-100 flex flex-col ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+                    className={`group relative bg-gray-50 rounded-lg shadow-sm overflow-hidden border-2 border-gray-200 flex flex-col ${pathway.path || isToolkitTile ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
                     onClick={(pathway.path || isToolkitTile) ? handleCardClick : undefined}
                   >
                     <div className="p-5 pb-2 flex-1 flex items-start">

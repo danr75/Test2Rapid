@@ -1,6 +1,6 @@
 import React from 'react';
 
-type Status = 'needs-attention' | 'on-track' | 'excelling';
+type Status = 'needs-attention' | 'on-track' | 'excelling' | 'completed';
 
 interface StatusIndicatorProps {
   status: Status;
@@ -20,6 +20,11 @@ const statusMap = {
   },
   'excelling': {
     text: 'Excelling',
+    textColor: 'text-green-600',
+    dotColor: 'bg-green-500'
+  },
+  'completed': {
+    text: 'Completed',
     textColor: 'text-green-600',
     dotColor: 'bg-green-500'
   }

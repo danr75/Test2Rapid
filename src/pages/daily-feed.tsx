@@ -154,52 +154,44 @@ const DailyFeedPage: React.FC = () => {
               <div className="mb-10">
                 <div className="space-y-8 p-6 pt-8 rounded-lg bg-white shadow-sm">
                   <h2 className="text-2xl font-semibold text-gray-900">Ignore the hype, learn what news really means.</h2>
-                  {/* Article 1: Leadership & Strategy */}
-                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                  {/* Article 1: Leadership & Strategy - Completed State */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden border-l-4 border-green-500">
                     <div className="p-4 space-y-3">
-                      <div className="flex justify-between items-center mb-4">
-                        <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Strategic AI Leadership in the Digital Age</h2>
-                        <span className="text-xs" style={{color: '#6B7280'}}>2h ago</span>
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Strategic AI Leadership in the Digital Age</h2>
+                            <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                              <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              Completed
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-500 block mt-1">Completed 2h ago</span>
+                        </div>
                       </div>
-                      <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn how to develop and communicate a compelling AI vision that aligns with your organization's strategic objectives and drives digital transformation.</p>
+                      <p className="text-sm mb-3 text-gray-700">Learn how to develop and communicate a compelling AI vision that aligns with your organization's strategic objectives and drives digital transformation.</p>
                       
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <div className="pt-2">
                         <Tag tag="leadership-strategy" onClick={() => {}} className="text-xs" />
-                        <StatusIndicator status="on-track" />
-                      </div>
-                      
-                      <div className="flex justify-end items-center gap-3 mt-2">
-                        <button 
-                          onClick={() => handleLaunchLearning("Responsible Use of Generative AI in Customer Services")}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                        >
-                          Learn
-                        </button>
-                        
-                        <button 
-                          onClick={() => handleLaunchTest("Responsible Use of Generative AI in Customer Services")}
-                          className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                        >
-                          Test
-                        </button>
                       </div>
                     </div>
                   </div>
                   
                   <hr className="border-[#E5E7EB] border-t" />
 
-                  {/* Article 2: Governance, Policy & Risk */}
-                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                  {/* Article 2: Governance, Policy & Risk - Needs Attention */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden border-l-4 border-red-500">
                     <div className="p-4 space-y-3">
                       <div className="flex justify-between items-center mb-4">
                         <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>AI Governance Frameworks for Enterprise Risk Management</h2>
                         <span className="text-xs" style={{color: '#6B7280'}}>4h ago</span>
                       </div>
-                      <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Discover how to implement robust governance structures that ensure responsible AI deployment while managing risks and regulatory compliance.</p>
+                      <p className="text-sm mb-4" style={{color: '#2D2D38'}}>Discover how to implement robust governance structures that ensure responsible AI deployment while managing risks and regulatory compliance.</p>
                       
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <Tag tag="governance-policy-risk" onClick={() => {}} className="text-xs" />
-                        <StatusIndicator status="needs-attention" />
+                      <div className="text-sm text-red-600 font-medium mb-2">
+                        Contributes to <span className="font-semibold bg-red-50 border border-red-200 rounded px-1.5 py-0.5">Governance, Policy & Risk</span> that needs attention
                       </div>
                       
                       <div className="flex justify-end items-center gap-3 mt-2">
@@ -222,8 +214,8 @@ const DailyFeedPage: React.FC = () => {
                   
                   <hr className="border-[#E5E7EB] border-t" />
 
-                  {/* Article 3: Foundations & Ecosystem */}
-                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                  {/* Article 3: Foundations & Ecosystem - Excelling */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden border-l-4 border-blue-500">
                     <div className="p-4 space-y-3">
                       <div className="flex justify-between items-center mb-4">
                         <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Building a Future-Ready AI Infrastructure</h2>
@@ -231,9 +223,8 @@ const DailyFeedPage: React.FC = () => {
                       </div>
                       <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Explore the essential components of a scalable AI infrastructure that supports innovation while ensuring security and compliance.</p>
                       
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <Tag tag="foundations-ecosystem" onClick={() => {}} className="text-xs" />
-                        <StatusIndicator status="excelling" />
+                      <div className="text-sm text-green-600 font-medium mb-2">
+                        Contributes to <span className="font-semibold bg-green-50 border border-green-200 rounded px-1.5 py-0.5">Foundations & Ecosystem</span> where you are excelling
                       </div>
                       
                       <div className="flex justify-end items-center gap-3 mt-2">
@@ -256,8 +247,8 @@ const DailyFeedPage: React.FC = () => {
                   
                   <hr className="border-[#E5E7EB] border-t" />
 
-                  {/* Article 4: Workforce Enablement */}
-                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden">
+                  {/* Article 4: Workforce Enablement - On Track */}
+                  <div style={{backgroundColor: '#FAFAFC'}} className="rounded-lg shadow-sm overflow-hidden border-l-4 border-blue-500">
                     <div className="p-4 space-y-3">
                       <div className="flex justify-between items-center mb-4">
                         <h2 className="font-semibold text-lg" style={{color: '#2D2D38'}}>Upskilling Teams for the AI Revolution</h2>
@@ -265,9 +256,8 @@ const DailyFeedPage: React.FC = () => {
                       </div>
                       <p className="text-sm mb-5" style={{color: '#2D2D38'}}>Learn strategies for developing AI literacy across your organization and building the skills needed for successful AI adoption.</p>
                       
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <Tag tag="workforce-enablement" onClick={() => {}} className="text-xs" />
-                        <StatusIndicator status="on-track" />
+                      <div className="text-sm text-blue-600 font-medium mb-2">
+                        Contributes to <span className="font-semibold bg-blue-50 border border-blue-200 rounded px-1.5 py-0.5">Workforce Enablement</span> which you are on track
                       </div>
                       
                       <div className="flex justify-end items-center gap-3 mt-2">
