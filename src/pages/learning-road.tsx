@@ -10,6 +10,10 @@ const LearningRoad: React.FC = () => {
   const activeTab: NavigationTab = 'skill-tracker';
   const [selectedRole, setSelectedRole] = useState<string>('Full Stack Developer');
   const [assessmentCompleted, setAssessmentCompleted] = useState<boolean>(true);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [targetPosition, setTargetPosition] = useState<number>(87.5); // Default position at Expert
+  const [progressWidth, setProgressWidth] = useState<number>(33); // Current progress width percentage (33% progress)
+  const progressBarRef = React.useRef<HTMLDivElement>(null);
 
   // Check localStorage for assessment completion status and selected role
   useEffect(() => {
@@ -33,6 +37,54 @@ const LearningRoad: React.FC = () => {
       localStorage.removeItem('assessmentCompleted');
     }
     router.push('/skill-tracker');
+  };
+
+  // Handle mouse down on the target
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  // Handle mouse up anywhere on the document
+  useEffect(() => {
+    const handleMouseUp = () => {
+      if (isDragging) {
+        setIsDragging(false);
+      }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !progressBarRef.current) return;
+      
+      const progressBar = progressBarRef.current;
+      const rect = progressBar.getBoundingClientRect();
+      const x = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
+      const percentage = Math.round((x / rect.width) * 100);
+      
+      // Snap to nearest 25% (Aware, Participate, Lead, Expert, Master)
+      const snapPoints = [0, 25, 50, 75, 100];
+      const closest = snapPoints.reduce((prev, curr) => 
+        Math.abs(curr - percentage) < Math.abs(prev - percentage) ? curr : prev
+      );
+      
+      setTargetPosition(closest);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+  
+  const getPositionPercentage = () => {
+    const positions = [0, 25, 50, 75, 100];
+    const labels = ['Aware', 'Participate', 'Lead', 'Expert', 'Master'];
+    const index = positions.findIndex(pos => pos === targetPosition);
+    return labels[index] || 'Expert';
   };
 
   return (
@@ -65,7 +117,10 @@ const LearningRoad: React.FC = () => {
                   <div className="mt-4">
                     <div className="flex flex-col space-y-1">
                       <div className="relative w-full mb-1">
-                        <div className="relative h-6 bg-gray-100 rounded-xl overflow-visible">
+                        <div 
+                          ref={progressBarRef}
+                          className="relative h-6 bg-gray-100 rounded-xl overflow-visible cursor-pointer"
+                        >
                           {/* Background grid lines - removed */}
                           
                           {/* Vertical dividers */}
@@ -77,14 +132,24 @@ const LearningRoad: React.FC = () => {
                           
                           {/* Purple progress bar */}
                           <div 
-                            className="absolute top-0 left-0 h-6 bg-violet-600 transition-all duration-300 flex items-center rounded-l-xl z-5" 
-                            style={{ width: '25%' }}
+                            className="absolute top-0 left-0 h-6 bg-blue-500 transition-all duration-300 flex items-center rounded-l-xl z-5" 
+                            style={{ width: `${progressWidth}%` }}
                           >
-                            <span className="ml-auto mr-2 text-white text-xs font-medium">25%</span>
+                            <span className="ml-auto mr-2 text-white text-xs font-medium">{progressWidth}%</span>
                           </div>
                           
-                          {/* Target indicator with pill and connecting line */}
-                          <div className="absolute -top-7 right-0" style={{ zIndex: 20 }}>
+                          {/* Draggable target indicator with pill and connecting line */}
+                          <div 
+                            className="absolute -top-7 cursor-move select-none" 
+
+                            onMouseDown={handleMouseDown}
+                            style={{
+                              cursor: isDragging ? 'grabbing' : 'grab',
+                              left: `${targetPosition}%`,
+                              transform: 'translateX(-50%)',
+                              zIndex: 20 
+                            }}
+                          >
                             <div className="flex flex-col items-center">
                               <span className="bg-violet-200 border border-violet-300 text-violet-900 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
                                 Target
@@ -113,18 +178,7 @@ const LearningRoad: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Action Buttons */}
-                <div className="flex justify-end space-x-2 mt-4 pt-3">
-                  <button
-                    onClick={() => {}}
-                    className="bg-violet-500 hover:bg-violet-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    <span>Change Target</span>
-                  </button>
-                </div>
+                {/* Action Buttons - Removed Change Target button */}
               </div>
             </div>
 
@@ -132,12 +186,12 @@ const LearningRoad: React.FC = () => {
             <div className="w-full mb-6 p-6 rounded-xl bg-white shadow-sm border border-gray-100">
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Overall Progress */}
+                {/* Weekly Progress */}
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl flex flex-col h-full">
-                  <h4 className="text-sm font-medium text-gray-600 text-center mb-3">Overall Progress</h4>
+                  <h4 className="text-sm font-medium text-gray-600 text-center mb-3">Weekly Progress</h4>
                   <div className="flex-1 flex items-center justify-center mb-2">
                     <div className="flex items-center">
-                      <span className="text-3xl font-bold text-blue-600">65%</span>
+                      <span className="text-3xl font-bold text-blue-600">3%</span>
                       <svg className="w-8 h-8 ml-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                       </svg>
@@ -185,7 +239,7 @@ const LearningRoad: React.FC = () => {
             {/* Capability Bars */}
             <div className="w-full bg-white rounded-lg p-6 shadow-sm mb-6">
               <div className="mb-6">
-                <h3 className="text-2xl font-semibold text-gray-900">Capability status</h3>
+                <h3 className="text-2xl font-semibold text-gray-900">Progress to next level</h3>
               </div>
               {/* Frontend Development */}
               <div className="relative mb-6">
@@ -209,36 +263,20 @@ const LearningRoad: React.FC = () => {
                   
                   {/* Blue progress bar */}
                   <div 
-                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    className="absolute top-0 left-0 h-6 bg-blue-500 transition-all duration-300 flex items-center" 
                     style={{ width: '85%' }}
                   >
                     <span className="ml-auto mr-2 text-white text-xs font-medium">85%</span>
                   </div>
                   
-                  {/* Target indicator with pill and connecting line */}
-                  <div className="absolute -top-7" style={{ left: '50%', zIndex: 20 }}>
-                    <div className="flex flex-col items-center">
-                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
-                        Target
-                      </span>
-                      {/* Connecting line with solid circle - blue */}
-                      <div className="relative z-10">
-                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
-                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-                {/* Level labels */}
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Aware</span>
+                {/* Next level indicator */}
+                <div className="flex justify-end mt-1">
                   <span className="text-xs text-gray-500">Participate</span>
-                  <span className="text-xs text-gray-500">Lead</span>
-                  <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
               
-              {/* Backend Development */}
+              {/* Governance, Policy & Risk */}
               <div className="relative mb-6">
                 <div className="flex justify-between items-center mb-1">
                   <div className="flex items-center">
@@ -257,28 +295,16 @@ const LearningRoad: React.FC = () => {
                     <div className="w-px h-full bg-gray-200"></div>
                   </div>
                   <div 
-                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    className="absolute top-0 left-0 h-6 bg-blue-500 transition-all duration-300 flex items-center" 
                     style={{ width: '60%' }}
                   >
                     <span className="ml-auto mr-2 text-white text-xs font-medium">60%</span>
                   </div>
-                  <div className="absolute -top-7" style={{ left: '90%', zIndex: 20 }}>
-                    <div className="flex flex-col items-center">
-                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
-                        Target
-                      </span>
-                      <div className="relative z-10">
-                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
-                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Aware</span>
+                {/* Next level indicator */}
+                <div className="flex justify-end mt-1">
                   <span className="text-xs text-gray-500">Participate</span>
-                  <span className="text-xs text-gray-500">Lead</span>
-                  <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
               
@@ -301,28 +327,16 @@ const LearningRoad: React.FC = () => {
                     <div className="w-px h-full bg-gray-200"></div>
                   </div>
                   <div 
-                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    className="absolute top-0 left-0 h-6 bg-blue-500 transition-all duration-300 flex items-center" 
                     style={{ width: '30%' }}
                   >
                     <span className="ml-auto mr-2 text-white text-xs font-medium">30%</span>
                   </div>
-                  <div className="absolute -top-7" style={{ left: '60%', zIndex: 20 }}>
-                    <div className="flex flex-col items-center">
-                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
-                        Target
-                      </span>
-                      <div className="relative z-10">
-                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
-                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Aware</span>
+                {/* Next level indicator */}
+                <div className="flex justify-end mt-1">
                   <span className="text-xs text-gray-500">Participate</span>
-                  <span className="text-xs text-gray-500">Lead</span>
-                  <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
               
@@ -345,28 +359,16 @@ const LearningRoad: React.FC = () => {
                     <div className="w-px h-full bg-gray-200"></div>
                   </div>
                   <div 
-                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    className="absolute top-0 left-0 h-6 bg-blue-500 transition-all duration-300 flex items-center" 
                     style={{ width: '63%' }}
                   >
                     <span className="ml-auto mr-2 text-white text-xs font-medium">63%</span>
                   </div>
-                  <div className="absolute -top-7" style={{ left: '45%', zIndex: 20 }}>
-                    <div className="flex flex-col items-center">
-                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
-                        Target
-                      </span>
-                      <div className="relative z-10">
-                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
-                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Aware</span>
+                {/* Next level indicator */}
+                <div className="flex justify-end mt-1">
                   <span className="text-xs text-gray-500">Participate</span>
-                  <span className="text-xs text-gray-500">Lead</span>
-                  <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
 
@@ -389,28 +391,16 @@ const LearningRoad: React.FC = () => {
                     <div className="w-px h-full bg-gray-200"></div>
                   </div>
                   <div 
-                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    className="absolute top-0 left-0 h-6 bg-blue-500 transition-all duration-300 flex items-center" 
                     style={{ width: '50%' }}
                   >
                     <span className="ml-auto mr-2 text-white text-xs font-medium">50%</span>
                   </div>
-                  <div className="absolute -top-7" style={{ left: '65%', zIndex: 20 }}>
-                    <div className="flex flex-col items-center">
-                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
-                        Target
-                      </span>
-                      <div className="relative z-10">
-                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
-                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Aware</span>
+                {/* Next level indicator */}
+                <div className="flex justify-end mt-1">
                   <span className="text-xs text-gray-500">Participate</span>
-                  <span className="text-xs text-gray-500">Lead</span>
-                  <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
 
@@ -432,28 +422,16 @@ const LearningRoad: React.FC = () => {
                     <div className="w-px h-full bg-gray-200"></div>
                   </div>
                   <div 
-                    className="absolute top-0 left-0 h-6 bg-blue-600 transition-all duration-300 flex items-center" 
+                    className="absolute top-0 left-0 h-6 bg-blue-500 transition-all duration-300 flex items-center" 
                     style={{ width: '45%' }}
                   >
                     <span className="ml-auto mr-2 text-white text-xs font-medium">45%</span>
                   </div>
-                  <div className="absolute -top-7" style={{ left: '70%', zIndex: 20 }}>
-                    <div className="flex flex-col items-center">
-                      <span className="bg-blue-100 border border-blue-200 text-blue-800 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
-                        Target
-                      </span>
-                      <div className="relative z-10">
-                        <div className="w-0.5 h-3 bg-blue-500 mx-auto"></div>
-                        <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full z-20"></div>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">Aware</span>
+                {/* Next level indicator */}
+                <div className="flex justify-end mt-1">
                   <span className="text-xs text-gray-500">Participate</span>
-                  <span className="text-xs text-gray-500">Lead</span>
-                  <span className="text-xs text-gray-500">Expert</span>
                 </div>
               </div>
             </div>
