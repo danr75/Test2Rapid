@@ -59,33 +59,32 @@ const LearningRoad: React.FC = () => {
               
               <div className="relative z-10">
                 <div className="mb-4">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">Overall capability</h3>
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">Your progress</h3>
                   
                   {/* Progress Section */}
                   <div className="mt-4">
                     <div className="flex flex-col space-y-1">
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-medium text-violet-900">Your progress</span>
-                      </div>
                       <div className="relative w-full mb-1">
-                        <div className="relative h-6 bg-gray-100 rounded-xl overflow-visible border border-gray-200">
-                          {/* Background grid lines */}
-                          <div className="absolute inset-0 flex justify-between pointer-events-none">
-                            <div className="w-px h-full bg-gray-200"></div>
-                            <div className="w-px h-full bg-gray-200"></div>
-                            <div className="w-px h-full bg-gray-200"></div>
+                        <div className="relative h-6 bg-gray-100 rounded-xl overflow-visible">
+                          {/* Background grid lines - removed */}
+                          
+                          {/* Vertical dividers */}
+                          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }}>
+                            <div className="absolute top-0 bottom-0 w-0.5 bg-gray-200" style={{ left: '25%' }}></div>
+                            <div className="absolute top-0 bottom-0 w-0.5 bg-gray-200" style={{ left: '50%' }}></div>
+                            <div className="absolute top-0 bottom-0 w-0.5 bg-gray-200" style={{ left: '75%' }}></div>
                           </div>
                           
                           {/* Purple progress bar */}
                           <div 
-                            className="absolute top-0 left-0 h-6 bg-violet-600 transition-all duration-300 flex items-center" 
-                            style={{ width: '14%' }}
+                            className="absolute top-0 left-0 h-6 bg-violet-600 transition-all duration-300 flex items-center rounded-l-xl z-5" 
+                            style={{ width: '25%' }}
                           >
-                            <span className="ml-auto mr-2 text-white text-xs font-medium">14%</span>
+                            <span className="ml-auto mr-2 text-white text-xs font-medium">25%</span>
                           </div>
                           
                           {/* Target indicator with pill and connecting line */}
-                          <div className="absolute -top-7" style={{ left: '80%', zIndex: 20 }}>
+                          <div className="absolute -top-7 right-0" style={{ zIndex: 20 }}>
                             <div className="flex flex-col items-center">
                               <span className="bg-violet-200 border border-violet-300 text-violet-900 text-xs font-medium px-3 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
                                 Target
@@ -99,12 +98,14 @@ const LearningRoad: React.FC = () => {
                           </div>
                         </div>
                         
-                        {/* Level labels */}
-                        <div className="flex justify-between mt-1 text-xs text-gray-600">
-                          <span>Aware</span>
-                          <span>Participate</span>
-                          <span>Lead</span>
-                          <span>Expert</span>
+                        {/* Level labels - positioned under the lines */}
+                        <div className="relative mt-1">
+                          <div className="flex text-xs text-gray-600">
+                            <div className="absolute left-0 text-center" style={{ width: '25%', left: '12.5%' }}>Aware</div>
+                            <div className="absolute left-0 text-center" style={{ width: '25%', left: '37.5%' }}>Participate</div>
+                            <div className="absolute left-0 text-center" style={{ width: '25%', left: '62.5%' }}>Lead</div>
+                            <div className="absolute left-0 text-center" style={{ width: '25%', left: '87.5%' }}>Expert</div>
+                          </div>
                         </div>
                       </div>
 
@@ -113,7 +114,7 @@ const LearningRoad: React.FC = () => {
                 </div>
                 
                 {/* Action Buttons */}
-                <div className="flex justify-end space-x-2 mt-4 pt-3 border-t border-violet-100">
+                <div className="flex justify-end space-x-2 mt-4 pt-3">
                   <button
                     onClick={() => {}}
                     className="bg-violet-500 hover:bg-violet-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
@@ -129,9 +130,6 @@ const LearningRoad: React.FC = () => {
 
             {/* Stats Section - Modern Design */}
             <div className="w-full mb-6 p-6 rounded-xl bg-white shadow-sm border border-gray-100">
-                <div className="col-span-1 md:col-span-2">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-6">Your progress</h3>
-              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Overall Progress */}

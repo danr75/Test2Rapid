@@ -25,11 +25,18 @@ const CapabilityBar: React.FC<CapabilityBarProps> = ({ skill, targetLevel }) => 
     <div className="mb-8">
       <div className="text-lg font-semibold text-gray-800 mb-2">{skill.category}</div>
       <div className="relative h-8 bg-gray-100 rounded-xl overflow-visible border border-gray-200">
-        {/* Background grid lines */}
+        {/* Background grid lines for skill levels */}
         <div className="absolute inset-0 flex justify-between pointer-events-none">
           <div className="w-px h-full bg-gray-200"></div>
           <div className="w-px h-full bg-gray-200"></div>
           <div className="w-px h-full bg-gray-200"></div>
+        </div>
+        
+        {/* Skill level indicators */}
+        <div className="absolute inset-0 flex justify-between pointer-events-none">
+          <div className="w-0.5 h-full bg-gray-300" style={{ left: '25%' }}></div>
+          <div className="w-0.5 h-full bg-gray-300" style={{ left: '50%' }}></div>
+          <div className="w-0.5 h-full bg-gray-300" style={{ left: '75%' }}></div>
         </div>
         
         {/* Blue progress bar */}
@@ -89,11 +96,13 @@ const CapabilityBar: React.FC<CapabilityBarProps> = ({ skill, targetLevel }) => 
       </div>
       
       {/* Level labels */}
-      <div className="flex justify-between mt-1 text-xs text-gray-600">
-        <span>Beginner</span>
-        <span>Intermediate</span>
-        <span>Advanced</span>
-        <span>Expert</span>
+      <div className="relative mt-1">
+        <div className="flex justify-between text-xs text-gray-600">
+          <span>Aware</span>
+          <span>Participate</span>
+          <span>Lead</span>
+          <span>Expert</span>
+        </div>
       </div>
     </div>
   );
