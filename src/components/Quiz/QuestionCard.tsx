@@ -44,7 +44,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
         </div>
       </div>
       
-      <h3 className="text-xl font-semibold mb-6">{question}</h3>
+      <h3 className="text-xl font-semibold mb-6 text-black">{question}</h3>
       
       <div className="space-y-3">
         {options.map((option) => (

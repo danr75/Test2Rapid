@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
-import { ArrowLeftIcon, ChatBubbleLeftRightIcon, DocumentTextIcon, ClipboardDocumentListIcon, LightBulbIcon, BookmarkIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ChatBubbleLeftRightIcon, DocumentTextIcon, ClipboardDocumentListIcon, LightBulbIcon, BookmarkIcon, BeakerIcon, ChartBarIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import Header from '@/components/Layout/Header';
 
 // Mock data - replace with actual data from your API
@@ -29,7 +29,50 @@ const myNotes = [
   { id: 2, title: 'Leadership Development Plan', date: '2023-06-18' },
 ];
 
-type TabType = 'cheatsheets' | 'templates' | 'essentials' | 'mynotes' | 'chat';
+const aiUseCases = [
+  {
+    id: 1,
+    title: 'Digital Transformation in Banking',
+    description: 'How a major bank successfully led digital transformation across its operations.',
+    category: 'Industry Application',
+    icon: BeakerIcon,
+    iconColor: 'text-green-600',
+    bgColor: 'bg-green-50',
+    link: '#'
+  },
+  {
+    id: 2,
+    title: 'AI Strategy Development',
+    description: 'Case study on developing and implementing an enterprise-wide AI strategy.',
+    category: 'Strategy',
+    icon: ChartBarIcon,
+    iconColor: 'text-blue-600',
+    bgColor: 'bg-blue-50',
+    link: '#'
+  },
+  {
+    id: 3,
+    title: 'Leadership in Tech Innovation',
+    description: 'How leadership approaches drive successful technology innovation in large organizations.',
+    category: 'Leadership',
+    icon: LightBulbIcon,
+    iconColor: 'text-purple-600',
+    bgColor: 'bg-purple-50',
+    link: '#'
+  },
+  {
+    id: 4,
+    title: 'Change Management Success',
+    description: 'Transforming organizational culture through effective change management strategies.',
+    category: 'Management',
+    icon: UserGroupIcon,
+    iconColor: 'text-yellow-600',
+    bgColor: 'bg-yellow-50',
+    link: '#'
+  }
+];
+
+type TabType = 'cheatsheets' | 'templates' | 'essentials' | 'mynotes' | 'chat' | 'usecases';
 
 const LeadershipStrategy = () => {
   const router = useRouter();
@@ -120,6 +163,55 @@ const LeadershipStrategy = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        );
+
+      case 'usecases':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Use Cases & Case Studies</h2>
+              <p className="text-gray-600">Explore real-world applications of leadership and strategy in AI implementation.</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {aiUseCases.map((useCase) => {
+                const Icon = useCase.icon;
+                return (
+                  <div key={useCase.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                    <div className="p-6">
+                      <div className={`w-12 h-12 ${useCase.bgColor} rounded-lg flex items-center justify-center mb-4`}>
+                        <Icon className={`h-6 w-6 ${useCase.iconColor}`} />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{useCase.title}</h3>
+                      <p className="text-gray-600 mb-4">{useCase.description}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          {useCase.category}
+                        </span>
+                        <a 
+                          href={useCase.link} 
+                          className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center"
+                        >
+                          Learn more
+                          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="mt-8 bg-blue-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Submit Your Use Case</h3>
+              <p className="text-gray-600 mb-4">Have an interesting leadership or strategy use case to share? We'd love to hear about it!</p>
+              <button className="bg-white text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg border border-blue-200 text-sm font-medium transition-colors">
+                Save your story
+              </button>
             </div>
           </div>
         );
@@ -223,7 +315,7 @@ const LeadershipStrategy = () => {
               className="flex items-center text-blue-600 hover:text-blue-800"
             >
               <ArrowLeftIcon className="h-5 w-5 mr-2" />
-              Back to my Toolkit
+              Toolkit
             </Link>
             
             <div className="mt-6">
@@ -231,8 +323,6 @@ const LeadershipStrategy = () => {
               <p className="text-gray-600 mt-1">Resources and tools for strategic leadership</p>
             </div>
           </div>
-
-          {/* Tabs */}
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8 overflow-x-auto" aria-label="Tabs">
               {[
@@ -240,7 +330,8 @@ const LeadershipStrategy = () => {
                 { id: 'templates', name: 'Templates', icon: ClipboardDocumentListIcon },
                 { id: 'essentials', name: 'Essentials', icon: LightBulbIcon },
                 { id: 'mynotes', name: 'My Notes', icon: BookmarkIcon },
-                { id: 'chat', name: 'AI Assistant', icon: ChatBubbleLeftRightIcon },
+                { id: 'usecases', name: 'Use Cases', icon: BeakerIcon },
+                { id: 'chat', name: 'AI Assistant', icon: ChatBubbleLeftRightIcon }
               ].map((tab) => (
                 <button
                   key={tab.id}

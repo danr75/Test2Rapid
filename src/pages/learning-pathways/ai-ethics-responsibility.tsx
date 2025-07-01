@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -32,58 +33,58 @@ const AIEthicsResponsibilityPathway = () => {
   const router = useRouter();
   const [activeOption, setActiveOption] = useState<string | null>(null);
   
-  // Learning options for AI Ethics & Responsibility
+  // Standardized learning options for AI Ethics & Responsibility
   const learningOptions: LearningOption[] = [
     {
-      id: 'ethical-principles',
-      title: 'Ethical Principles',
-      description: 'Core ethical frameworks for responsible AI development',
-      icon: 'ScaleIcon',
+      id: 'quick-refreshers',
+      title: 'Quick Refreshers',
+      description: '5–10 minute learning bursts on AI ethics and responsible AI',
+      icon: 'LightBulbIcon',
       type: 'refresher',
       items: [
-        'AI Ethics Frameworks',
-        'Moral Decision Making',
-        'Value Alignment',
+        'Ethical Principles Recap',
+        'Responsible AI Overview',
+        'Bias & Fairness Fundamentals',
+        'Privacy & Security Refresher'
+      ]
+    },
+    {
+      id: 'scenario-challenges',
+      title: 'Scenario Challenges',
+      description: 'Apply your knowledge to ethical AI dilemmas',
+      icon: 'UserGroupIcon',
+      type: 'scenario',
+      items: [
+        'Bias Detection Scenario',
+        'Transparency Challenge',
+        'Data Privacy Simulation',
+        'Accountability Case Study'
+      ]
+    },
+    {
+      id: 'role-play',
+      title: 'Role Play Simulations',
+      description: 'Practice ethical decision-making in realistic scenarios',
+      icon: 'PlayCircleIcon',
+      type: 'simulation',
+      items: [
+        'Ethics Board Simulation',
+        'Stakeholder Engagement Workshop',
+        'Incident Response Role Play',
         'Ethical Risk Assessment'
       ]
     },
     {
-      id: 'bias-fairness',
-      title: 'Bias & Fairness',
-      description: 'Identify and mitigate bias in AI systems',
-      icon: 'ScaleIconSolid',
-      type: 'scenario',
-      items: [
-        'Types of Algorithmic Bias',
-        'Fairness Metrics',
-        'Bias Detection Tools',
-        'Mitigation Strategies'
-      ]
-    },
-    {
-      id: 'privacy-security',
-      title: 'Privacy & Security',
-      description: 'Protect data and ensure secure AI systems',
-      icon: 'ShieldCheckIcon',
-      type: 'simulation',
-      items: [
-        'Data Protection Principles',
-        'Privacy-Preserving AI',
-        'Security Best Practices',
-        'Compliance Requirements'
-      ]
-    },
-    {
-      id: 'responsible-framework',
-      title: 'Responsible AI Framework',
-      description: 'Implement ethical AI practices in your organization',
-      icon: 'ShieldExclamationIcon',
+      id: 'micro-actions',
+      title: 'Micro-Actions',
+      description: 'Practical ethical actions to implement in your work',
+      icon: 'CheckCircleIcon',
       type: 'action',
       items: [
-        'Governance Models',
-        'Ethics Review Boards',
-        'Impact Assessments',
-        'Stakeholder Engagement'
+        'Review an AI Policy',
+        'Identify a Bias Risk',
+        'Share an Ethics Resource',
+        'Reflect on an Ethical Dilemma'
       ]
     }
   ];
@@ -144,17 +145,16 @@ const AIEthicsResponsibilityPathway = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <Link href="/learning-coach" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
+          <Link href="/learning-coach#learning-pathways" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            <span>Back to Learning Coach</span>
+            <span>Skills Development</span>
           </Link>
           
-          <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg p-6 mb-8">
-            <h1 className="text-3xl font-bold mb-2">AI Ethics & Responsibility</h1>
-            <p className="text-purple-100">
-              Navigate the ethical considerations and responsible use of AI in your organization
-            </p>
-          </div>
+          <PathwayHeading
+            capability="AI Ethics & Responsibility"
+            title="AI Ethics & Responsibility"
+            description="Navigate the ethical considerations and responsible use of AI in your organization"
+          />
 
           {!selectedOption ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

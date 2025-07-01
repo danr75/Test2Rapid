@@ -270,8 +270,9 @@ const LearningRoad: React.FC = () => {
                   </div>
                   
                 </div>
-                {/* Next level indicator */}
-                <div className="flex justify-end mt-1">
+                {/* Level indicators */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Aware</span>
                   <span className="text-xs text-gray-500">Participate</span>
                 </div>
               </div>
@@ -302,8 +303,9 @@ const LearningRoad: React.FC = () => {
                   </div>
 
                 </div>
-                {/* Next level indicator */}
-                <div className="flex justify-end mt-1">
+                {/* Level indicators */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Aware</span>
                   <span className="text-xs text-gray-500">Participate</span>
                 </div>
               </div>
@@ -334,8 +336,9 @@ const LearningRoad: React.FC = () => {
                   </div>
 
                 </div>
-                {/* Next level indicator */}
-                <div className="flex justify-end mt-1">
+                {/* Level indicators */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Aware</span>
                   <span className="text-xs text-gray-500">Participate</span>
                 </div>
               </div>
@@ -366,8 +369,9 @@ const LearningRoad: React.FC = () => {
                   </div>
 
                 </div>
-                {/* Next level indicator */}
-                <div className="flex justify-end mt-1">
+                {/* Level indicators */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Aware</span>
                   <span className="text-xs text-gray-500">Participate</span>
                 </div>
               </div>
@@ -398,8 +402,9 @@ const LearningRoad: React.FC = () => {
                   </div>
 
                 </div>
-                {/* Next level indicator */}
-                <div className="flex justify-end mt-1">
+                {/* Level indicators */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Aware</span>
                   <span className="text-xs text-gray-500">Participate</span>
                 </div>
               </div>
@@ -429,8 +434,9 @@ const LearningRoad: React.FC = () => {
                   </div>
 
                 </div>
-                {/* Next level indicator */}
-                <div className="flex justify-end mt-1">
+                {/* Level indicators */}
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-gray-500">Aware</span>
                   <span className="text-xs text-gray-500">Participate</span>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -111,24 +112,16 @@ const GovernancePolicyRiskPathway = () => {
         </Link>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold">Governance, Policy & Risk</h1>
-                <p className="mt-2 text-blue-100 max-w-2xl">
-                  Develop your expertise in AI governance, policy development, and risk management
-                </p>
-              </div>
-            </div>
-          </div>
+          <PathwayHeading
+            capability="Governance, Policy & Risk"
+            title="Governance, Policy & Risk"
+            description="Build governance, policy, and risk management skills to support responsible AI adoption."
+          />
           
           <div className="p-6">
             {!activeOption ? (
               <div>
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Learning Options</h2>
-                  <p className="text-gray-600">Choose a learning format that fits your needs and schedule</p>
-                </div>
+
                 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   {learningOptions.map((option) => (
@@ -169,60 +162,48 @@ const GovernancePolicyRiskPathway = () => {
               </div>
             ) : (
               <div>
-                <button
-                  onClick={handleBackToOptions}
-                  className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
-                >
-                  <ArrowLeftIcon className="h-5 w-5 mr-2" />
-                  Back to Learning Options
-                </button>
-                
-                <div className="bg-white p-6 rounded-lg border border-gray-200">
-                  <div className="flex items-start">
-                    <div className={`flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-lg ${
-                      learningOptions.find(o => o.id === activeOption)?.type === 'refresher' ? 'bg-blue-100 text-blue-600' :
-                      learningOptions.find(o => o.id === activeOption)?.type === 'scenario' ? 'bg-purple-100 text-purple-600' :
-                      learningOptions.find(o => o.id === activeOption)?.type === 'simulation' ? 'bg-green-100 text-green-600' :
-                      'bg-amber-100 text-amber-600'
-                    }`}>
-                      {(() => {
-                        const icon = learningOptions.find(o => o.id === activeOption)?.icon || 'LightBulbIcon';
-                        const Icon = {
-                          'LightBulbIcon': LightBulbIcon,
-                          'UserGroupIcon': UserGroupIcon,
-                          'PlayCircleIcon': PlayCircleIcon,
-                          'CheckCircleIcon': CheckCircleIcon
-                        }[icon] || LightBulbIcon;
-                        return <Icon className="h-6 w-6" />;
-                      })()}
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                        {learningOptions.find(o => o.id === activeOption)?.title}
-                      </h2>
-                      <p className="text-gray-600">
-                        {learningOptions.find(o => o.id === activeOption)?.description}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-8">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Activities</h3>
-                    <div className="space-y-3">
-                      {learningOptions.find(o => o.id === activeOption)?.items.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-8 w-8 rounded-full bg-white border border-gray-200 flex items-center justify-center mr-3">
-                              <span className="text-sm font-medium text-gray-500">{index + 1}</span>
-                            </div>
-                            <span className="text-gray-700">{item}</span>
+                <div className="mb-6">
+                  <button 
+                    onClick={handleBackToOptions}
+                    className="text-blue-600 hover:text-blue-800 flex items-center"
+                  >
+                    <ArrowLeftIcon className="h-5 w-5 mr-1" />
+                    <span>Skills Development</span>
+                  </button>
+                </div>
+
+                <div className="mt-6 space-y-6">
+                  <h2 className="text-2xl font-bold text-gray-900">Start a challenge</h2>
+                  <div className="space-y-4">
+                    {learningOptions.find(o => o.id === activeOption)?.items.map((item, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          const option = learningOptions.find(o => o.id === activeOption);
+                          if (option) {
+                            if (option.type === 'scenario') {
+                              const topic = `Governance: ${item}`;
+                              localStorage.setItem('selectedTopic', topic);
+                              router.push('/qa-learn');
+                            } else if (option.type === 'refresher') {
+                              // Handle refresher logic here
+                            }
+                          }
+                        }}
+                        className="w-full text-left group flex items-center justify-between p-6 border-2 border-gray-100 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+                      >
+                        <div className="flex items-start">
+                          <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-800 text-lg font-bold mr-4">
+                            {index + 1}
                           </div>
-                          <button className="ml-4 p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
-                            <ChevronRightIcon className="h-5 w-5" />
-                          </button>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-1">{item}</h3>
+                            <p className="text-gray-600 text-sm">Click to start this challenge</p>
+                          </div>
                         </div>
-                      ))}
-                    </div>
+                        <ChevronRightIcon className="h-6 w-6 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>

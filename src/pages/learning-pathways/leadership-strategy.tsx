@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -47,7 +48,7 @@ const LeadershipStrategyPathway = () => {
     {
       id: 'scenario-challenges',
       title: 'Scenario Challenges',
-      description: 'Apply strategic thinking to real-world leadership challenges',
+      description: 'Apply your skills to realistic business scenarios',
       icon: 'UserGroupIcon',
       type: 'scenario',
       items: [
@@ -84,6 +85,20 @@ const LeadershipStrategyPathway = () => {
       ]
     }
   ];
+
+  const [selectedRefresher, setSelectedRefresher] = useState<string | null>(null);
+
+  const handleStartLearning = (option: LearningOption, item: string) => {
+    if (option.type === 'scenario') {
+      // For scenario challenges, navigate to the Q&A learning mode with the selected topic
+      const topic = `Leadership: ${item}`;
+      localStorage.setItem('selectedTopic', topic);
+      router.push('/qa-learn');
+    } else if (option.type === 'refresher') {
+      // For quick refreshers, show the refresher content
+      setSelectedRefresher(item);
+    }
+  };
 
   const toggleOption = (id: string) => {
     setActiveOption(activeOption === id ? null : id);
@@ -135,19 +150,56 @@ const LeadershipStrategyPathway = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <Link href="/learning-coach" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
+          <Link href="/learning-coach#learning-pathways" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            <span>Back to Learning Coach</span>
+            <span>Learning Pathway</span>
           </Link>
           
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg p-6 mb-8">
-            <h1 className="text-3xl font-bold mb-2">Leadership & Strategy</h1>
-            <p className="text-blue-100">
-              Develop your strategic thinking and leadership capabilities to drive AI transformation in your organization.
-            </p>
-          </div>
+          <PathwayHeading
+            capability="Leadership & Strategy"
+            title="Leadership & Strategy"
+            description="Develop your strategic thinking and leadership capabilities to drive AI transformation in your organization."
+          />
 
-          {!selectedOption ? (
+          {selectedRefresher ? (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex items-center mb-6">
+                <button 
+                  onClick={() => setSelectedRefresher(null)}
+                  className="mr-4 text-blue-600 hover:text-blue-800 flex items-center"
+                >
+                  <ArrowLeftIcon className="h-5 w-5 mr-1" />
+                  <span>Skills Development</span>
+                </button>
+              </div>
+              <div className="prose max-w-none">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{selectedRefresher}</h2>
+                <div className="bg-blue-50 p-4 rounded-lg mb-6">
+                  <p className="text-blue-800 font-medium mb-2">5-10 Minute Refresher</p>
+                  <p className="text-gray-700">
+                    This is a quick refresher on {selectedRefresher.toLowerCase()}. Take your time to review the key concepts and strategies.
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Key Points</h3>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>Review the core concepts</li>
+                    <li>Consider real-world applications</li>
+                    <li>Reflect on your current approach</li>
+                    <li>Identify one takeaway to apply</li>
+                  </ul>
+                </div>
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <button 
+                    onClick={() => setSelectedRefresher(null)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors"
+                  >
+                    Complete Refresher
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : !selectedOption ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {learningOptions.map((option) => (
                 <div 
@@ -178,15 +230,21 @@ const LeadershipStrategyPathway = () => {
                           </li>
                         ))}
                       </ul>
-                      <button 
-                        className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Handle start learning
-                        }}
-                      >
-                        Start Learning
-                      </button>
+                      <div className="space-y-2 mt-4">
+                        {option.items.map((item, itemIndex) => (
+                          <button 
+                            key={itemIndex}
+                            className="w-full text-left bg-blue-50 hover:bg-blue-100 text-blue-800 py-2 px-4 rounded-md transition-colors flex items-center justify-between"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStartLearning(option, item);
+                            }}
+                          >
+                            <span>{item}</span>
+                            <ChevronRightIcon className="h-4 w-4" />
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -194,49 +252,38 @@ const LeadershipStrategyPathway = () => {
             </div>
           ) : (
             <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center mb-6">
+              <div className="mb-6">
                 <button 
                   onClick={() => setActiveOption(null)}
-                  className="mr-4 text-gray-600 hover:text-gray-900"
+                  className="text-blue-600 hover:text-blue-800 flex items-center"
                 >
-                  <ArrowLeftIcon className="h-5 w-5" />
+                  <ArrowLeftIcon className="h-5 w-5 mr-1" />
+                  <span>Skills Development</span>
                 </button>
-                <div className={`rounded-full p-2 mr-4 ${getTypeColor(selectedOption.type)}`}>
-                  {getIcon(selectedOption.icon)}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                    {selectedOption.title}
-                  </h2>
-                  <p className="text-gray-600">
-                    {selectedOption.description}
-                  </p>
-                </div>
               </div>
 
-              <div className="mt-6 space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Activities</h3>
-                <ul className="space-y-3">
+              <div className="mt-6 space-y-6">
+                <h2 className="text-2xl font-bold text-gray-900">Start a challenge</h2>
+                <div className="space-y-4">
                   {selectedOption.items.map((item, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-800 text-sm font-medium mr-3">
-                        {index + 1}
-                      </span>
-                      <span className="text-gray-700">{item}</span>
-                    </li>
+                    <button
+                      key={index}
+                      onClick={() => handleStartLearning(selectedOption, item)}
+                      className="w-full text-left group flex items-center justify-between p-6 border-2 border-gray-100 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+                    >
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-800 text-lg font-bold mr-4">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-1">{item}</h3>
+                          <p className="text-gray-600 text-sm">Click to start this challenge</p>
+                        </div>
+                      </div>
+                      <ChevronRightIcon className="h-6 w-6 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                    </button>
                   ))}
-                </ul>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    // Handle start learning
-                  }}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Start Learning
-                </button>
+                </div>
               </div>
             </div>
           )}

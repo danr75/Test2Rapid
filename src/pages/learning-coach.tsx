@@ -3,7 +3,8 @@ import Head from 'next/head';
 import Header from '@/components/Layout/Header';
 import TopicInput from '@/components/UI/TopicInput';
 import { useLearning, LearningMode } from '@/store/LearningContext';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { BookmarkIcon } from '@heroicons/react/24/outline';
 import { 
   ChatBubbleOvalLeftEllipsisIcon, 
   DocumentTextIcon, 
@@ -475,8 +476,38 @@ const LearningCoachPage: React.FC = () => {
     setCarouselIndex((prevIndex) => (prevIndex < learningPathways.length - 3 ? prevIndex + 1 : 0));
   };
 
-  // Derive current mode from context, default to 'Q&A'
-  const currentLearningMode = state.learningMode || 'Q&A';
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { setTopic, setLearningMode } = useLearning();
+  const [currentLearningMode, setCurrentLearningMode] = useState<LearningMode>('Q&A');
+
+  // Handle scrolling to the My Toolkit section when the component mounts or when the URL hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#my-toolkit') {
+        const element = document.getElementById('my-toolkit');
+        if (element) {
+          // Add a small delay to ensure the page has rendered
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth' });
+            // Update the URL without the hash to prevent scrolling on refresh
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          }, 100);
+        }
+      }
+    };
+
+    // Check for hash on initial load
+    handleHashChange();
+
+    // Add event listener for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, [pathname, searchParams]);
 
   // Effect to initialize context's learningMode if it's not set (e.g., on first app load)
   useEffect(() => {
@@ -562,7 +593,7 @@ const LearningCoachPage: React.FC = () => {
 
       <Header activeTab="learning-coach" />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pb-48">
         <div className="max-w-4xl mx-auto space-y-12">
           {/* Daily Drill */}
           <div className="mb-6">
@@ -725,7 +756,7 @@ const LearningCoachPage: React.FC = () => {
           </div>
           
           {/* AI Skills Toolkit Section */}
-          <div id="my-toolkit" className="bg-white rounded-xl p-6 -mx-6 sm:mx-0 shadow-sm">
+          <div id="my-toolkit" className="bg-white rounded-xl p-6 -mx-6 sm:mx-0 shadow-sm scroll-mt-24">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">My Toolkit</h2>
               <p className="text-gray-600 text-base">Quick-access resources to support your daily work.</p>
@@ -799,6 +830,23 @@ const LearningCoachPage: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+            
+            {/* Saved Items Full Width Card */}
+            <div 
+              className="relative bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg shadow-sm overflow-hidden border-2 border-dashed border-indigo-200 group hover:shadow-md transition-all cursor-pointer col-span-1 md:col-span-2 lg:col-span-3 mt-4"
+              onClick={() => router.push('/saved-items')}
+            >
+              <div className="p-6 flex flex-col items-center justify-center text-center">
+                <div className="h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
+                  <BookmarkIcon className="h-6 w-6 text-indigo-600" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">Saved Items</h3>
+                <p className="text-sm text-gray-500 mb-3">Your saved lessons, tests, and articles</p>
+                <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                  <ArrowRightIcon className="h-3 w-3 text-indigo-600" />
+                </div>
+              </div>
             </div>
           </div>
 

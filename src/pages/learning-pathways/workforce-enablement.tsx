@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -32,58 +33,58 @@ const WorkforceEnablementPathway = () => {
   const router = useRouter();
   const [activeOption, setActiveOption] = useState<string | null>(null);
   
-  // Learning options for Workforce Enablement
+  // Standardized learning options for Workforce Enablement
   const learningOptions: LearningOption[] = [
     {
-      id: 'skills-assessment',
-      title: 'Skills Assessment',
-      description: 'Evaluate your team\'s current AI capabilities and identify skill gaps',
-      icon: 'ChartBarIcon',
+      id: 'quick-refreshers',
+      title: 'Quick Refreshers',
+      description: '5–10 minute learning bursts on workforce enablement and AI skills',
+      icon: 'LightBulbIcon',
       type: 'refresher',
       items: [
-        'AI Skills Framework',
-        'Assessment Tools',
-        'Gap Analysis',
-        'Benchmarking'
+        'AI Skills Framework Overview',
+        'Change Management Basics',
+        'Team Collaboration Recap',
+        'Continuous Learning Principles'
       ]
     },
     {
-      id: 'learning-pathways',
-      title: 'Learning Pathways',
-      description: 'Develop customized learning journeys for different roles',
-      icon: 'AcademicCapIcon',
+      id: 'scenario-challenges',
+      title: 'Scenario Challenges',
+      description: 'Apply your skills to workforce enablement scenarios',
+      icon: 'UserGroupIcon',
       type: 'scenario',
       items: [
-        'Role-Specific Tracks',
-        'Technical Upskilling',
-        'Leadership Development',
-        'Continuous Learning'
+        'Role-Specific Upskilling',
+        'Stakeholder Engagement Scenario',
+        'Team Development Challenge',
+        'Learning Pathway Simulation'
       ]
     },
     {
-      id: 'change-management',
-      title: 'Change Management',
-      description: 'Guide your organization through AI transformation',
-      icon: 'ArrowsRightLeftIcon',
+      id: 'role-play',
+      title: 'Role Play Simulations',
+      description: 'Practice workforce enablement in realistic scenarios',
+      icon: 'PlayCircleIcon',
       type: 'simulation',
       items: [
-        'Change Readiness',
-        'Stakeholder Engagement',
-        'Communication Strategies',
-        'Adoption Metrics'
+        'Change Management Simulation',
+        'Team Collaboration Workshop',
+        'Leadership Development Role Play',
+        'Performance Review Exercise'
       ]
     },
     {
-      id: 'team-structures',
-      title: 'Team Structures',
-      description: 'Build effective AI teams and define new roles',
-      icon: 'UsersIcon',
+      id: 'micro-actions',
+      title: 'Micro-Actions',
+      description: 'Practical workforce enablement tasks to implement in your work',
+      icon: 'CheckCircleIcon',
       type: 'action',
       items: [
-        'Hybrid Team Models',
-        'Role Definitions',
-        'Collaboration Frameworks',
-        'Performance Metrics'
+        'Conduct a Team Check-in',
+        'Identify a Skills Gap',
+        'Share a Learning Resource',
+        'Reflect on a Team Success'
       ]
     }
   ];
@@ -144,17 +145,16 @@ const WorkforceEnablementPathway = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <Link href="/learning-coach" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
+          <Link href="/learning-coach#learning-pathways" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            <span>Back to Learning Coach</span>
+            <span>Skills Development</span>
           </Link>
           
-          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg p-6 mb-8">
-            <h1 className="text-3xl font-bold mb-2">Workforce Enablement</h1>
-            <p className="text-blue-100">
-              Equip your team with the skills and knowledge needed for AI adoption
-            </p>
-          </div>
+          <PathwayHeading
+            capability="Workforce Enablement"
+            title="Workforce Enablement"
+            description="Enable your workforce with the skills and mindsets needed for AI transformation."
+          />
 
           {!selectedOption ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

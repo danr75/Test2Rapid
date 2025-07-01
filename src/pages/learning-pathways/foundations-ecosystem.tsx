@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -29,64 +30,74 @@ const FoundationsEcosystemPathway = () => {
   const router = useRouter();
   const [activeOption, setActiveOption] = useState<string | null>(null);
   
-  // Learning options for Foundations & Ecosystem
+  // Standardized learning options for Foundations & Ecosystem
   const learningOptions: LearningOption[] = [
     {
       id: 'quick-refreshers',
       title: 'Quick Refreshers',
-      description: '5–10 minute learning bursts on AI foundations',
+      description: '5–10 minute learning bursts on AI foundations and ecosystem concepts',
       icon: 'LightBulbIcon',
       type: 'refresher',
       items: [
         'AI Fundamentals Recap',
-        'Key AI Technologies Overview',
-        'Ecosystem Players Explained',
-        'Technology Stack Refresher'
+        'Ecosystem Players Overview',
+        'Technology Stack Refresher',
+        'Integration Best Practices'
       ]
     },
     {
       id: 'scenario-challenges',
       title: 'Scenario Challenges',
-      description: 'Apply your knowledge to real-world AI scenarios',
+      description: 'Apply your knowledge to real-world AI ecosystem scenarios',
       icon: 'UserGroupIcon',
       type: 'scenario',
       items: [
-        'Technology Selection Challenge',
+        'Ecosystem Mapping Exercise',
         'Vendor Evaluation Scenario',
-        'Integration Planning Exercise',
-        'Ecosystem Mapping'
+        'Technology Selection Challenge',
+        'Integration Planning Simulation'
       ]
     },
     {
       id: 'role-play',
       title: 'Role Play Simulations',
-      description: 'Practice decision-making in technical scenarios',
+      description: 'Practice ecosystem decision-making in realistic scenarios',
       icon: 'PlayCircleIcon',
       type: 'simulation',
       items: [
-        'Technical Decision Simulation',
-        'Vendor Evaluation Role Play',
-        'Architecture Planning Workshop',
-        'Technology Stack Design'
+        'Stakeholder Alignment Simulation',
+        'Technical Decision Workshop',
+        'Vendor Negotiation Role Play',
+        'Ecosystem Strategy Session'
       ]
     },
     {
       id: 'micro-actions',
       title: 'Micro-Actions',
-      description: 'Practical tasks to implement in your work',
+      description: 'Practical ecosystem tasks to implement in your work',
       icon: 'CheckCircleIcon',
       type: 'action',
       items: [
-        'Map Your Organization\'s AI Ecosystem',
-        'Research One New AI Technology',
-        'Identify One Integration Opportunity',
-        'Share a Technology Insight with Your Team'
+        'Map Your Organization’s AI Ecosystem',
+        'Research a New AI Tool',
+        'Identify an Integration Opportunity',
+        'Share an Ecosystem Insight'
       ]
     }
   ];
 
   const toggleOption = (id: string) => {
     setActiveOption(activeOption === id ? null : id);
+  };
+
+  const handleStartLearning = (option: LearningOption, item: string) => {
+    if (option.type === 'scenario') {
+      const topic = `Foundations: ${item}`;
+      localStorage.setItem('selectedTopic', topic);
+      router.push('/qa-learn');
+    } else if (option.type === 'refresher') {
+      // Handle refresher logic here
+    }
   };
 
   const getIcon = (iconName: string) => {
@@ -135,17 +146,16 @@ const FoundationsEcosystemPathway = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <Link href="/learning-coach" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
+          <Link href="/learning-coach#learning-pathways" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6">
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
-            <span>Back to Learning Coach</span>
+            <span>Skills Development</span>
           </Link>
           
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg p-6 mb-8">
-            <h1 className="text-3xl font-bold mb-2">Foundations & Ecosystem</h1>
-            <p className="text-blue-100">
-              Build a strong foundation in AI technologies and understand the ecosystem to make informed decisions about AI adoption and implementation.
-            </p>
-          </div>
+          <PathwayHeading
+            capability="Foundations & Ecosystem"
+            title="Foundations & Ecosystem"
+            description="Build foundational knowledge and understand the AI ecosystem to accelerate your impact."
+          />
 
           {!selectedOption ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -193,47 +203,39 @@ const FoundationsEcosystemPathway = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center mb-6">
+            <div>
+              <div className="mb-6">
                 <button 
                   onClick={() => setActiveOption(null)}
-                  className="mr-4 text-gray-600 hover:text-gray-900"
+                  className="text-blue-600 hover:text-blue-800 flex items-center"
                 >
-                  <ArrowLeftIcon className="h-5 w-5" />
+                  <ArrowLeftIcon className="h-5 w-5 mr-1" />
+                  <span>Skills Development</span>
                 </button>
-                <div className={`rounded-full p-2 mr-4 ${getTypeColor(selectedOption.type)}`}>
-                  {getIcon(selectedOption.icon)}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">{selectedOption.title}</h2>
-                  <p className="text-gray-600">{selectedOption.description}</p>
-                </div>
               </div>
-              
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Activities</h3>
-                <ol className="space-y-3">
+
+              <div className="mt-6 space-y-6">
+                <h2 className="text-2xl font-bold text-gray-900">Start a challenge</h2>
+                <div className="space-y-4">
                   {selectedOption.items.map((item, index) => (
-                    <li key={index} className="flex items-start">
-                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full mr-3">
-                        {index + 1}
-                      </span>
-                      <span className="flex-1">{item}</span>
-                      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                        Start
-                      </button>
-                    </li>
+                    <button
+                      key={index}
+                      onClick={() => handleStartLearning(selectedOption, item)}
+                      className="w-full text-left group flex items-center justify-between p-6 border-2 border-gray-100 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+                    >
+                      <div className="flex items-start">
+                        <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-800 text-lg font-bold mr-4">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-1">{item}</h3>
+                          <p className="text-gray-600 text-sm">Click to start this challenge</p>
+                        </div>
+                      </div>
+                      <ChevronRightIcon className="h-6 w-6 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                    </button>
                   ))}
-                </ol>
-              </div>
-              
-              <div className="mt-8 pt-6 border-t">
-                <button
-                  onClick={() => setActiveOption(null)}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  ← Back to all options
-                </button>
+                </div>
               </div>
             </div>
           )}

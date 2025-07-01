@@ -2,13 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import QuestionCard from '@/components/Quiz/QuestionCard';
-import { MindMapNode, MindMapLink } from '@/components/MindMap/MindMap';
-import MindMap from '@/components/MindMap/MindMap'; // Default import
-import CompletionModal from '@/components/Quiz/CompletionModal';
+import ChatPrompt from '@/components/Chat/ChatPrompt';
 import { useLearning } from '@/store/LearningContext';
 import questionGenerator from '@/services/ai/questionGenerator';
-import topicGenerator from '@/services/ai/topicGenerator';
-import LearnNowNextModal from '@/components/Quiz/LearnNowNextModal';
 
 const themeStages = [
   { main: "AI Fundamentals", sub: ["Defining AI", "History of AI", "Types of AI"] }, // Questions 1-3
@@ -21,76 +17,160 @@ const QuizPage: React.FC = () => {
   const router = useRouter();
   const { state, dispatch } = useLearning();
   const [showFeedback, setShowFeedback] = useState(false);
-  const [showCompletion, setShowCompletion] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [expandedMindMap, setExpandedMindMap] = useState(false);
   const [explanation, setExplanation] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
   const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
   const [currentThemeStageIndex, setCurrentThemeStageIndex] = useState(0);
-  const [dynamicCentralTopic, setDynamicCentralTopic] = useState<string | null>(null);
-  const [dynamicSubThemes, setDynamicSubThemes] = useState<string[] | null>(null);
-  const [isGeneratingSubthemes, setIsGeneratingSubthemes] = useState(false);
-  const [isLearnNowNextModalOpen, setIsLearnNowNextModalOpen] = useState(false);
-  const [selectedModalTopic, setSelectedModalTopic] = useState<string>('');
+  const [showCompletion, setShowCompletion] = useState(false);
+  const [savedToToolkit, setSavedToToolkit] = useState(false);
+  const [saveInProgress, setSaveInProgress] = useState(false);
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [chatMessages, setChatMessages] = useState<Array<{text: string; isUser: boolean}>>([]);
   
   // Ref for auto-progression timer
   const autoProgressTimerRef = useRef<number | null>(null);
   
-  // Get the current question
-  const currentQuestion = state.questions[state.currentQuestionIndex];
-
-  // Prepare nodes for MindMap, ensuring type compatibility
-  const nodesForMindMap = state.nodes.map(node => {
-    let finalType: 'central' | 'subtopic' | 'topic' | 'question';
-
-    if (node.id === 'central') {
-      finalType = 'central';
-    } else if (node.type === 'subtopic') {
-      finalType = 'subtopic';
-    } else if (node.type === 'question') {
-      finalType = 'question';
-    } else {
-      // Default to 'topic' if type is undefined, null, or any other value from context
-      // This also covers the case where node.type is already 'topic'
-      finalType = 'topic';
-    }
-
-    return {
-      ...node, // Spread original node properties. This is important to keep other potential fields like x, y, fx, fy if they exist from d3 updates.
-      id: node.id,
-      label: node.label,
-      group: node.group ?? 0, // MindMapNode expects group: number; LearningContext Node has group?: number
-      type: finalType,
-    };
-  }) as MindMapNode[]; // Assert that the result of the map is MindMapNode[]
-  
-  // Handle case when there's no topic or questions
+  // Load questions when component mounts or when topic changes
   useEffect(() => {
-    if (!state.topic) {
-      router.push('/');
-      return;
-    }
-    
-    // If there are no questions, generate them
-    if (state.questions.length === 0) {
-      const loadQuestions = async () => {
-        dispatch({ type: 'SET_LOADING', payload: true });
+    const loadQuestions = async () => {
+      // Check for a selected topic in localStorage first
+      const selectedTopic = localStorage.getItem('selectedTopic');
+      
+      if (selectedTopic && !state.topic) {
+        // Set the topic from localStorage if we don't have one in state
+        dispatch({ type: 'SET_TOPIC', payload: selectedTopic });
+        // Clear the stored topic so it doesn't persist after navigation
+        localStorage.removeItem('selectedTopic');
+      } else if (!state.topic) {
+        // No topic in state or localStorage, redirect to home
+        router.push('/');
+        return;
+      }
+      
+      // Only load questions if we don't have any yet
+      if (state.questions.length === 0) {
         try {
+          dispatch({ type: 'SET_LOADING', payload: true });
           const questions = await questionGenerator.generateQuestions(state.topic);
           dispatch({ type: 'SET_QUESTIONS', payload: questions });
         } catch (error) {
-          dispatch({ type: 'SET_ERROR', payload: 'Failed to load questions' });
+          console.error('Error loading questions:', error);
+          dispatch({ type: 'SET_ERROR', payload: 'Failed to load questions. Please try again.' });
         } finally {
           dispatch({ type: 'SET_LOADING', payload: false });
         }
-      };
+      }
+    };
+    
+    loadQuestions();
+  }, [state.topic, dispatch, router]);
+  
+  // Get the current question
+  const currentQuestion = state.questions[state.currentQuestionIndex];
+  const completionPercentage = state.questions.length > 0 
+    ? Math.round((correctAnswersCount / state.questions.length) * 100) 
+    : 0;
+
+  // Save the completed module to the toolkit
+  const saveToToolkit = async () => {
+    if (savedToToolkit || saveInProgress) return;
+    
+    setSaveInProgress(true);
+    try {
+      // In a real app, you would make an API call here to save to the backend
+      // For now, we'll just simulate a delay and update the UI
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      loadQuestions();
+      // Determine capability from topic prefix
+      let capability = 'Foundations & Ecosystem'; // Default
+      
+      if (state.topic.startsWith('Leadership:')) {
+        capability = 'Leadership & Strategy';
+      } else if (state.topic.startsWith('Governance:')) {
+        capability = 'Governance, Policy & Risk';
+      } else if (state.topic.startsWith('Workforce:')) {
+        capability = 'Workforce Enablement';
+      } else if (state.topic.startsWith('Data:')) {
+        capability = 'Data & Tech Capable';
+      }
+      
+      // Save to localStorage to persist across page refreshes
+      const toolkitModules = JSON.parse(localStorage.getItem('toolkitModules') || '[]');
+      if (!toolkitModules.some((module: any) => module.topic === state.topic)) {
+        toolkitModules.push({
+          topic: state.topic,
+          completedAt: new Date().toISOString(),
+          score: completionPercentage,
+          type: 'scenario',
+          capability: capability
+        });
+        localStorage.setItem('toolkitModules', JSON.stringify(toolkitModules));
+      }
+      
+      setSavedToToolkit(true);
+    } catch (error) {
+      console.error('Error saving to toolkit:', error);
+    } finally {
+      setSaveInProgress(false);
     }
-  }, [state.topic, state.questions.length, dispatch, router]);
+  };
+
+  // Handle module completion
+  const handleModuleCompletion = () => {
+    setShowCompletion(true);
+    // Add to completed modules in context if needed
+    if (state.learnNextTopics.includes(state.topic)) {
+      dispatch({ type: 'COMPLETE_QUEUED_TOPIC', payload: state.topic });
+    }
+  };
+
+  // Refs for scrolling
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatMessages]);
+
+  // Handle sending a chat message
+  const handleSendMessage = async (message: string) => {
+    if (!message.trim()) return;
+    
+    // Add user message to chat
+    const userMessage = { text: message, isUser: true };
+    setChatMessages(prev => [...prev, userMessage]);
+    
+    // Set loading state
+    setIsChatLoading(true);
+    
+    try {
+      // TODO: Connect to LLM API here
+      // For now, just echo the message back after a short delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Add bot response
+      const botResponse = {
+        text: `I'll help you with: "${message}" (LLM integration coming soon)`,
+        isUser: false
+      };
+      setChatMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage = {
+        text: 'Sorry, I encountered an error. Please try again later.',
+        isUser: false
+      };
+      setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
   
   // Handle answer selection
   const handleAnswerSelected = (option: { id: string; text: string; isCorrect: boolean }) => {
@@ -159,13 +239,13 @@ const QuizPage: React.FC = () => {
       autoProgressTimerRef.current = null;
     }
     
-    // Set auto-progress timers with different delays based on correctness
-    // Correct: 1 second, Incorrect: 3 seconds
-    const delay = option.isCorrect ? 1000 : 3000;
-    autoProgressTimerRef.current = window.setTimeout(() => {
-      console.log(`Auto-progressing to next question after ${option.isCorrect ? 'correct' : 'incorrect'} answer (${delay/1000}s delay)`);
-      handleContinue();
-    }, delay);
+    // Only auto-progress for correct answers
+    if (option.isCorrect) {
+      autoProgressTimerRef.current = window.setTimeout(() => {
+        console.log('Auto-progressing to next question after correct answer');
+        handleContinue();
+      }, 1000);
+    }
   };
   
   // Handle continue button click
@@ -206,159 +286,29 @@ const QuizPage: React.FC = () => {
       }
     }
     
-    // If we've completed all questions, show the completion modal
+    // If we've completed all questions, show the completion message
     if (shouldShowCompletion) {
-      setShowCompletion(true);
+      handleModuleCompletion();
     }
   };
   
   // Handle starting a new topic
   const handleStartNewTopic = () => {
-    setShowCompletion(false);
     router.push('/');
   };
   
-  // Handle reviewing the mind map (just closes the modal to see the mind map)
-  const handleReviewMindMap = () => {
+  // Handle redoing the quiz
+  const handleRedoQuiz = () => {
+    // Reset quiz state
     setShowCompletion(false);
-  };
-  
-  const handleCentralNodeActionRequested = (topicLabel: string) => {
-    setSelectedModalTopic(topicLabel);
-    setIsLearnNowNextModalOpen(true);
-  };
-
-  const handleLearnNow = () => {
-    if (selectedModalTopic) {
-      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: selectedModalTopic });
-      setDynamicCentralTopic(null); 
-      setDynamicSubThemes(null);
-      setCurrentThemeStageIndex(0); 
-      // Reset other relevant local state if necessary
-      setCompletedQuestions([]);
-      setCorrectAnswersCount(0);
-      setExpandedMindMap(false); // Collapse mind map view
-    }
-    setIsLearnNowNextModalOpen(false);
-    setSelectedModalTopic('');
-  };
-
-  const handleLearnNext = () => {
-    if (selectedModalTopic) {
-      dispatch({ type: 'ADD_TO_LEARN_NEXT', payload: selectedModalTopic });
-      // console.log(`${selectedModalTopic} added to 'Learn Next' queue.`);
-    }
-    setIsLearnNowNextModalOpen(false);
-    setSelectedModalTopic('');
-  };
-
-  const handleCloseLearnNowNextModal = () => {
-    setIsLearnNowNextModalOpen(false);
-    setSelectedModalTopic('');
-  };
-
-  // Handle subtheme selection in the mind map
-  const handleSubThemeSelect = async (subThemeLabel: string) => {
-    setDynamicCentralTopic(subThemeLabel);
-    setIsGeneratingSubthemes(true);
-    setDynamicSubThemes([]); // Clear or show loading indicator
-
-    try {
-      const rawGeneratedThemes = await topicGenerator.generateRelatedTopics(subThemeLabel);
-
-      // Map to 5-word limit
-      let processedThemes = rawGeneratedThemes.map(theme => theme.split(' ').slice(0, 5).join(' '));
-
-      // Ensure exactly 3 themes, padding if necessary
-      let finalSubThemes: string[] = [];
-
-      if (processedThemes.length >= 3) {
-        finalSubThemes = processedThemes.slice(0, 3);
-      } else {
-        finalSubThemes = [...processedThemes]; // Start with what we have
-        // Add placeholders until we have 3. Ensure placeholders are unique enough.
-        for (let i = finalSubThemes.length; i < 3; i++) {
-          let placeholderBase = `${subThemeLabel} - Sub ${i + 1}`;
-          // Simple check to avoid duplicate placeholders if subThemeLabel itself is very similar
-          if (finalSubThemes.some(t => t.startsWith(subThemeLabel + " - Sub"))) {
-             placeholderBase = `${subThemeLabel} - More Sub ${i + 1 + finalSubThemes.length}`;
-          }
-          finalSubThemes.push(placeholderBase.split(' ').slice(0, 5).join(' '));
-        }
-      }
-      setDynamicSubThemes(finalSubThemes);
-      dispatch({ type: 'UPDATE_NODE', payload: { id: 'central', newLabel: subThemeLabel } });
-    } catch (error) {
-      console.error("Failed to generate subthemes:", error);
-      const errorPlaceholders = [
-        `${subThemeLabel} - Error Sub 1`,
-        `${subThemeLabel} - Error Sub 2`,
-        `${subThemeLabel} - Error Sub 3`
-      ].map(theme => theme.split(' ').slice(0, 5).join(' '));
-      setDynamicSubThemes(errorPlaceholders);
-      // Optionally, dispatch an error to the state or show a toast notification
-    } finally {
-      setIsGeneratingSubthemes(false);
-    }
+    setCorrectAnswersCount(0);
+    setCompletedQuestions([]);
+    setShowFeedback(false);
+    setIsCorrect(false);
+    setSelectedOption(null);
     
-    // If you want to signify that quiz progression is paused or altered by this dynamic exploration:
-    // setCurrentThemeStageIndex(-1); // Or manage a separate state for 'exploration mode'
-  };
-
-  // Handle topic click in the mind map
-  const handleTopicClick = async (topicId: string, topicLabel: string) => {
-    console.log(`Topic clicked: ${topicLabel} (${topicId})`);
-    
-    try {
-      // Show loading state
-      dispatch({ type: 'SET_LOADING', payload: true });
-      
-      // If this is a subtopic, make it the new central topic
-      if (topicId !== 'central') {
-        // Clear existing nodes and links
-        dispatch({ type: 'CLEAR_MIND_MAP' });
-        
-        // Set this as the new central topic
-        dispatch({ type: 'SET_TOPIC', payload: topicLabel });
-        
-        // Create a new central node
-        const centralNode = {
-          id: 'central',
-          label: topicLabel,
-          type: 'topic' as const,
-          group: 0
-        };
-        
-        dispatch({ type: 'ADD_NODE', payload: centralNode });
-      }
-      
-      // Generate related subtopics using AI
-      const relatedTopics = await topicGenerator.generateRelatedTopics(topicLabel);
-      console.log('Generated related topics:', relatedTopics);
-      
-      // Create subtopic nodes (limit to 2 as requested)
-      const limitedTopics = relatedTopics.slice(0, 2);
-      const subtopicNodes = limitedTopics.map((topic, index) => ({
-        id: `${topicId === 'central' ? 'central' : 'new-central'}-subtopic-${index}`,
-        label: topic,
-        type: 'subtopic' as const,
-        parentId: 'central'
-      }));
-      
-      // Add subtopics to the mind map
-      dispatch({ 
-        type: 'ADD_SUBTOPICS', 
-        payload: { 
-          parentId: 'central', 
-          subtopics: subtopicNodes 
-        } 
-      });
-    } catch (error) {
-      console.error('Error generating related topics:', error);
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to generate related topics' });
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false });
-    }
+    // Reset the quiz in the global state
+    dispatch({ type: 'SET_CURRENT_QUESTION_INDEX', payload: 0 });
   };
   
   if (state.isLoading) {
@@ -411,146 +361,201 @@ const QuizPage: React.FC = () => {
     );
   }
   
+  // Helper function to render the main content
+  const renderContent = () => {
+    if (state.isLoading) {
+      return <p className="text-center text-lg">Loading questions...</p>;
+    }
+
+    if (state.error) {
+      return <p className="text-center text-lg text-red-500">Error: {state.error}</p>;
+    }
+
+    if (!currentQuestion) {
+      if (state.questions.length === 0) {
+        return <p className="text-center text-lg">No questions available for this topic yet. Please wait or try another topic.</p>;
+      }
+      return <p className="text-center text-lg">Question loaded, but current question is invalid. Index: {state.currentQuestionIndex}, Total: {state.questions.length}</p>;
+    }
+
+    return (
+      <>
+        <QuestionCard
+          question={currentQuestion.text}
+          options={currentQuestion.options}
+          onAnswerSelected={handleAnswerSelected}
+          questionNumber={state.currentQuestionIndex + 1}
+          totalQuestions={state.questions.length}
+          completedQuestions={completedQuestions}
+          selectedOptionId={selectedOption}
+          showFeedback={showFeedback}
+          isCorrect={isCorrect}
+        />
+
+        {showFeedback && !isCorrect && (
+          <div className="bg-red-50 p-6 rounded-lg border border-red-200 mb-8">
+            <div className="flex items-start">
+              <div className="text-red-500 mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div>
+                <span className="font-semibold text-red-500">Tip:</span>
+                <p className="text-gray-700 mt-1">
+                  {explanation}
+                </p>
+              </div>
+              <button 
+                onClick={handleContinue} 
+                className="ml-4 px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary whitespace-nowrap"
+              >
+                Next Question
+              </button>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  // Helper function to render completion screen
+  const renderCompletionScreen = () => {
+    if (!showCompletion) return null;
+
+    return (
+      <div className="card p-6 border-l-4 border-green-500 mt-6 relative">
+        <div className="flex items-start">
+          <div className="flex-shrink-0 mr-4">
+            <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Congratulations!</h2>
+            <p className="text-gray-600 mb-4">
+              You've completed the <span className="font-semibold">{state.topic}</span> module with a score of {correctAnswersCount} out of {state.questions.length}.
+            </p>
+            
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+              <div 
+                className="h-2 rounded-full bg-green-500" 
+                style={{ width: `${Math.round((correctAnswersCount / state.questions.length) * 100)}%` }}
+              ></div>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleRedoQuiz}
+                className="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Redo Quiz
+              </button>
+              {!savedToToolkit ? (
+                <button
+                  onClick={saveToToolkit}
+                  disabled={saveInProgress}
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {saveInProgress ? 'Saving...' : 'Save to My Toolkit'}
+                </button>
+              ) : (
+                <div className="flex items-center text-green-600 text-sm bg-green-50 px-4 py-2 rounded-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Saved to Toolkit</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* Return to Learning Hub button positioned at bottom right */}
+        <div className="absolute bottom-4 right-6">
+          <button 
+            onClick={() => router.push('/')} 
+            className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 focus:outline-none transition-colors"
+            aria-label="Return to Learning Hub"
+          >
+            <span className="mr-2">Return to Learning Hub</span>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex flex-col h-screen bg-white">
       <Head>
         <title>Quiz - {state.topic} | Interactive Learning Hub</title>
         <meta name="description" content={`Test your knowledge about ${state.topic} with interactive questions`} />
       </Head>
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-primary">{state.topic}</h1>
-          </div>
-          <button 
-            onClick={() => router.push('/')} 
-            className="mt-4 md:mt-0 py-2 px-4 rounded-md border border-gray-200 text-sm font-medium flex items-center hover:bg-gray-50 transition-colors"
-            aria-label="Return to topic selection"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Hub
-          </button>
-        </div>
-        
-        <div className={`grid grid-cols-1 ${expandedMindMap ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6 relative`}>
-          {!expandedMindMap && (
-            <div className="lg:col-span-2">
-              {state.isLoading && <p className="text-center text-lg">Loading questions...</p>}
-              {state.error && <p className="text-center text-lg text-red-500">Error: {state.error}</p>}
-              {!state.isLoading && !state.error && currentQuestion && (
-                <>
-                  <QuestionCard
-                    question={currentQuestion.text}
-                    options={currentQuestion.options}
-                    onAnswerSelected={handleAnswerSelected}
-                    questionNumber={state.currentQuestionIndex + 1}
-                    totalQuestions={state.questions.length}
-                    completedQuestions={completedQuestions}
-                    selectedOptionId={selectedOption}
-                    showFeedback={showFeedback}
-                    isCorrect={isCorrect}
-                  />
-
-                  {/* Inline Feedback - Show tip box only for incorrect answers */}
-                  {showFeedback && !isCorrect && (
-                    <div className="bg-red-50 p-6 rounded-lg border border-red-200 mb-8">
-                      <div className="flex items-start">
-                        <div className="text-red-500 mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1">
-                          <span className="font-semibold text-red-500">Tip:</span>
-                          <p className="text-gray-700 mt-1">
-                            {explanation}
-                          </p>
-                          
-                          {/* Button hidden but action happens after delay */}
-                          <button 
-                            onClick={handleContinue} 
-                            className="hidden"
-                            aria-hidden="true"
-                          >
-                            Next Question
-                          </button>
-                          
-                          {/* Hidden button for accessibility */}
-                          {/* No visible timer message as requested */}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Auto-progress will happen without any visible message */}
-                </>
-              )}
-              {!state.isLoading && !state.error && !currentQuestion && state.questions.length > 0 && (
-                 <p className="text-center text-lg">Question loaded, but current question is invalid. Index: {state.currentQuestionIndex}, Total: {state.questions.length}</p>
-              )}
-              {!state.isLoading && !state.error && !currentQuestion && state.questions.length === 0 && state.topic && (
-                <p className="text-center text-lg">No questions available for this topic yet. Please wait or try another topic.</p>
-              )}
+      {/* Fixed Q&A Section */}
+      <div className="flex-shrink-0 bg-white">
+        <div className="container mx-auto px-4 py-6 max-w-4xl">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-black">{state.topic}</h1>
             </div>
-          )}
+            <button 
+              onClick={() => router.push('/')} 
+              className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800 focus:outline-none transition-colors"
+              aria-label="Return to Learning Hub"
+            >
+              <svg className="w-4 h-4 mr-2 -ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Return to Learning Hub
+            </button>
+          </div>
           
-          <div className={expandedMindMap ? 'col-span-1' : 'lg:col-span-1'}>
-            <div className="relative" id="mind-map-container" key={expandedMindMap ? 'expanded' : 'collapsed'}>
-              <button 
-                onClick={() => setExpandedMindMap(!expandedMindMap)}
-                className="absolute top-4 right-4 z-10 p-2 bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 transition-colors"
-                aria-label={expandedMindMap ? "Collapse mind map" : "Expand mind map"}
-                title={expandedMindMap ? "Collapse mind map" : "Expand mind map"}
+          <div className="grid grid-cols-1 gap-6 relative">
+            <div>
+              {renderContent()}
+              {renderCompletionScreen()}
+            </div>
+          </div>
+        </div>
+        {/* Line below questions */}
+        <div className="border-t border-gray-200 max-w-4xl mx-auto w-full"></div>
+      </div>
+      
+      {/* Scrollable Chat Section */}
+      <div className="flex-1 overflow-y-auto bg-white" ref={chatContainerRef}>
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="bg-blue-50 rounded-lg overflow-hidden">
+            {chatMessages.map((msg: { text: string; isUser: boolean }, index: number) => (
+              <div 
+                key={index} 
+                className={`p-4 ${msg.isUser ? 'bg-blue-100' : 'bg-blue-50'} border-b border-blue-100`}
               >
-                {expandedMindMap ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                )}
-              </button>
-              <MindMap 
-                nodes={nodesForMindMap} 
-                links={state.links} 
-                centralTopic={dynamicCentralTopic || state.topic}
-                subThemeTitles={dynamicSubThemes || (currentThemeStageIndex < themeStages.length ? themeStages[currentThemeStageIndex].sub : [])}
-                onTopicClick={(id, label) => console.log('Topic clicked:', id, label)} // Placeholder for other topic clicks
-                onSubThemeSelect={handleSubThemeSelect}
-                onCentralNodeActionRequested={handleCentralNodeActionRequested}
-              />
-            </div>
+                <div className="font-medium text-sm mb-1">
+                  {msg.isUser ? 'You' : 'Learning Assistant'}
+                </div>
+                <div className="text-gray-800">{msg.text}</div>
+              </div>
+            ))}
+            <div ref={chatEndRef} />
           </div>
-          
-          {/* Removed the bottom-right return button */}
         </div>
-      </main>
+      </div>
       
-      {/* Feedback is now shown inline instead of in a modal */}
-      
-      {showCompletion && (
-        <CompletionModal
-          topic={state.topic}
-          correctAnswers={correctAnswersCount}
-          totalQuestions={state.questions.length}
-          onStartNew={handleStartNewTopic}
-          onReview={handleReviewMindMap}
-        />
-      )}
-      {isLearnNowNextModalOpen && (
-        <LearnNowNextModal
-          isOpen={isLearnNowNextModalOpen}
-          topicName={selectedModalTopic}
-          onLearnNow={handleLearnNow}
-          onLearnNext={handleLearnNext}
-          onClose={handleCloseLearnNowNextModal}
-        />
-      )}
+      {/* Fixed Chat Input */}
+      <div className="bg-blue-50 border-t border-blue-200 px-4 py-3">
+        <div className="max-w-4xl mx-auto">
+          <ChatPrompt 
+            onSendMessage={handleSendMessage} 
+            isDisabled={isChatLoading || !state.topic}
+          />
+        </div>
+      </div>
     </div>
   );
 };
