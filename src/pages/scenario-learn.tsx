@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useLearning } from '@/store/LearningContext';
@@ -80,6 +80,8 @@ const mockDynamicLlmScenario: DynamicScenarioData = {
   ],
 };
 
+import { useRouter } from 'next/router';
+
 const ScenarioLearnPage: React.FC = () => {
   const { state: learningContextState } = useLearning();
 
@@ -89,6 +91,24 @@ const ScenarioLearnPage: React.FC = () => {
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
   const [scenarioCompleted, setScenarioCompleted] = useState<boolean>(false);
+  // Save confirmation state: true (success), 'already' (duplicate), false (none)
+  const [showSaveConfirm, setShowSaveConfirm] = useState<true | false | 'already'>(false);
+
+  const router = useRouter();
+  const { id, view } = router.query;
+
+  // Load saved scenario and show completion if in view=saved mode
+  useEffect(() => {
+    if (view === 'saved' && id && typeof window !== 'undefined') {
+      const savedScenarios = JSON.parse(localStorage.getItem('savedScenarios') || '[]');
+      const found = savedScenarios.find((s: any) => s.id === id);
+      if (found) {
+        setCurrentScenario(found);
+        setRevealedSteps(found.steps || []);
+        setScenarioCompleted(true);
+      }
+    }
+  }, [id, view]);
 
   const currentStepData = !scenarioCompleted && currentScenario.steps[currentStepIndex] ? currentScenario.steps[currentStepIndex] : null;
   const isCorrect = currentStepData && selectedOptionId === currentStepData.correctOptionId;
@@ -128,6 +148,56 @@ const ScenarioLearnPage: React.FC = () => {
 
   // Scenario Completion View
   if (scenarioCompleted) {
+    // If in saved view mode, hide Do Again and Save buttons
+    if (view === 'saved') {
+      return (
+        <div className="min-h-screen bg-background text-foreground flex flex-col items-center py-12 sm:py-16">
+          <main className="container mx-auto px-4 max-w-2xl">
+            <h2 className="text-2xl sm:text-3xl font-bold text-green-600 mb-4">Scenario Complete!</h2>
+            {/* Scenario Metadata */}
+            <div className="bg-card p-6 rounded-lg shadow-lg border border-border mb-6">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Topic</h3>
+              <p className="text-muted-foreground mb-4">{currentScenario.topic}</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Context</h3>
+              <p className="text-muted-foreground mb-4">{currentScenario.overallContext}</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Goal</h3>
+              <p className="text-muted-foreground mb-2">{currentScenario.overallGoal}</p>
+            </div>
+            {/* Objective Block */}
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold text-foreground mb-2">Objective:</h3>
+              <p className="text-muted-foreground mb-4">{currentScenario.objective}</p>
+              {/* Steps list directly under objective */}
+              {revealedSteps.map((step, index) => {
+                // Generate descriptive text based on step ID/title
+                let stepDescription = '';
+                if (step.id === 'step1') {
+                  stepDescription = 'Define clear project needs and constraints to guide your LLM selection process with specific performance requirements and budget parameters.';
+                } else if (step.id === 'step2') {
+                  stepDescription = 'Research both open-source and commercial LLM options to create a balanced comparison based on your specific requirements.';
+                } else if (step.id === 'step3') {
+                  stepDescription = 'Test shortlisted LLMs with real-world examples to verify their actual performance against marketing claims.';
+                } else {
+                  stepDescription = 'Complete this step successfully by choosing the optimal path forward based on careful analysis.';
+                }
+                return (
+                  <div key={index} className="mb-4">
+                    <p className="font-semibold text-foreground">{step.title}</p>
+                    <p className="text-muted-foreground text-sm">{stepDescription}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-8 flex flex-col items-center gap-4">
+              <Link href="/saved-items" className="w-40 flex items-center justify-center gap-2 py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                Back to Saved Items
+              </Link>
+            </div>
+          </main>
+        </div>
+      );
+    }
+    // Normal completion screen (with Do Again and Save)
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col items-center py-12 sm:py-16">
             <main className="container mx-auto px-4 max-w-2xl">
@@ -160,7 +230,7 @@ const ScenarioLearnPage: React.FC = () => {
                   })}
                 </div>
 
-                <div className="mt-8 flex flex-col sm:flex-row sm:justify-between">
+                <div className="mt-8 flex flex-col sm:flex-row sm:justify-between items-center gap-4">
                   {/* Do Again button - left aligned */}
                   <button
                     onClick={() => {
@@ -178,14 +248,47 @@ const ScenarioLearnPage: React.FC = () => {
                     </svg>
                     Do Again
                   </button>
+                  {/* Save button - left aligned, next to Do Again */}
+                  <button
+                    onClick={() => {
+                      const savedScenarios = JSON.parse(localStorage.getItem('savedScenarios') || '[]');
+                      const newSaved = {
+                        id: currentScenario.id,
+                        topic: currentScenario.topic,
+                        dateSaved: new Date().toISOString(),
+                        steps: currentScenario.steps,
+                      };
+                      // Avoid duplicates by id
+                      const alreadySaved = savedScenarios.some((s:any) => s.id === newSaved.id);
+                      if (!alreadySaved) {
+                        savedScenarios.push(newSaved);
+                        localStorage.setItem('savedScenarios', JSON.stringify(savedScenarios));
+                        setShowSaveConfirm(true);
+                        setTimeout(() => setShowSaveConfirm(false), 1500);
+                      } else {
+                        setShowSaveConfirm('already');
+                        setTimeout(() => setShowSaveConfirm(false), 1500);
+                      }
+                    }}
+                    className="w-40 flex items-center justify-center gap-2 py-3 px-6 bg-blue-50 text-blue-700 font-semibold rounded-lg shadow-md hover:bg-blue-100 transition-colors mb-4 sm:mb-0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save
+                  </button>
+                  {showSaveConfirm === true && (
+                    <span className="text-green-600 font-medium ml-2">Saved!</span>
+                  )}
+                  {showSaveConfirm === 'already' && (
+                    <span className="text-yellow-600 font-medium ml-2">Already saved</span>
+                  )}
                   
-                  {/* Hub button - right aligned */}
-                  <Link href="/" passHref>
-                    <button className="w-40 flex items-center justify-center gap-2 py-3 px-6 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                      </svg>
-                      Hub
+                  {/* Back button - right aligned */}
+                  <Link href="/learning-coach#learning-pathways" passHref>
+                    <button className="w-40 flex items-center justify-center gap-2 py-3 px-6 bg-transparent text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors border-none shadow-none">
+                      <ArrowLeftIcon className="h-5 w-5 text-blue-600" />
+                      Back
                     </button>
                   </Link>
                 </div>
@@ -214,12 +317,12 @@ const ScenarioLearnPage: React.FC = () => {
             <h1 className="text-3xl sm:text-4xl font-bold text-primary">
               {learningContextState.topic ? learningContextState.topic : currentScenario.topic}
             </h1>
-            <Link href="/">
-              <button className="bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 font-medium py-2 px-4 rounded-md shadow-sm flex items-center space-x-2 transition-colors duration-150">
-                <ArrowLeftIcon className="h-5 w-5" />
-                <span>Hub</span>
-              </button>
-            </Link>
+             <Link href="/learning-coach#learning-pathways">
+               <button className="bg-transparent text-blue-600 hover:bg-blue-50 border-none font-medium py-2 px-4 rounded-md flex items-center space-x-2 transition-colors duration-150 shadow-none">
+                 <ArrowLeftIcon className="h-5 w-5 text-blue-600" />
+                 <span>Back</span>
+               </button>
+             </Link>
           </div>
 
           {/* Objective Block */}

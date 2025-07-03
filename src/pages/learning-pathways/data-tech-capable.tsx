@@ -1,7 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useLearning } from '@/store/LearningContext';
 import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
+import QuickRefresherActivity from '@/components/LearningPathway/QuickRefresherActivity';
+import ScenarioChallengeActivity from '@/components/LearningPathway/ScenarioChallengeActivity';
+import RolePlaySimulationActivity from '@/components/LearningPathway/RolePlaySimulationActivity';
+import MicroActionChecklist from '@/components/LearningPathway/MicroActionChecklist';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -32,7 +37,23 @@ type LearningOption = {
 
 const DataTechCapablePathway = () => {
   const router = useRouter();
+  const { dispatch } = useLearning();
   const [activeOption, setActiveOption] = useState<string | null>(null);
+
+  // Map option id to activity component
+  const getActivityComponent = (optionId: string | null) => {
+    switch (optionId) {
+      case 'quick-refreshers':
+        return <QuickRefresherActivity onBack={() => setActiveOption(null)} />;
+      case 'role-play':
+        return <RolePlaySimulationActivity onBack={() => setActiveOption(null)} />;
+      case 'micro-actions':
+        return <MicroActionChecklist onBack={() => setActiveOption(null)} />;
+      default:
+        return null;
+    }
+  };
+
   
   // Standardized learning options for Data & Tech Capable
   const learningOptions: LearningOption[] = [
@@ -169,15 +190,21 @@ const DataTechCapablePathway = () => {
             description="Build the technical foundation and capabilities for successful AI implementation"
           />
 
-          {!selectedOption ? (
+          {!activeOption ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {learningOptions.map((option) => (
-                <div 
+                <div
                   key={option.id}
-                  className={`border rounded-lg p-6 cursor-pointer transition-all hover:shadow-md ${
-                    activeOption === option.id ? 'ring-2 ring-blue-500' : ''
-                  }`}
-                  onClick={() => toggleOption(option.id)}
+                  className={`cursor-pointer border border-gray-200 rounded-xl p-6 bg-white hover:shadow-md transition-shadow duration-200`}
+                  onClick={() => {
+                    if (option.id === 'scenario-challenges') {
+                      // Launch real scenario mode
+                      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Data & Tech Capable' });
+                      router.push('/scenario-learn');
+                    } else {
+                      setActiveOption(option.id);
+                    }
+                  }}
                 >
                   <div className="flex items-start">
                     <div className={`rounded-full p-2 mr-4 ${getTypeColor(option.type)}`}>
@@ -188,74 +215,11 @@ const DataTechCapablePathway = () => {
                       <p className="text-gray-600 text-sm">{option.description}</p>
                     </div>
                   </div>
-                  {activeOption === option.id && (
-                    <div className="mt-4 pt-4 border-t">
-                      <ul className="space-y-2">
-                        {option.items.map((item, index) => (
-                          <li key={index} className="flex items-center">
-                            <span className="text-blue-600 mr-2">
-                              <ChevronRightIcon className="h-4 w-4 inline" />
-                            </span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="space-y-2 mt-4">
-                        {option.items.map((item, itemIndex) => (
-                          <button 
-                            key={itemIndex}
-                            className="w-full text-left bg-blue-50 hover:bg-blue-100 text-blue-800 py-2 px-4 rounded-md transition-colors flex items-center justify-between"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleStartLearning(option, item);
-                            }}
-                          >
-                            <span>{item}</span>
-                            <ChevronRightIcon className="h-4 w-4" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
           ) : (
-            <div>
-              <div className="mb-6">
-                <button 
-                  onClick={() => setActiveOption(null)}
-                  className="text-blue-600 hover:text-blue-800 flex items-center"
-                >
-                  <ArrowLeftIcon className="h-5 w-5 mr-1" />
-                  <span>Skills Development</span>
-                </button>
-              </div>
-
-              <div className="mt-6 space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900">Start a challenge</h2>
-                <div className="space-y-4">
-                  {selectedOption.items.map((item, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleStartLearning(selectedOption, item)}
-                      className="w-full text-left group flex items-center justify-between p-6 border-2 border-gray-100 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
-                    >
-                      <div className="flex items-start">
-                        <div className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-lg bg-blue-100 text-blue-800 text-lg font-bold mr-4">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-1">{item}</h3>
-                          <p className="text-gray-600 text-sm">Click to start this challenge</p>
-                        </div>
-                      </div>
-                      <ChevronRightIcon className="h-6 w-6 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+            getActivityComponent(activeOption)
           )}
         </div>
       </main>

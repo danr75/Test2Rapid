@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
+import { useLearning } from '@/store/LearningContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -27,6 +28,7 @@ type LearningOption = {
 
 const GovernancePolicyRiskPathway = () => {
   const router = useRouter();
+  const { dispatch } = useLearning();
   const [activeOption, setActiveOption] = useState<string | null>(null);
   
   // Learning options for Governance, Policy & Risk
@@ -128,7 +130,14 @@ const GovernancePolicyRiskPathway = () => {
                     <div 
                       key={option.id}
                       className="group relative bg-white p-6 border border-gray-200 rounded-lg hover:border-indigo-200 hover:shadow-md transition-all cursor-pointer"
-                      onClick={() => setActiveOption(option.id)}
+                      onClick={() => {
+                        if (option.id === 'scenario-challenges') {
+                          dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Governance, Policy & Risk' });
+                          router.push('/scenario-learn');
+                        } else {
+                          handleOptionSelect(option.id);
+                        }
+                      }}
                     >
                       <div className="flex items-start">
                         <div className={`flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-lg ${
@@ -182,9 +191,8 @@ const GovernancePolicyRiskPathway = () => {
                           const option = learningOptions.find(o => o.id === activeOption);
                           if (option) {
                             if (option.type === 'scenario') {
-                              const topic = `Governance: ${item}`;
-                              localStorage.setItem('selectedTopic', topic);
-                              router.push('/qa-learn');
+                              dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Governance, Policy & Risk' });
+                              router.push('/scenario-learn');
                             } else if (option.type === 'refresher') {
                               // Handle refresher logic here
                             }

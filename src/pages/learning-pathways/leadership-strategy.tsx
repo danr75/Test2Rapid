@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
+import { useLearning } from '@/store/LearningContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -28,6 +29,7 @@ type LearningOption = {
 
 const LeadershipStrategyPathway = () => {
   const router = useRouter();
+  const { dispatch } = useLearning();
   const [activeOption, setActiveOption] = useState<string | null>(null);
   
   // Learning options for Leadership & Strategy
@@ -89,11 +91,9 @@ const LeadershipStrategyPathway = () => {
   const [selectedRefresher, setSelectedRefresher] = useState<string | null>(null);
 
   const handleStartLearning = (option: LearningOption, item: string) => {
-    if (option.type === 'scenario') {
-      // For scenario challenges, navigate to the Q&A learning mode with the selected topic
-      const topic = `Leadership: ${item}`;
-      localStorage.setItem('selectedTopic', topic);
-      router.push('/qa-learn');
+    if (option.id === 'scenario-challenges') {
+      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Leadership & Strategy' });
+      router.push('/scenario-learn');
     } else if (option.type === 'refresher') {
       // For quick refreshers, show the refresher content
       setSelectedRefresher(item);
@@ -207,7 +207,14 @@ const LeadershipStrategyPathway = () => {
                   className={`border rounded-lg p-6 cursor-pointer transition-all hover:shadow-md ${
                     activeOption === option.id ? 'ring-2 ring-blue-500' : ''
                   }`}
-                  onClick={() => toggleOption(option.id)}
+                  onClick={() => {
+                    if (option.id === 'scenario-challenges') {
+                      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Leadership & Strategy' });
+                      router.push('/scenario-learn');
+                    } else {
+                      toggleOption(option.id);
+                    }
+                  }}
                 >
                   <div className="flex items-start">
                     <div className={`rounded-full p-2 mr-4 ${getTypeColor(option.type)}`}>

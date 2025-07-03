@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
+import { useLearning } from '@/store/LearningContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -28,6 +29,7 @@ type LearningOption = {
 
 const FoundationsEcosystemPathway = () => {
   const router = useRouter();
+  const { dispatch } = useLearning();
   const [activeOption, setActiveOption] = useState<string | null>(null);
   
   // Standardized learning options for Foundations & Ecosystem
@@ -92,9 +94,8 @@ const FoundationsEcosystemPathway = () => {
 
   const handleStartLearning = (option: LearningOption, item: string) => {
     if (option.type === 'scenario') {
-      const topic = `Foundations: ${item}`;
-      localStorage.setItem('selectedTopic', topic);
-      router.push('/qa-learn');
+      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Foundations & Ecosystem' });
+      router.push('/scenario-learn');
     } else if (option.type === 'refresher') {
       // Handle refresher logic here
     }
@@ -165,7 +166,14 @@ const FoundationsEcosystemPathway = () => {
                   className={`border rounded-lg p-6 cursor-pointer transition-all hover:shadow-md ${
                     activeOption === option.id ? 'ring-2 ring-blue-500' : ''
                   }`}
-                  onClick={() => toggleOption(option.id)}
+                  onClick={() => {
+                    if (option.id === 'scenario-challenges') {
+                      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Foundations & Ecosystem' });
+                      router.push('/scenario-learn');
+                    } else {
+                      toggleOption(option.id);
+                    }
+                  }}
                 >
                   <div className="flex items-start">
                     <div className={`rounded-full p-2 mr-4 ${getTypeColor(option.type)}`}>

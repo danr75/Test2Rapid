@@ -856,4 +856,58 @@ const LearningCoachPage: React.FC = () => {
   );
 };
 
+// --- Inline Saved Scenarios List Component ---
+// (Imports removed; useEffect, useState, useRouter, and ArrowRightIcon are already imported at the top of the file)
+
+interface SavedScenario {
+  id: string;
+  topic: string;
+  dateSaved: string;
+  steps: any[];
+}
+
+const SavedScenariosInline: React.FC = () => {
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const items = localStorage.getItem('savedScenarios');
+      if (items) {
+        setSavedScenarios(JSON.parse(items));
+      }
+    }
+  }, []);
+
+  if (savedScenarios.length === 0) {
+    return (
+      <div className="bg-white rounded-lg p-6 mt-4 text-center shadow-sm">
+        <p className="text-gray-500">No saved scenarios yet. Complete a scenario and click Save to revisit it here.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg p-6 mt-4 shadow-sm">
+      <h3 className="text-lg font-semibold mb-4 text-gray-900">Saved Scenarios</h3>
+      <div className="space-y-4">
+        {savedScenarios.map((scenario) => (
+          <div key={scenario.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b last:border-b-0 pb-4 last:pb-0">
+            <div>
+              <div className="font-medium text-gray-800">{scenario.topic}</div>
+              <div className="text-gray-400 text-xs">Saved on {new Date(scenario.dateSaved).toLocaleString()}</div>
+            </div>
+            <button
+              className="mt-3 sm:mt-0 inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium shadow"
+              onClick={() => router.push(`/scenario-learn?id=${scenario.id}&view=saved`)}
+            >
+              View <ArrowRightIcon className="ml-2 h-4 w-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export default LearningCoachPage;

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import PathwayHeading from '@/components/LearningPathway/PathwayHeading';
+import { useLearning } from '@/store/LearningContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -31,6 +32,7 @@ type LearningOption = {
 
 const WorkforceEnablementPathway = () => {
   const router = useRouter();
+  const { dispatch } = useLearning();
   const [activeOption, setActiveOption] = useState<string | null>(null);
   
   // Standardized learning options for Workforce Enablement
@@ -164,7 +166,14 @@ const WorkforceEnablementPathway = () => {
                   className={`border rounded-lg p-6 cursor-pointer transition-all hover:shadow-md ${
                     activeOption === option.id ? 'ring-2 ring-blue-500' : ''
                   }`}
-                  onClick={() => toggleOption(option.id)}
+                  onClick={() => {
+                    if (option.id === 'scenario-challenges') {
+                      dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: 'Workforce Enablement' });
+                      router.push('/scenario-learn');
+                    } else {
+                      toggleOption(option.id);
+                    }
+                  }}
                 >
                   <div className="flex items-start">
                     <div className={`rounded-full p-2 mr-4 ${getTypeColor(option.type)}`}>
