@@ -13,8 +13,8 @@ const PathwayHeading: React.FC<PathwayHeadingProps> = ({ capability, title, desc
 
   return (
     <div className={`${colorClass} text-white rounded-lg p-6 mb-8 w-full`}>
-      <h1 className="text-3xl font-bold mb-2">{title}</h1>
-      <p>{description}</p>
+      <h1 className="text-3xl font-bold mb-2 text-white">{title}</h1>
+      <p className="text-white">{description}</p>
     </div>
   );
 };

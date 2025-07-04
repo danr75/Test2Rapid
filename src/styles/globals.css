@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 79, 70, 229;    /* #4F46E5 */
+    --color-secondary: 16, 185, 129; /* #10B981 */
+    --color-error: 239, 68, 68;      /* #EF4444 */
+    --color-background: 249, 250, 251; /* #F9FAFB */
+    --color-surface: 255, 255, 255;  /* #FFFFFF */
+    --color-text: 31, 41, 55;        /* #1F2937 */
+  }
+
+  /* Dark mode variables */
+  .dark {
+    --color-primary: 99, 102, 241;   /* #6366F1 */
+    --color-secondary: 52, 211, 153; /* #34D399 */
+    --color-error: 248, 113, 113;    /* #F87171 */
+    --color-background: 17, 24, 39;  /* #111827 */
+    --color-surface: 31, 41, 55;     /* #1F2937 */
+    --color-text: 249, 250, 251;     /* #F9FAFB */
+  }
+
+  /* Base styles */
+  body {
+    @apply bg-background text-text antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    color: rgb(var(--color-text));
+  }
+  
+  /* Ensure text is white in dark mode */
+  .dark body {
+    @apply text-white;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold text-gray-900 dark:text-white;
+  }
+
+  /* Force white text for headings on dark backgrounds */
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    @apply text-white;
+  }
+
+  h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-2xl md:text-3xl; }
+  h4 { @apply text-xl md:text-2xl; }
+  h5 { @apply text-lg md:text-xl; }
+  h6 { @apply text-base md:text-lg; }
+
+  /* Links */
+  a {
+    @apply text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 transition-colors;
+  }
+
+  /* Forms */
+  [type='text'],
+  [type='email'],
+  [type='url'],
+  [type='password'],
+  [type='number'],
+  [type='date'],
+  [type='datetime-local'],
+  [type='month'],
+  [type='search'],
+  [type='tel'],
+  [type='time'],
+  [type='week'],
+  [multiple],
+  textarea,
+  select {
+    @apply w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-primary-400 dark:focus:ring-primary-400;
+  }
+
+  /* Buttons */
+  button,
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md border border-transparent font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none transition-colors;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 dark:bg-gray-600 rounded-full hover:bg-gray-500 dark:hover:bg-gray-500;
+  }
+}
+
+@layer components {
+  /* Button variants */
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 dark:bg-primary-600 dark:hover:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500 dark:bg-secondary-600 dark:hover:bg-secondary-700;
+  }
+
+  .btn-outline {
+    @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700;
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-gray-200 dark:border-gray-700;
+  }
+
+  .card-body {
+    @apply p-6;
+  }
+
+  .card-footer {
+    @apply px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50;
+  }
+
+  /* Alert */
+  .alert {
+    @apply p-4 rounded-lg;
+  }
+
+  .alert-info {
+    @apply bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200;
+  }
+
+  .alert-success {
+    @apply bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-200;
+  }
+
+  .alert-warning {
+    @apply bg-yellow-50 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200;
+  }
+
+  .alert-error {
+    @apply bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-200;
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { 
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Scroll utilities */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Aspect ratios */
+  .aspect-16\/9 {
+    aspect-ratio: 16 / 9;
+  }
+
+  .aspect-4\/3 {
+    aspect-ratio: 4 / 3;
+  }
+
+  .aspect-1\/1 {
+    aspect-ratio: 1 / 1;
+  }
+}

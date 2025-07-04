@@ -321,8 +321,8 @@ const DataTechCapable = () => {
             </Link>
             
             <div className="mt-6">
-              <h1 className="text-3xl font-bold text-gray-900">Data & Tech Capable</h1>
-              <p className="text-gray-600 mt-1">Resources and tools for technical capabilities</p>
+              <h1 className="text-3xl font-bold text-white">Data & Tech Capable</h1>
+              <p className="text-white mt-1">Resources and tools for technical capabilities</p>
             </div>
           </div>
 

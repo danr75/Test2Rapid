@@ -359,10 +359,13 @@ const LearningCoachPage: React.FC = () => {
   
   // Function to handle 'Pick for me' click
   const handlePickForMe = () => {
-    // Use the currently selected mode instead of a random one
-    const mode = currentLearningMode;
+    // Use the currently selected mode
+    const mode = currentLearningMode || 'Q&A';
     
-    // Define some default topics for each mode
+    // Update the learning mode in the context
+    dispatch({ type: 'SET_LEARNING_MODE', payload: mode });
+    
+    // Define default topics for each mode
     const defaultTopics = {
       'Q&A': 'AI Fundamentals',
       'Scenario': 'AI Business Case',
@@ -512,19 +515,22 @@ const LearningCoachPage: React.FC = () => {
   // Effect to initialize context's learningMode if it's not set (e.g., on first app load)
   useEffect(() => {
     if (!state.learningMode) {
-      // Default to Q&A, or any other preferred default
+      // Default to Q&A mode
       dispatch({ type: 'SET_LEARNING_MODE', payload: 'Q&A' }); 
+      setCurrentLearningMode('Q&A');
+    } else {
+      setCurrentLearningMode(state.learningMode);
     }
   }, [state.learningMode, dispatch]); // Only re-run if these change
 
   const handleModeChange = (newMode: LearningMode) => {
     console.log('handleModeChange called with:', newMode);
     
-    // Toggle the learning mode - if clicking the same mode, keep it selected
-    const modeToSet = currentLearningMode === newMode ? currentLearningMode : newMode;
+    // Set the new learning mode
+    setCurrentLearningMode(newMode);
     
-    // Set the learning mode in the context
-    dispatch({ type: 'SET_LEARNING_MODE', payload: modeToSet });
+    // Update the learning mode in the context
+    dispatch({ type: 'SET_LEARNING_MODE', payload: newMode });
     
     // Get the default topic for this mode if no topic is set
     const defaultTopics = {
@@ -533,7 +539,7 @@ const LearningCoachPage: React.FC = () => {
       'Speed': 'AI Quick Facts'
     };
     
-    const topic = state.topic || defaultTopics[modeToSet] || 'AI Learning';
+    const topic = state.topic || defaultTopics[newMode] || 'AI Learning';
     
     // Set the topic in the context
     dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: topic });
@@ -564,17 +570,22 @@ const LearningCoachPage: React.FC = () => {
   };
 
   const handleStrategicFocusClick = (card: StrategicFocusCardData) => {
-    console.log('Strategic focus clicked with mode:', currentLearningMode);
+    // Always prefer 'Scenario' or 'Speed' mode when a strategic focus is clicked
+    // If current mode is 'Q&A', default to 'Scenario'
+    const mode = currentLearningMode === 'Q&A' ? 'Scenario' : currentLearningMode;
+    
+    // Update the learning mode in the context
+    dispatch({ type: 'SET_LEARNING_MODE', payload: mode });
     
     // Set the topic for learning
     dispatch({ type: 'SET_TOPIC_FOR_LEARNING', payload: card.topicToSet });
     
-    // Navigate based on the currently selected mode
-    if (currentLearningMode === 'Scenario') {
+    // Navigate based on the selected mode
+    if (mode === 'Scenario') {
       console.log('Navigating strategic focus to Scenario mode');
       router.push('/scenario-learn');
     }
-    else if (currentLearningMode === 'Speed') {
+    else if (mode === 'Speed') {
       console.log('Navigating strategic focus to Speed mode');
       router.push('/speed-learn');
     }

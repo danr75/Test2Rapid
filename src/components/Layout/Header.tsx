@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeTab }) => {
       <div className="bg-blue-800 text-white shadow-md">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex flex-col">
-            <h1 className="text-xl font-semibold">AI skills builder</h1>
+            <h1 className="text-xl font-semibold text-white">AI skills builder</h1>
             <p className="text-sm text-blue-200">Personal learning hub</p>
           </div>
           <div className="flex items-center gap-2">
