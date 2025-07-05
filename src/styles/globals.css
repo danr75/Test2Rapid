@@ -10,6 +10,7 @@
     --color-background: 249, 250, 251; /* #F9FAFB */
     --color-surface: 255, 255, 255;  /* #FFFFFF */
     --color-text: 31, 41, 55;        /* #1F2937 */
+    --heading-color: theme('colors.gray.900');
   }
 
   /* Dark mode variables */
@@ -20,6 +21,7 @@
     --color-background: 17, 24, 39;  /* #111827 */
     --color-surface: 31, 41, 55;     /* #1F2937 */
     --color-text: 249, 250, 251;     /* #F9FAFB */
+    --heading-color: theme('colors.white');
   }
 
   /* Base styles */
@@ -36,17 +38,8 @@
 
   /* Typography */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold text-gray-900 dark:text-white;
-  }
-
-  /* Force white text for headings on dark backgrounds */
-  .dark h1,
-  .dark h2,
-  .dark h3,
-  .dark h4,
-  .dark h5,
-  .dark h6 {
-    @apply text-white;
+    @apply font-display font-bold;
+    color: var(--heading-color);
   }
 
   h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
@@ -150,6 +143,14 @@
 
   .alert-error {
     @apply bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-200;
+  }
+
+  /* Contextual background classes for headings */
+  .dark-bg {
+    --heading-color: theme('colors.white');
+  }
+  .light-bg {
+    --heading-color: theme('colors.gray.900');
   }
 }
 
